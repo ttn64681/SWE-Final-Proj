@@ -31,7 +31,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Create an Account</h1>
-            <p className="text-gray-400">Step 1 of 4</p>
+            <p className="text-gray-400">Step 1 of 3</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -45,7 +45,7 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className="w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
                 required
               />
             </div>
@@ -60,7 +60,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className="w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
                 required
               />
             </div>
@@ -75,14 +75,14 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className="w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-md font-semibold hover:from-red-600 hover:to-pink-600 transition-all transform hover:scale-105"
+              className="inline-block bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-full font-semibold hover:from-red-600 hover:to-pink-600 transition-all"
             >
               Continue
             </button>
