@@ -3,6 +3,39 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import MovieCardsGrid from "../../components/common/movies/MovieCardsGrid";
+
+// DUMMY MOVIE DATA
+const sampleMovies = [
+  {
+    id: 1,
+    title: "Godzilla",
+    poster: "/poster godzilla.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Action", "Sci-Fi", "Thriller"],
+    rating: 10.0,
+    duration: "1HR 47MIN"
+  },
+  {
+    id: 2,
+    title: "Cinema People",
+    poster: "/cinema people.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Drama", "Comedy"],
+    rating: 8.0,
+    duration: "2HR 15MIN"
+  },
+  {
+    id: 3,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    rating: 9.0,
+    duration: "1HR 59MIN"
+  },
+];
+
 export default function Home() {
   return (
     <div className="flex flex-col">
@@ -31,13 +64,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Promo Section (overlapping bottom of hero) */}
+      {/* Promo Section */}
       <section className="relative -mt-20 z-20 px-4">
         <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 rounded-xl bg-component-purple/90 p-5 backdrop-blur md:grid-cols-2">
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg">
             <Image
               src="/cinema people.jpg"
-              alt="Cinema promotional"
+              alt="Cinema people"
               fill
               className="object-cover"
             />
@@ -61,6 +94,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Movies Section */}
+      <MovieCardsGrid movies={sampleMovies} />
     </div>
   );
 }
