@@ -5,6 +5,11 @@
   --foreground: #171717;
 }
 
+@theme {
+  --color-acm-orange: #FF5C33;
+  --color-acm-pink: #FF478B;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
