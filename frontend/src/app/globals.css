@@ -5,11 +5,22 @@
   --foreground: #171717;
 }
 
+@theme {
+  --color-acm-orange: #FF5C33;
+  --color-acm-pink: #FF478B;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Map next/font variables to Tailwind v4 font tokens */
+  --font-afacad: var(--font-afacad);
+  --font-pacifico: var(--font-pacifico);
+  --font-red-rose: var(--font-red-rose);
+
+  /* Dark background color token for bg-dark */
+  --color-dark: #04060a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +33,4 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
