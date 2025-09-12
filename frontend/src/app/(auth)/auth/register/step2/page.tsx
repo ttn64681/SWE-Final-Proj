@@ -1,22 +1,41 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NavBar from '@/components/common/navBar/NavBar';
+import { useRegistration } from '@/contexts/RegistrationContext';
+import { validatePhoneNumber } from '@/services/auth';
 
 export default function RegisterStep2Page() {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const { data, updateData, isStepValid } = useRegistration();
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle step 2 logic here
-    console.log('Step 2 data:', { firstName, lastName, phoneNumber });
-    // Navigate to step 3
-    router.push('/auth/register/step3');
+    setErrors({});
+
+    // Validate first name
+    if (!data.firstName.trim()) {
+      setErrors(prev => ({ ...prev, firstName: 'First name is required' }));
+    }
+
+    // Validate last name
+    if (!data.lastName.trim()) {
+      setErrors(prev => ({ ...prev, lastName: 'Last name is required' }));
+    }
+
+    // Validate phone number
+    if (!data.phoneNumber.trim()) {
+      setErrors(prev => ({ ...prev, phoneNumber: 'Phone number is required' }));
+    } else if (!validatePhoneNumber(data.phoneNumber)) {
+      setErrors(prev => ({ ...prev, phoneNumber: 'Please enter a valid phone number' }));
+    }
+
+    // If no errors, proceed to next step
+    if (Object.keys(errors).length === 0 && isStepValid(2)) {
+      router.push('/auth/register/step3');
+    }
   };
 
   const handleGoBack = () => {
@@ -42,12 +61,13 @@ export default function RegisterStep2Page() {
               <input
                 type="text"
                 id="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                value={data.firstName}
+                onChange={(e) => updateData({ firstName: e.target.value })}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.firstName ? 'border-2 border-red-500' : ''}`}
                 required
               />
+              {errors.firstName && <p className="text-red-400 text-sm mt-1">{errors.firstName}</p>}
             </div>
 
             <div>
@@ -57,12 +77,13 @@ export default function RegisterStep2Page() {
               <input
                 type="text"
                 id="lastName"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={data.lastName}
+                onChange={(e) => updateData({ lastName: e.target.value })}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.lastName ? 'border-2 border-red-500' : ''}`}
                 required
               />
+              {errors.lastName && <p className="text-red-400 text-sm mt-1">{errors.lastName}</p>}
             </div>
 
             <div>
@@ -72,12 +93,13 @@ export default function RegisterStep2Page() {
               <input
                 type="tel"
                 id="phoneNumber"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                value={data.phoneNumber}
+                onChange={(e) => updateData({ phoneNumber: e.target.value })}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.phoneNumber ? 'border-2 border-red-500' : ''}`}
                 required
               />
+              {errors.phoneNumber && <p className="text-red-400 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
 
             <div className="flex space-x-4">
