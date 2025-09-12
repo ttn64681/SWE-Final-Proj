@@ -29,7 +29,7 @@ export default function MovieCardsGrid({
       <div className="mx-auto max-w-7xl">
         
         {/* Movies Grid */}
-        <div className={`grid gap-6 grid-cols-${columns.mobile} sm:grid-cols-${columns.tablet} md:grid-cols-${columns.desktop} lg:grid-cols-${columns.large}`}>
+        <div className={`grid gap-6 grid-cols-${columns.mobile?.toString()} sm:grid-cols-${columns.tablet?.toString()} md:grid-cols-${columns.desktop?.toString()} lg:grid-cols-${columns.large?.toString()}`}>
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
