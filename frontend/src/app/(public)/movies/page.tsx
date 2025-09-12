@@ -1,3 +1,4 @@
+'use client';
 
 import SearchBar from "@/components/specific/movies/SearchBar";
 import MovieCard from "@/components/common/movies/MovieCard";
@@ -8,7 +9,7 @@ import Image from "next/image";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { IoFilterOutline } from "react-icons/io5";
 
-
+import { useState } from "react";
 
 const sampleMovies = [
   {
@@ -86,6 +87,12 @@ const sampleMovies = [
 ];
 
 export default function MoviesPage() {
+
+  const [tab, setTab] = useState('now'); // Initial active tab
+
+  const handleTabClick = (tabId: string) => {
+    setTab(tabId);
+  };
   return (
     <div>
       <div className="w-screen h-[60vh] relative flex flex-col items-center gap-8 py-36 overflow-hidden">
