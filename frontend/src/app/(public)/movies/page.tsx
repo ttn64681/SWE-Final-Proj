@@ -1,9 +1,89 @@
 
 import SearchBar from "@/components/specific/movies/SearchBar";
+import MovieCard from "@/components/common/movies/MovieCard";
+import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
+import WhiteSeparator from "@/components/common/WhiteSeparator";
 import Image from "next/image";
 
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { IoFilterOutline } from "react-icons/io5";
+
+
+
+const sampleMovies = [
+  {
+    id: 1,
+    title: "Godzilla",
+    poster: "/poster godzilla.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Action", "Sci-Fi", "Thriller"],
+    rating: 10.0,
+    duration: "1HR 47MIN"
+  },
+  {
+    id: 2,
+    title: "Cinema People",
+    poster: "/cinema people.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Drama", "Comedy"],
+    rating: 8.0,
+    duration: "2HR 15MIN"
+  },
+  {
+    id: 3,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    rating: 9.0,
+    duration: "1HR 59MIN"
+  },
+  {
+    id: 4,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    rating: 9.0,
+    duration: "1HR 59MIN"
+  },
+  {
+    id: 5,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    rating: 9.0,
+    duration: "1HR 59MIN"
+  },
+  {
+    id: 6,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    rating: 9.0,
+    duration: "1HR 59MIN"
+  },
+  {
+    id: 7,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    rating: 9.0,
+    duration: "1HR 59MIN"
+  },
+  {
+    id: 8,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    rating: 9.0,
+    duration: "1HR 59MIN"
+  },
+];
 
 export default function MoviesPage() {
   return (
@@ -26,7 +106,22 @@ export default function MoviesPage() {
           <IoFilterOutline className="ml-3 text-white text-3xl" />
         </div>
       </div>
-      
+      <div className="w-screen relative px-16">
+        <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">Now Playing</h2>
+        <WhiteSeparator />
+        <MovieCardsGrid 
+          movies={sampleMovies} 
+          columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
+        />
+      </div>
+      <div className="w-screen relative px-16">
+        <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">Upcoming</h2>
+        <WhiteSeparator />
+        <MovieCardsGrid 
+          movies={sampleMovies} 
+          columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
+        />
+      </div>
     </div>
   );
 }

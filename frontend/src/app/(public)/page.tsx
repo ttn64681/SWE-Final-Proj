@@ -96,7 +96,10 @@ export default function Home() {
       </section>
 
       {/* Movies Section */}
-      <MovieCardsGrid movies={sampleMovies} />
+      <MovieCardsGrid 
+        movies={sampleMovies} 
+        columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
+      />
     </div>
   );
 }
