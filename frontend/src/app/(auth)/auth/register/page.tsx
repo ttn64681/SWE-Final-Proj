@@ -1,26 +1,49 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NavBar from '@/components/common/navBar/NavBar';
+import { useRegistration } from '@/contexts/RegistrationContext';
+import { validateEmail, validatePassword } from '@/services/auth';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const { data, updateData, isStepValid } = useRegistration();
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert('Passwords do not match');
-      return;
+    setErrors({});
+
+    // Validate email
+    if (!data.email) {
+      setErrors(prev => ({ ...prev, email: 'Email is required' }));
+    } else if (!validateEmail(data.email)) {
+      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }));
     }
-    // Handle step 1 logic here
-    console.log('Step 1 data:', { email, password });
-    // Navigate to step 2
-    router.push('/auth/register/step2');
+
+    // Validate password
+    if (!data.password) {
+      setErrors(prev => ({ ...prev, password: 'Password is required' }));
+    } else {
+      const passwordValidation = validatePassword(data.password);
+      if (!passwordValidation.isValid) {
+        setErrors(prev => ({ ...prev, password: passwordValidation.message || 'Invalid password' }));
+      }
+    }
+
+    // Validate confirm password
+    if (!data.confirmPassword) {
+      setErrors(prev => ({ ...prev, confirmPassword: 'Please confirm your password' }));
+    } else if (data.password !== data.confirmPassword) {
+      setErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+    }
+
+    // If no errors, proceed to next step
+    if (Object.keys(errors).length === 0 && isStepValid(1)) {
+      router.push('/auth/register/step2');
+    }
   };
 
   return (
@@ -31,7 +54,7 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Create an Account</h1>
-            <p className="text-gray-400">Step 1 of 4</p>
+            <p className="text-gray-400">Step 1 of 3</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -42,12 +65,13 @@ export default function RegisterPage() {
               <input
                 type="email"
                 id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={data.email}
+                onChange={(e) => updateData({ email: e.target.value })}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.email ? 'border-2 border-red-500' : ''}`}
                 required
               />
+              {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
             </div>
 
             <div>
@@ -57,12 +81,13 @@ export default function RegisterPage() {
               <input
                 type="password"
                 id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={data.password}
+                onChange={(e) => updateData({ password: e.target.value })}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.password ? 'border-2 border-red-500' : ''}`}
                 required
               />
+              {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
             </div>
 
             <div>
@@ -72,17 +97,18 @@ export default function RegisterPage() {
               <input
                 type="password"
                 id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={data.confirmPassword}
+                onChange={(e) => updateData({ confirmPassword: e.target.value })}
                 placeholder="Input text"
-                className="w-full px-4 py-3 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500"
+                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.confirmPassword ? 'border-2 border-red-500' : ''}`}
                 required
               />
+              {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-md font-semibold hover:from-red-600 hover:to-pink-600 transition-all transform hover:scale-105"
+              className="inline-block bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-full font-semibold hover:from-red-600 hover:to-pink-600 transition-all"
             >
               Continue
             </button>
