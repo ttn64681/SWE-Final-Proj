@@ -1,17 +1,15 @@
 "use client";
 import React, { useState } from 'react';
 
-interface props {
-    max: number;
-}
+export default function TicketCounter() {
 
-export default function TicketCounter({ max }: props) {
-
+    // Placeholder constant- in a later version, this maximum will be carried over from the Seats page.
+    const reservedSeats = 5;
 
     const [ticketCount, setTicketCount] = useState(0);
 
     const increment = () => {
-        if (ticketCount < max) {
+        if (ticketCount < reservedSeats) {
             setTicketCount(ticketCount + 1); 
         }
     }
