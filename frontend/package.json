@@ -6,10 +6,20 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "init-db": "tsx scripts/init-db.ts"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/pg": "^8.15.5",
+    "bcryptjs": "^3.0.2",
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.5",
+    "jsonwebtoken": "^9.0.2",
     "next": "15.5.2",
+    "pg": "^8.16.3",
+    "postgres": "^3.4.7",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
@@ -23,6 +33,7 @@
     "eslint-config-next": "15.5.2",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
+    "tsx": "^4.20.5",
     "typescript": "^5"
   }
 }
