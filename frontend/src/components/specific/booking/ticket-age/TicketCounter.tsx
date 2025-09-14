@@ -2,23 +2,28 @@
 import React, { useState } from 'react';
 
 interface props {
-    max: number;
+    index: number;
+    ticketsByCategory: number[];
+    currentlySelected: number;
+    maxTickets: number;
+    onCountChange: (count: number) => void;
 }
 
-export default function TicketCounter({ max }: props) {
+export default function TicketCounter({ index, ticketsByCategory, currentlySelected, maxTickets, onCountChange }: props) {
 
-
-    const [ticketCount, setTicketCount] = useState(0);
+    const [ticketCount, setTicketCount] = useState(ticketsByCategory[index]);
 
     const increment = () => {
-        if (ticketCount < max) {
-            setTicketCount(ticketCount + 1); 
+        if (currentlySelected + 1 <= maxTickets) {
+            setTicketCount(ticketCount + 1);
+            onCountChange(1);
         }
     }
 
     const decrement = () => {
         if (ticketCount > 0) {
-            setTicketCount(ticketCount - 1); 
+            setTicketCount(ticketCount - 1);
+            onCountChange(-1);
         }
     }
 

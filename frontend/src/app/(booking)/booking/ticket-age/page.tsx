@@ -15,7 +15,7 @@ export default function TicketAgePage() {
 
             <h2 className="ml-8 mt-8 text-2xl text-white"> Choose tickets for each seat you reserved. </h2>
 
-            <TicketTable max={reservedSeats} />
+            <TicketTable reservedSeats={reservedSeats} />
 
         </div>
     );
