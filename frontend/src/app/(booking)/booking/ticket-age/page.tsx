@@ -4,6 +4,7 @@ import TicketTable from "@/components/specific/booking/ticket-age/TicketTable";
 export default function TicketAgePage() {
     // Placeholder constant- in a later version, this maximum will be carried over from the Seats page.
     const reservedSeats = 5;
+    
     return (
         <div className="w-screen h-screen bg-black">
             <NavBar />
