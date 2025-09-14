@@ -33,11 +33,13 @@ export interface ValidationError {
   message: string;
 }
 
-// Real API functions using PostgreSQL database
+// API functions using Spring Boot backend
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+
 export const authAPI = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ export const authAPI = {
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,9 +81,13 @@ export const authAPI = {
 
   async refreshToken(): Promise<AuthResponse> {
     try {
-      const response = await fetch('/api/auth/refresh', {
+      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
-        credentials: 'include', // Include cookies
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();
@@ -97,9 +103,11 @@ export const authAPI = {
 
   async logout(): Promise<AuthResponse> {
     try {
-      const response = await fetch('/api/auth/logout', {
+      const response = await fetch(`${API_BASE_URL}/auth/logout`, {
         method: 'POST',
-        credentials: 'include', // Include cookies
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();
