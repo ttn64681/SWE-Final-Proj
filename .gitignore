@@ -22,6 +22,26 @@ frontend/.next/
 # production
 /build
 
+# Java/Spring Boot backend
+backend/build/
+backend/target/
+backend/.gradle/
+backend/gradle/
+!backend/gradle/wrapper/
+backend/gradlew
+backend/gradlew.bat
+backend/*.jar
+backend/*.war
+backend/*.ear
+backend/*.class
+backend/out/
+backend/.idea/
+backend/*.iml
+backend/.settings/
+backend/.project
+backend/.classpath
+backend/.vscode/
+
 # misc
 .DS_Store
 *.pem
