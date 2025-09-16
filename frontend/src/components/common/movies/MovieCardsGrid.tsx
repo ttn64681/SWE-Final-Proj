@@ -1,4 +1,4 @@
-import MovieCard from "./MovieCard";
+import MovieCard from './MovieCard';
 
 interface Movie {
   id: number;
@@ -10,7 +10,8 @@ interface Movie {
   duration: string;
 }
 
-interface MovieCardsGridProps { // Specify how many columns for each breakpoint
+interface MovieCardsGridProps {
+  // Specify how many columns for each breakpoint
   movies: Movie[];
   columns?: {
     mobile?: number;
@@ -20,21 +21,22 @@ interface MovieCardsGridProps { // Specify how many columns for each breakpoint
   };
 }
 
-export default function MovieCardsGrid({ 
-  movies, 
-  columns = { mobile: 2, tablet: 3, desktop: 4, large: 5 } 
+export default function MovieCardsGrid({
+  movies,
+  columns = { mobile: 2, tablet: 3, desktop: 4, large: 5 },
 }: MovieCardsGridProps) {
   return (
     <section className="py-12 px-4">
       <div className="mx-auto max-w-7xl">
-        
         {/* Movies Grid */}
-        <div className={`grid gap-6 grid-cols-${columns.mobile} sm:grid-cols-${columns.tablet} md:grid-cols-${columns.desktop} lg:grid-cols-${columns.large}`}>
+        <div
+          className={`grid gap-6 grid-cols-${columns.mobile} sm:grid-cols-${columns.tablet} md:grid-cols-${columns.desktop} lg:grid-cols-${columns.large}`}
+        >
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
         </div>
-        
+
         {/* Empty State */}
         {movies.length === 0 && (
           <div className="text-center py-12">

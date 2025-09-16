@@ -1,4 +1,4 @@
-export default function AdminDashboardPage() {
+export default function AdminProfilePage() {
   return (
     <div>
       <h2 className="text-xl font-semibold">Admin Dashboard</h2>
