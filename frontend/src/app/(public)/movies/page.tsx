@@ -4,6 +4,8 @@ import SearchBar from "@/components/specific/movies/SearchBar";
 import MovieCard from "@/components/common/movies/MovieCard";
 import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
 import WhiteSeparator from "@/components/common/WhiteSeparator";
+import TrailerEmbed from "@/components/common/movies/TrailerEmbed";
+
 import Image from "next/image";
 
 import { PiMagnifyingGlass } from "react-icons/pi";
@@ -95,6 +97,7 @@ export default function MoviesPage() {
   };
   return (
     <div>
+      <TrailerEmbed />
       <div className="w-screen h-[60vh] relative flex flex-col items-center gap-8 py-36 overflow-hidden">
         <Image
             src="/search background.jpg"
