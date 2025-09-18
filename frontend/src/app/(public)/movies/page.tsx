@@ -95,9 +95,16 @@ export default function MoviesPage() {
   const handleTabClick = (tabId: string) => {
     setTab(tabId);
   };
+
+  const [isClosed, setIsClosed] = useState(false);
   return (
     <div>
-      <TrailerEmbed />
+      <TrailerEmbed
+        name="Godzilla"
+        trailerUrl="https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL"
+        isClosed={isClosed}
+        setIsClosed={setIsClosed}
+      />
       <div className="w-screen h-[60vh] relative flex flex-col items-center gap-8 py-36 overflow-hidden">
         <Image
             src="/search background.jpg"
