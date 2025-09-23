@@ -4,41 +4,55 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "movies")
 public class Movie {
-    @Id // identifies below 'id' as the primary key
+    @Id // identifies below 'id' as primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // generates unique val for primary key
     private Long id;
+    @NotBlank
+    @Column(nullable = false)
     private String title;
+    @NotBlank
+    @Column(nullable = false)
+    private String status;
+    @NotBlank
+    @Column(nullable = false)
     private String genre;
+    @NotBlank
+    @Column(nullable = false)
     private String rating;
-
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getTitle() {
-        return title;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getCategory() {
-        return genre;
-    }
-    public void setCategory(String category) {
-        this.genre = category;
-    }
-    public String getRating() {
-        return rating;
-    }
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate releaseDate;
+    @NotBlank
+    @Column(nullable = false)
+    private String synopsis;
+    @NotBlank
+    @Column(nullable = false)
+    private String trailerLink;
+    @NotBlank
+    @Column(nullable = false)
+    private String posterLink;
+    @NotBlank
+    @Column(nullable = false)
+    private String castNames; // comma-separated names for simplicity
+    @NotBlank
+    @Column(nullable = false)
+    private String directors; // comma-separated names
+    @NotBlank
+    @Column(nullable = false)
+    private String producers; // comma-separated names
 }
