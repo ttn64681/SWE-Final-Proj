@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import TicketCounter from "@/components/specific/booking/ticket-age/TicketCounter";
+import TotalPrice from "@/components/specific/booking/ticket-age/TotalPrice";
 
 interface props {
     reservedSeats: number;
@@ -25,7 +26,12 @@ export default function TicketTable( { reservedSeats }: props) {
     function calculatePrice()
     {
         const price = (ticketsByCategory[0] * 5) + (ticketsByCategory[1] * 3.5 + (ticketsByCategory[2] * 2));
-        const dollarFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2}).format(price);
+        return price;
+    }
+
+    function formatPriceString(price: number)
+    {
+        const dollarFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumIntegerDigits: 1, minimumFractionDigits: 2}).format(price);
         return dollarFormat;
     }
 
@@ -88,8 +94,13 @@ export default function TicketTable( { reservedSeats }: props) {
                     {/* Totals */}
                     <tr>
                         <td className="p-4 text-3xl font-semibold text-acm-pink"> Total:</td>
-                        <td className="p-4 text-3xl font-semibold text-acm-pink"> {totalTickets} / {reservedSeats} </td>
-                        <td className="p-4 text-3xl font-semibold text-acm-pink"> {calculatePrice()}</td>
+                        <td className="p-8 text-3xl font-semibold text-acm-pink"> {totalTickets} / {reservedSeats} </td>
+                        <td className="p-2 text-3xl font-semibold text-acm-pink"> 
+                            <TotalPrice 
+                                price={calculatePrice()}
+                                priceDisplay={formatPriceString(calculatePrice())}
+                            /> 
+                        </td>
                         {/* Checkout button: WIP */}
                         <td> 
                             <button className="border-2 border-acm-pink rounded-xl text-white text-center text-2xl"> 
