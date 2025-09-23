@@ -1,24 +1,33 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { Afacad, Red_Rose, Pacifico } from "next/font/google";
+import type { Metadata } from 'next';
+import './globals.css';
+import { Afacad, Red_Rose, Pacifico } from 'next/font/google';
+
+export const metadata: Metadata = {
+  title: 'ACM Actual Cinema Movies',
+  description: 'Cinema E-booking System: Book your movie tickets online',
+  icons: {
+    icon: '/favicon.ico',
+  },
+};
 
 const afacad = Afacad({
-  variable: "--font-afacad",
-  weight: "400", // 400-700
-  subsets: ["latin"],
+  variable: '--font-afacad',
+  weight: '400', // 400-700
+  subsets: ['latin'],
 });
 
 const redRose = Red_Rose({
-  variable: "--font-red-rose",
-  weight: "300", // 300-700
-  subsets: ["latin"],
+  variable: '--font-red-rose',
+  weight: '300', // 300-700
+  subsets: ['latin'],
 });
 
 const pacifico = Pacifico({
-  variable: "--font-pacifico",
-  weight: "400", // adjust if needed
-  subsets: ["latin"],
+  variable: '--font-pacifico',
+  weight: '400', // adjust if needed
+  subsets: ['latin'],
 });
+
 
 export default function RootLayout({
   children,
@@ -27,9 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`}
-      >
+      <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`}>
         {children}
       </body>
     </html>
