@@ -1,8 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# Node.js dependencies
 node_modules/
-frontend/node_modules/
+# This includes frontend/node_modules as well since it's a sub-directory
+
+# Scripts
+set_env.sh
+
+# Yarn PnP
 /.pnp
 .pnp.*
 .yarn/*
@@ -11,53 +16,59 @@ frontend/node_modules/
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# Next.js build output
 .next/
-frontend/.next/
 /out/
 
-# production
+# Production build output
 /build
 
-# Java/Spring Boot backend
-backend/build/
-backend/target/
-backend/.gradle/
-backend/gradle/
-!backend/gradle/wrapper/
-backend/gradlew
-backend/gradlew.bat
-backend/*.jar
-backend/*.war
-backend/*.ear
-backend/*.class
-backend/out/
-backend/.idea/
-backend/*.iml
-backend/.settings/
-backend/.project
-backend/.classpath
-backend/.vscode/
+# Java/Spring Boot backend build and IDE files
+/backend/target/
+/backend/build/
+/backend/.mvn/wrapper/
+/backend/.gradle/
+/backend/gradle/
+!/backend/gradle/wrapper/
+/backend/gradlew
+/backend/gradlew.bat
+/backend/*.jar
+/backend/*.war
+/backend/*.ear
+/backend/*.class
+/backend/out/
 
-# misc
+# IDE files (Applies to all subdirectories)
+.idea/
+*.iws
+*.iml
+*.ipr
+.project
+.classpath
+.settings/
+.factorypath
+.springBeans
+.sts4-cache
+# .vscode/
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Environment files
+.env*
+.env.local
+
+# Misc files
 .DS_Store
 *.pem
-
-# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
 .vercel
 
-# typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
