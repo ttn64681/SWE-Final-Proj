@@ -4,12 +4,15 @@ import SearchBar from "@/components/specific/movies/SearchBar";
 import MovieCard from "@/components/common/movies/MovieCard";
 import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
 import WhiteSeparator from "@/components/common/WhiteSeparator";
+import TrailerEmbed from "@/components/common/movies/TrailerEmbed";
+
 import Image from "next/image";
 
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { IoFilterOutline } from "react-icons/io5";
 
 import { useState } from "react";
+import FiltersPopUp from "@/components/specific/movies/FiltersPopUp";
 
 const sampleMovies = [
   {
@@ -93,8 +96,21 @@ export default function MoviesPage() {
   const handleTabClick = (tabId: string) => {
     setTab(tabId);
   };
+
+  const [isClosed, setIsClosed] = useState(false);
+  const [isFilterClosed, setIsFilterClosed] = useState(true);
   return (
     <div>
+      {/* <TrailerEmbed
+        name="Godzilla"
+        trailerUrl="https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL"
+        isClosed={isClosed}
+        setIsClosed={setIsClosed}
+      /> */}
+      <FiltersPopUp 
+        isClosed={isFilterClosed}
+        setIsClosed={setIsFilterClosed}
+      />
       <div className="w-screen h-[60vh] relative flex flex-col items-center gap-8 py-36 overflow-hidden">
         <Image
             src="/search background.jpg"
@@ -110,7 +126,11 @@ export default function MoviesPage() {
           <div className="flex-1">
             <SearchBar />
           </div>
-          <IoFilterOutline className="ml-3 text-white text-3xl" />
+          <button 
+          className="ml-3"
+          onClick={() => setIsFilterClosed(false)}>
+            <IoFilterOutline className="text-white text-3xl hover:text-acm-pink hover:scale-105 hover:cursor-pointer" />
+          </button>
         </div>
       </div>
       <div className="w-screen relative px-16">
