@@ -16,13 +16,16 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public List<Movie> searchMovies(String title, String genresCsv, Integer month, Integer day, Integer year) {
+    // CURRENTLY JUST FINDS THE FIRST GENRE IN THE STRING
+    public List<Movie> searchMovies(String title, String genres, Integer month, Integer day, Integer year) {
         if (title != null && !title.isBlank()) {
             return movieRepository.findByTitleContainingIgnoreCase(title);
         }
-        if (genresCsv != null && !genresCsv.isBlank()) {
-            String first = genresCsv.split(",")[0].trim();
-            return movieRepository.findByGenreIgnoreCase(first);
+        if (genres != null && !genres.isBlank()) {
+            // regex:"," looks for a comma, [0] looks for first genre, trim() removes whitespace
+            String first = genres.split(",")[0].trim(); 
+        
+            return movieRepository.findByGenresIgnoreCase(first);
         }
         if (month != null && day != null) {
             int y = (year != null) ? year : LocalDate.now().getYear();

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@RestController // Bean that creates a RESTful controller class that handles HTTP requests
 @RequestMapping("/api/movies")
 public class MovieController {
 
@@ -21,7 +21,7 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public List<Movie> getMovies(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String genres, // comma-separated
@@ -31,7 +31,12 @@ public class MovieController {
         return movieService.searchMovies(title, genres, month, day, year);
     }
 
-    @PostMapping
+    @GetMapping("/test")
+    public String testEndpoint() {
+        return "API is working!";
+    }
+
+    @PostMapping("/create")
     public String postMovie() {
         return "Posted movie.";
     }
