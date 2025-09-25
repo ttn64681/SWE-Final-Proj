@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import MovieCardsGrid from '../../components/common/movies/MovieCardsGrid';
+import NavBar from '@/components/common/navBar/NavBar';
 
 // DUMMY MOVIE DATA
 const sampleMovies = [
@@ -39,6 +40,7 @@ const sampleMovies = [
 export default function Home() {
   return (
     <div className="flex flex-col">
+      <NavBar />
       {/* Hero Section */}
       <section className="relative h-[60vh] w-full overflow-hidden">
         {/* Background image */}
