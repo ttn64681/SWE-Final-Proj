@@ -1,5 +1,7 @@
+"use client";
+import React, { useState } from "react";
 import Image from 'next/image';
-// import { useState } from "react";
+import SelectedMovie from "./SelectedMovie";
 
 interface Movie {
   id: number;
@@ -17,14 +19,34 @@ interface MovieCardProps {
 
 export default function MovieCard({ movie }: MovieCardProps) {
   //   const [isHovered, setIsHovered] = useState(false);
+
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+
+  const handleDetailsPopup = () => {
+    setSelectedMovie(movie);
+    console.log("I AM GODZILLA FEAR ME");
+  }
+
+  const handleClose = () => {
+    setSelectedMovie(null);
+  }
+
   return (
     <div className="group cursor-pointer rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-102">
+      
+      {selectedMovie && ( 
+            <SelectedMovie 
+              movie={selectedMovie} 
+              onClose={handleClose} /> 
+          )}
+
       {/* Movie Poster Container */}
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-t-lg">
-        <Image src={movie.poster} alt={movie.title} fill className="object-cover" />
+      <div onClick={handleDetailsPopup} className="relative aspect-[2/3] w-full overflow-hidden rounded-t-lg z-50">
+        
+          <Image src={movie.poster} alt={movie.title} fill className="object-cover" />
 
         {/* Dark Overlay on Hover */}
-        <div className="absolute inset-0 transition-all duration-300 opacity-0 bg-black group-hover:opacity-65" />
+        {/* <div className="absolute inset-0 transition-all duration-300 opacity-0 bg-black group-hover:opacity-65" /> */}
 
         {/* Rating Badge */}
         <div className="absolute top-2 right-2 rounded-full backdrop-blur-sm px-2 py-1 text-xs font-bold text-black bg-white/80 shadow-sm transition-all duration-300 group-hover:bg-white/95">
