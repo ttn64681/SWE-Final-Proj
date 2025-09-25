@@ -1,7 +1,10 @@
 "use client";
 import React, { useState } from 'react';
 import TicketCounter from "@/components/specific/booking/ticket-age/TicketCounter";
-import TotalPrice from "@/components/specific/booking/ticket-age/TotalPrice";
+import CheckoutButton from "@/components/specific/booking/ticket-age/CheckoutButton";
+
+import Link from 'next/link';
+import { format } from 'node:util';
 
 interface props {
     reservedSeats: number;
@@ -22,17 +25,26 @@ export default function TicketTable( { reservedSeats }: props) {
         setTotalTickets(currentTotal);
     }
 
-    // Calculate the total price of all tickets the user has selected (and return it in USD format)
+    // Calculate the total price of all tickets the user has selected 
     function calculatePrice()
     {
         const price = (ticketsByCategory[0] * 5) + (ticketsByCategory[1] * 3.5 + (ticketsByCategory[2] * 2));
         return price;
     }
 
+    // Return the price (number) as a string in USD format
     function formatPriceString(price: number)
     {
         const dollarFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumIntegerDigits: 1, minimumFractionDigits: 2}).format(price);
         return dollarFormat;
+    }
+
+    // Used to stop adding extra digits to the price from bumping other UI elements.
+    // If there are only 3 digits in the price, an extra invisible character is added.
+    function padString(price: number) {
+        if (price < 100) {
+            return '$$';
+        }
     }
 
     return (
@@ -96,16 +108,16 @@ export default function TicketTable( { reservedSeats }: props) {
                         <td className="p-4 text-3xl font-semibold text-acm-pink"> Total:</td>
                         <td className="p-8 text-3xl font-semibold text-acm-pink"> {totalTickets} / {reservedSeats} </td>
                         <td className="p-2 text-3xl font-semibold text-acm-pink"> 
-                            <TotalPrice 
-                                price={calculatePrice()}
-                                priceDisplay={formatPriceString(calculatePrice())}
-                            /> 
+                            <div className="flex flex-row text-3xl font-semibold text-acm-pink">
+                                <h1 className="text-black"> {padString(calculatePrice())} </h1> <h1> {formatPriceString((calculatePrice()))} </h1>
+                            </div>
                         </td>
-                        {/* Checkout button: WIP */}
+                        {/* Checkout button: Only clickable after all tickets are selected */}
                         <td> 
-                            <button className="border-2 border-acm-pink rounded-xl text-white text-center text-2xl"> 
-                                <h1> Checkout  </h1>
-                                </button>
+                            <CheckoutButton 
+                                tickets={totalTickets}
+                                seats={reservedSeats}
+                            />
                         </td>
                     </tr>
                 </tbody>
