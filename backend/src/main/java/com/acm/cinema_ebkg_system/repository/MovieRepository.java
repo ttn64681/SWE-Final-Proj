@@ -15,14 +15,14 @@ import java.util.List;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     // Automatic methods:
-    // findAll(), findById(movie_id, save(), delete(), deleteById()
-    
+    // findAll(), findById(movie_id), save(), delete(), deleteById(), flush(), saveAndFlush(), etc.
+
     // Derived queries
-    List<Movie> findByGenreIgnoreCase(String genre);
+    List<Movie> findByGenresIgnoreCase(String genres);
     List<Movie> findByTitleContainingIgnoreCase(String titlePart);
 
-    // Month/day/year via JPQL (delegates to DB functions)
-    @Query("select m from Movie m where EXTRACT(MONTH FROM m.releaseDate) = :month and EXTRACT(DAY FROM m.releaseDate) = :day and EXTRACT(YEAR FROM m.releaseDate) = :year")
+    // JPQL query which maps to PostgreSQL functions 
+    @Query("select m from Movie m where EXTRACT(MONTH FROM m.release_date) = :month and EXTRACT(DAY FROM m.release_date) = :day and EXTRACT(YEAR FROM m.release_date) = :year")
     List<Movie> findByReleaseMonthDayYear(@Param("month") int month, @Param("day") int day, @Param("year") int year);
 
 } 
