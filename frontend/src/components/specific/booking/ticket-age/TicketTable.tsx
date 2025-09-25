@@ -42,8 +42,8 @@ export default function TicketTable( { reservedSeats }: props) {
     // Used to stop adding extra digits to the price from bumping other UI elements.
     // If there are only 3 digits in the price, an extra invisible character is added.
     function padString(price: number) {
-        if (price < 10) {
-            return '_';
+        if (price < 100) {
+            return '$$';
         }
     }
 
