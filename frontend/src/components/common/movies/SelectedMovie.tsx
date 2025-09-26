@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import TrailerEmbed from './TrailerEmbed';
+import { IoClose } from "react-icons/io5";
 
 interface MovieDetailProps {
   movie: {
@@ -20,13 +21,6 @@ interface MovieDetailProps {
 }
 
 export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
-  
-  // Function to open/close date dropdown
-  const [openDateDropdown, setOpenDateDropdown] = useState(false);
-
-  // Function to open/close trailer?
-  const [isClosed, setIsClosed] = useState(false);
-  const [isFilterClosed, setIsFilterClosed] = useState(true);
 
   // Dummy data for show dates and times
   const availableDates = ["10/10/25", "10/11/25", "10/12/25"];
@@ -39,19 +33,26 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
   const producer = movie.producer || "Producer Name";
   const director = movie.director || "Director Name";
 
+  // Function to open/close date dropdown
+  const [openDateDropdown, setOpenDateDropdown] = useState(false);
+
   // Function to update selected date
   const [currentDate, setCurrentDate] = useState(availableDates[0]);
+
+  // Function to select showtime
+  const [selectedShowtime, setSelectedShowtime] = useState<string | null>(null);
+
 
   return (
     <div className="fixed inset-0 flex z-50 items-center justify-center">
 
       {/* Overlay */}
-      <div className="flex flex-row items-center w-[90vw] h-[90vh] relative backdrop-blur-xl rounded-3xl shadow-2xl z-10">
+      <div className="flex flex-row items-center w-[70vw] h-[90vh] relative backdrop-blur-xl rounded-3xl shadow-2xl z-10">
 
         {/* Close Button */}
           <div>
-            <button onClick={onClose} className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 active:text-acm-pink/80 text-6xl hover:cursor-pointer">
-              x
+            <button onClick={onClose} className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 z-50 active:text-acm-pink/80 text-6xl hover:cursor-pointer">
+              <IoClose />
             </button>
           </div>
 
@@ -143,8 +144,8 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
             {/* Showtimes */}
             <div className="flex space-x-4 mt-4 flex-row items-center relative">
               {availableTimes.map((time) => (
-                <Link href="/booking/seats" key={time ?? "unknown"}>
-                  <button className="text-md border-2 border-white/40 backdrop-blur-sm px-6 py-3 rounded-full flex-shrink-0 bg-white/10  w-auto min-w-[90px]">
+                <Link href="/booking" key={time ?? "unknown"}>
+                  <button className="text-lg border-2 border-white/40 backdrop-blur-sm px-4 py-2 rounded-full flex-shrink-0 bg-white/10 hover:bg-white/60 hover:border-transparent text-white hover:text-black hover:cursor-pointer w-auto min-w-[90px]">
                     {time ?? "unknown"}
                   </button>
                 </Link>
@@ -152,7 +153,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
             </div>
 
             {/* Cast */}
-            <div className="flex flex-row mt-4 text-xl text-white">
+            <div className="flex flex-row mt-4 text-xl text-white flex-wrap">
               <h2 className="font-semibold">Cast: &nbsp; </h2>
                 {cast.map((actor, index) => (
                   <span key={actor ?? ""} className="">
@@ -167,7 +168,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
               <h2 className="font-semibold"> Producer: </h2>
               <p> &nbsp; {producer ?? ""} </p>
             </div>
-            
+
             {/* Director */}
             <div className="flex flex-row mt-4 text-xl text-white">
               <h2 className="font-semibold"> Director: </h2>
