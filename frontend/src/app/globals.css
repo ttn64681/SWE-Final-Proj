@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -28,6 +28,14 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+.acm-gradient {
+  background: linear-gradient(to right, #FF478B, #FF5C33);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 body {
