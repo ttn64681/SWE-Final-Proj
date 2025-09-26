@@ -127,7 +127,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 10,
@@ -137,7 +140,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 11,
@@ -147,7 +153,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 12,
@@ -157,7 +166,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 13,
@@ -167,7 +179,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
 ];
 
