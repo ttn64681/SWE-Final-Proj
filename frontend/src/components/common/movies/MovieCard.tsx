@@ -12,6 +12,9 @@ interface Movie {
   score: number;
   rating: string;
   duration: string;
+  cast: string[];
+  producer: string;
+  director: string;
 }
 
 interface MovieCardProps {

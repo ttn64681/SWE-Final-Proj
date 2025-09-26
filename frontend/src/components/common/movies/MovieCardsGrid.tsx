@@ -6,8 +6,12 @@ interface Movie {
   poster: string;
   description: string;
   genres: string[];
-  rating: number;
+  rating: string;
   duration: string;
+  score: number;
+  cast: string[];
+  producer: string;
+  director: string;
 }
 
 interface MovieCardsGridProps {

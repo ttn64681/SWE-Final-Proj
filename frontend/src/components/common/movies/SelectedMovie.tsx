@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import TrailerEmbed from './TrailerEmbed';
+
 interface MovieDetailProps {
   movie: {
     title: string;
@@ -10,6 +12,9 @@ interface MovieDetailProps {
     poster: string;
     description: string;
     genres: string[];
+    cast: string[];
+    producer: string;
+    director: string;
   }
   onClose: () => void;
 }
@@ -19,9 +24,20 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
   // Function to open/close date dropdown
   const [openDateDropdown, setOpenDateDropdown] = useState(false);
 
+  // Function to open/close trailer?
+  const [isClosed, setIsClosed] = useState(false);
+  const [isFilterClosed, setIsFilterClosed] = useState(true);
+
   // Dummy data for show dates and times
   const availableDates = ["10/10/25", "10/11/25", "10/12/25"];
   const availableTimes = ["8:00 PM", "9:15 PM", "10:00 PM"];
+
+  const trailer = "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
+
+  // Dummy data for cast, producer, director
+  const cast = movie.cast || ["Actor 1", "Actor 2", "Actor 3", "Actor 4"];
+  const producer = movie.producer || "Producer Name";
+  const director = movie.director || "Director Name";
 
   // Function to update selected date
   const [currentDate, setCurrentDate] = useState(availableDates[0]);
@@ -46,15 +62,15 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
           <div className="w-full h-full relative">
             <Image src={movie.poster} alt={movie.title} className="object-cover" fill />
             <div className="absolute inset-0 bg-black/60" />
-
+            <div className="w-full h-1/2"> </div>
             <div className="absolute flex flex-col p-8 gap-8">
 
               {/* Movie Title */}
-              <div className="relative text-white z-50">
-                {movie.title ? (<h2 className="text-4xl font-bold">{movie.title}</h2>) : (<h2 className="">No Title</h2>)}
+              <div className="relative text-white">
+                {movie.title ? (<h2 className="text-5xl font-bold">{movie.title}</h2>) : (<h2 className="">No Title</h2>)}
 
               {/* Movie Rating */}
-                {movie.rating ? (<h2 className="text-xl">Rated {movie.rating}</h2>) : (<h2 className="">No Rating</h2>)}
+                {movie.rating ? (<h2 className="text-2xl ml-1">Rated {movie.rating}</h2>) : (<h2 className="">No Rating</h2>)}
               </div>
 
               {/* Genre Bubbles */}
@@ -84,7 +100,14 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
 
           {/* Trailer container */}
           <div className="w-full h-1/3 mt-10 items-center relative border-2 border-gray-600 rounded-lg bg-white/15 text-2xl">
-            trailer here
+            <iframe
+              className="w-full h-full rounded-2xl"
+              src={trailer ? trailer.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            ></iframe>
           </div>
           
           {/* Show dates and times container */}
@@ -127,20 +150,31 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
                 </Link>
             ))}
             </div>
-          </div>
-        
-          {/* Cast container */}
-            <div className="w-full h-1/3 flex space-x-4 flex-col relative">
 
+            {/* Cast */}
+            <div className="flex flex-row mt-4 text-xl text-white">
+              <h2 className="font-semibold">Cast: &nbsp; </h2>
+                {cast.map((actor, index) => (
+                  <span key={actor ?? ""} className="">
+                    {actor ?? ""}
+                    {index < cast.length - 1 && <span>,&nbsp;</span>}
+                  </span>
+                ))}
+            </div>
+              
+            {/* Producer */}
+            <div className="flex flex-row mt-4 text-xl text-white">
+              <h2 className="font-semibold"> Producer: </h2>
+              <p> &nbsp; {producer ?? ""} </p>
+            </div>
             
-            
-            
-            
-            
-            
+            {/* Director */}
+            <div className="flex flex-row mt-4 text-xl text-white">
+              <h2 className="font-semibold"> Director: </h2>
+              <p> &nbsp; {director ?? ""} </p>
             </div>
 
-          
+          </div>
 
         </div>
 
