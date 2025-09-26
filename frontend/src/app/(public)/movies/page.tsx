@@ -20,8 +20,9 @@ const sampleMovies = [
     title: "Godzilla",
     poster: "/poster godzilla.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
-    genres: ["Action", "Sci-Fi", "Thriller"],
-    rating: 10.0,
+    genres: ["Action", "Sci-Fi", "Thriller", "Romance", "Adventure", "Fantasy"],
+    score: 10.0,
+    rating: "PG-13",
     duration: "1HR 47MIN"
   },
   {
@@ -30,7 +31,8 @@ const sampleMovies = [
     poster: "/cinema people.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
     genres: ["Drama", "Comedy"],
-    rating: 8.0,
+    score: 8.0,
+    rating: "PG",
     duration: "2HR 15MIN"
   },
   {
@@ -39,7 +41,8 @@ const sampleMovies = [
     poster: "/poster oldboy.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
-    rating: 9.0,
+    score: 9.0,
+    rating: "R",
     duration: "1HR 59MIN"
   },
   {
@@ -48,7 +51,8 @@ const sampleMovies = [
     poster: "/poster oldboy.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
-    rating: 9.0,
+    score: 9.0,
+    rating: "R",
     duration: "1HR 59MIN"
   },
   {
@@ -57,7 +61,8 @@ const sampleMovies = [
     poster: "/poster oldboy.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
-    rating: 9.0,
+    score: 9.0,
+    rating: "R",
     duration: "1HR 59MIN"
   },
   {
@@ -66,7 +71,8 @@ const sampleMovies = [
     poster: "/poster oldboy.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
-    rating: 9.0,
+    score: 9.0,
+    rating: "R",
     duration: "1HR 59MIN"
   },
   {
@@ -75,7 +81,8 @@ const sampleMovies = [
     poster: "/poster oldboy.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
-    rating: 9.0,
+    score: 9.0,
+    rating: "R",
     duration: "1HR 59MIN"
   },
   {
@@ -84,7 +91,8 @@ const sampleMovies = [
     poster: "/poster oldboy.jpg",
     description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
-    rating: 9.0,
+    score: 9.0,
+    rating: "R",
     duration: "1HR 59MIN"
   },
   {
