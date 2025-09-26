@@ -37,7 +37,7 @@ const sampleMovies = [
     score: 8.0,
     rating: "PG",
     duration: "2HR 15MIN",
-    cast: ["Actor 1", "Actor 2", "Actor 3", "Actor 4", "Actor 5"],
+    cast: ["Actor 1", "Actor 2", "Actor 3", "Actor 4", "Actor 5","Actor 6","Actor 7","Actor 8"],
     producer: "Producer Name",
     director: "Director Name"
   },
@@ -115,7 +115,7 @@ const sampleMovies = [
     score: 9.0,
     rating: "R",
     duration: "1HR 59MIN",
-    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    cast: ["Actor 1", "Actor 2", "Actor 3",],
     producer: "Producer Name",
     director: "Director Name"
   },
