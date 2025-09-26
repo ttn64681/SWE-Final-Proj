@@ -40,7 +40,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
     //  <div className="w-64 group cursor-pointer rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-102"></div>
     <div>
       {/* Conditional Movie Details Popup */}
-      <div className="w-64 group cursor-pointer rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-102">
+      <div className="absolute z-50">
         {selectedMovie && ( 
             <SelectedMovie 
               movie={selectedMovie} 

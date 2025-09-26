@@ -108,7 +108,7 @@ export default function Home() {
         <div className="flex flex-row gap-x-6">
           <div className='flex flex-col items-center'>
             <button
-              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2"
+              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2 hover:cursor-pointer"
               onClick={() => setActiveTab("nowplaying")}
             >
                 Now Playing
@@ -119,7 +119,7 @@ export default function Home() {
           </div>
           <div className='flex flex-col items-center'>
             <button
-              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2"
+              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2 hover:cursor-pointer"
               onClick={() => setActiveTab("upcoming")}
             >
                 Upcoming
@@ -134,6 +134,14 @@ export default function Home() {
           movies={sampleMovies}
           columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
         />
+      </div>
+
+      {/* Genres */}
+      <div className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2">
+        Genres
+      </div>
+      <div className="flex flex-row overflow-x-scroll">
+            
       </div>
     </div>
   );
