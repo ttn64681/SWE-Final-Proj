@@ -18,8 +18,11 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     // findAll(), findById(movie_id), save(), delete(), deleteById(), flush(), saveAndFlush(), etc.
 
     // Derived queries
-    List<Movie> findByGenresIgnoreCase(String genres);
     List<Movie> findByTitleContainingIgnoreCase(String titlePart);
+    
+    // Custom JPQL query for genre search (handles comma-separated genres)
+    @Query("SELECT m FROM Movie m WHERE LOWER(m.genres) LIKE LOWER(CONCAT('%', :genre, '%'))")
+    List<Movie> findByGenresContainingIgnoreCase(@Param("genre") String genre);
 
     // JPQL query which maps to PostgreSQL functions 
     @Query("select m from Movie m where EXTRACT(MONTH FROM m.release_date) = :month and EXTRACT(DAY FROM m.release_date) = :day and EXTRACT(YEAR FROM m.release_date) = :year")
