@@ -13,7 +13,7 @@ export default function TrailerEmbed({ name, trailerUrl, isClosed, setIsClosed }
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* Popup Window with Blur */}
-      <div className="flex flex-col items-center gap-y-8 w-4/5 h-4/5 relative backdrop-blur-xl rounded-3xl shadow-2xl p-8 z-10">
+      <div className="flex flex-col items-center gap-y-8 w-4/5 h-4/5 relative backdrop-blur-xl rounded-3xl border-1 border-white/20 p-8 z-10">
           <button
             className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 active:text-acm-pink/80 text-6xl hover:cursor-pointer"
             onClick={() => setIsClosed(true)}

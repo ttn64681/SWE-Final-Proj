@@ -119,7 +119,78 @@ const sampleMovies = [
     producer: "Producer Name",
     director: "Director Name"
   },
+  {
+    id: 9,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    score: 9.0,
+    rating: "R",
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
+  },
+  {
+    id: 10,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    score: 9.0,
+    rating: "R",
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
+  },
+  {
+    id: 11,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    score: 9.0,
+    rating: "R",
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
+  },
+  {
+    id: 12,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    score: 9.0,
+    rating: "R",
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
+  },
+  {
+    id: 13,
+    title: "Old Boy",
+    poster: "/poster oldboy.jpg",
+    description: "I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...",
+    genres: ["Horror", "Thriller", "Drama", "Mystery"],
+    score: 9.0,
+    rating: "R",
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
+  },
 ];
+
+interface Filters {
+  genre: string[];
+  start: string;
+  end: string;
+}
 
 export default function MoviesPage() {
 
@@ -131,6 +202,23 @@ export default function MoviesPage() {
 
   const [isClosed, setIsClosed] = useState(false);
   const [isFilterClosed, setIsFilterClosed] = useState(true);
+
+  const [filters, setFilters] = useState<Filters>({
+    genre: [],
+    start: "2023-01-01",
+    end: "2023-12-31"
+  });
+  const addFilter = (genre : string, start: string, end: string) => {
+
+    setFilters(
+      (filters) => {
+        return { genre: [...filters.genre, genre], start: start, end: end };
+      }
+    );
+
+  }
+  
+
   return (
     <div>
       {/*= <TrailerEmbed
@@ -156,7 +244,8 @@ export default function MoviesPage() {
         <div className="flex flex-row items-center z-10 w-1/2">
           <PiMagnifyingGlass className="mr-3 text-white text-3xl" />
           <div className="flex-1">
-            <SearchBar />
+            <SearchBar 
+            />
           </div>
           <button 
           className="ml-3"

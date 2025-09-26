@@ -13,46 +13,61 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/*
+ * DB Fields: 
+ * id, 
+ * title, 
+ * status, 
+ * genres, 
+ * rating, 
+ * release_date, 
+ * synopsis, 
+ * trailer_link, 
+ * poster_link, 
+ * cast_names, 
+ * directors, 
+ * producers
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "movies")
 public class Movie {
-    @Id // identifies below 'id' as primary key
+    @Id // identifies below 'movie_id' as primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // generates unique val for primary key
-    private Long id;
+    private Long movie_id;
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String title;
     @NotBlank
     @Column(nullable = false)
-    private String status;
+    private String status; // Must be 'NOW_PLAYING' or 'UPCOMING'
+    @NotBlank
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String genres;
     @NotBlank
     @Column(nullable = false)
-    private String genre;
-    @NotBlank
-    @Column(nullable = false)
-    private String rating;
+    private String rating; // Must be 'G', 'PG', 'PG-13', 'R', or 'NC-17'
     @NotNull
     @Column(nullable = false)
-    private LocalDate releaseDate;
+    private LocalDate release_date;
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String synopsis;
     @NotBlank
-    @Column(nullable = false)
-    private String trailerLink;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String trailer_link;
     @NotBlank
-    @Column(nullable = false)
-    private String posterLink;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String poster_link;
     @NotBlank
-    @Column(nullable = false)
-    private String castNames; // comma-separated names for simplicity
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String cast_names; // comma-separated names for simplicity
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String directors; // comma-separated names
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String producers; // comma-separated names
 }
