@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -14,7 +15,8 @@ const sampleMovies = [
     poster: '/poster godzilla.jpg',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Action', 'Sci-Fi', 'Thriller'],
-    rating: 10.0,
+    score: 9.0,
+    rating: "R",
     duration: '1HR 47MIN',
   },
   {
@@ -23,7 +25,8 @@ const sampleMovies = [
     poster: '/cinema people.jpg',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Drama', 'Comedy'],
-    rating: 8.0,
+    score: 9.0,
+    rating: "R",
     duration: '2HR 15MIN',
   },
   {
@@ -32,12 +35,24 @@ const sampleMovies = [
     poster: '/poster oldboy.jpg',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Horror', 'Thriller', 'Drama', 'Mystery'],
-    rating: 9.0,
+    score: 9.0,
+    rating: "R",
     duration: '1HR 59MIN',
   },
 ];
 
 export default function Home() {
+
+  const [activeTab, setActiveTab] = useState<"nowplaying" | "upcoming">("nowplaying");
+  useEffect(() => {
+    if (activeTab == "nowplaying") {
+      // Call "/api/movies/now-playing"
+    }
+    else {
+      // Call "/api/movies/upcoming"
+    }
+  }, [activeTab])
+
   return (
     <div className="flex flex-col">
       <NavBar />
@@ -63,7 +78,7 @@ export default function Home() {
             <Image src="/cinema people.jpg" alt="Cinema people" fill className="object-cover" />
           </div>
           <div className="flex flex-col justify-center gap-3 text-white">
-            <h3 className="font-redRose text-2xl md:text-3xl">First time 20% OFF</h3>
+            <h3 className="font-redRose text-2xl md:text-3xl">First time 20% OFF</h3>            
             <p className="text-base text-white/90">
               Watch your first ACM movie to get 20% off any one subsequent movie ticket(s)!
             </p>
@@ -80,10 +95,37 @@ export default function Home() {
       </section>
 
       {/* Movies Section */}
-      <MovieCardsGrid 
-        movies={sampleMovies} 
-        columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
-      />
+      <div className='p-16'>
+        <div className="flex flex-row gap-x-6">
+          <div className='flex flex-col items-center'>
+            <button
+              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2"
+              onClick={() => setActiveTab("nowplaying")}
+            >
+                Now Playing
+            </button>
+            {activeTab == "nowplaying" && (
+              <div className="h-[4px] bg-acm-pink rounded-full w-1/4"/>
+            )}
+          </div>
+          <div className='flex flex-col items-center'>
+            <button
+              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2"
+              onClick={() => setActiveTab("upcoming")}
+            >
+                Upcoming
+            </button>
+            {activeTab == "upcoming" && (
+              <div className="h-[4px] bg-acm-pink rounded-full w-1/4"/>
+            )}
+        
+          </div>
+        </div>
+        <MovieCardsGrid
+          movies={sampleMovies}
+          columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
+        />
+      </div>
     </div>
   );
 }
