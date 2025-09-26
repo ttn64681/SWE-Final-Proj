@@ -1,6 +1,7 @@
 package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.Movie;
+import com.acm.cinema_ebkg_system.model.MovieSummary; // DTO
 import com.acm.cinema_ebkg_system.model.ShowTime;
 import com.acm.cinema_ebkg_system.service.MovieService;
 import com.acm.cinema_ebkg_system.service.ShowTimeService;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController // Bean that creates a RESTful controller class that handles HTTP requests
 @RequestMapping("/api/movies")
@@ -28,27 +28,92 @@ public class MovieController {
         this.showTimeService = showTimeService;
     }
 
-    @GetMapping("/search")
-    public List<Movie> getMovies(
+    /**
+     * Get all now playing movies, ordered by earliest show_date.
+     * Use when displaying the now playing movies on the homepage. (default behavior)
+     * @return
+     */
+    @GetMapping("/now-playing")
+    public List<Movie> getNowPlaying() {
+        // Return JSON: [ { "movie_id": 2, "title": "Superman", ... }, ... ] (NOW_PLAYING ordered by earliest show_date)
+        return movieService.getNowPlayingOrdered();
+    }
+
+    /**
+     * Get all upcoming movies, ordered by earliest show_date.
+     * Use when clicking the "Upcoming" button on the homepage.
+     * @return
+     */
+    @GetMapping("/upcoming")
+    public List<Movie> getUpcoming() {
+        // Return JSON: [ { "movie_id": 12, "title": "Materialists", ... }, ... ] (UPCOMING ordered by first show_date)
+        return movieService.getUpcomingOrdered();
+    }
+
+    /**
+     * Get all unique genres available in the system, ordered alphabetically.
+     * Use when displaying the genres on the homepage and
+     * when clicking on the filters popup in navbar or Movies page.
+     */
+    @GetMapping("/genres")
+    public List<String> getAvailableGenres() {
+        // Return JSON: ["Action", "Comedy", "Drama", "Horror", "Sci-Fi"] (sorted alphabetically)
+        return movieService.getAvailableGenres();
+    }
+
+    /**
+     * Search for movies based on AND filters title, genres (internal OR), 
+     * and date (month, day, year) (internal OR).
+     * Use when searching for movies via search bar.
+     */
+    @GetMapping("/search-now-playing")
+    public List<Movie> searchNowPlaying(
             @RequestParam(required = false) String title,
-            @RequestParam(required = false) String genres, // comma-separated
+            @RequestParam(required = false) String genres,
             @RequestParam(required = false) Integer month,
             @RequestParam(required = false) Integer day,
             @RequestParam(required = false) Integer year) {
-        return movieService.searchMovies(title, genres, month, day, year);
+        // Return JSON: [ { "movie_id": 5, "status": "NOW_PLAYING", ... }, ... ] (ordered by earliest show_date)
+        return movieService.searchNowPlayingOrdered(title, genres, month, day, year);
     }
 
+    /**
+     * Search for upcoming movies based on AND filters title, genres (internal OR), 
+     * and date (month, day, year) (internal OR).
+     * Use when searching for movies via search bar.
+     */
+    @GetMapping("/search-upcoming")
+    public List<Movie> searchUpcoming(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String genres,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer day,
+            @RequestParam(required = false) Integer year) {
+        // Return JSON: [ { "movie_id": 9, "status": "UPCOMING", ... }, ... ] (ordered by earliest show_date)
+        return movieService.searchUpcomingOrdered(title, genres, month, day, year);
+    }
+
+    /**
+     * Test endpoint to check if the API is working.
+     * Use when testing the API.
+     */
     @GetMapping("/test")
     public String testEndpoint() {
         return "API is working!";
     }
 
+    /**
+     * Create a new movie (placeholder).
+     */
     @PostMapping("/create")
     public String postMovie() {
         return "Posted movie.";
     }
 
-    // Show schedule endpoints
+    /**
+     * Get all available dates for a movie ordered by earliest show_date.
+     * Use when displaying the dates for a movie.
+     */
     @GetMapping("/{movieId}/dates")
     public List<LocalDate> getAvailableDates(@PathVariable Long movieId) {
         // Frontend: call this first to populate the date dropdown for a selected movie.
@@ -56,6 +121,10 @@ public class MovieController {
         return showTimeService.getAvailableDatesForMovie(movieId);
     }
 
+    /**
+     * Get all available times for a movie on a given date ordered by start_time.
+     * Use when displaying the times for a movie.
+     */
     @GetMapping("/{movieId}/times")
     public List<ShowTime> getAvailableTimes(@PathVariable Long movieId, @RequestParam String date) {
         // Frontend: when user picks a date from the dropdown, call this with that date.
@@ -65,11 +134,58 @@ public class MovieController {
         return showTimeService.getAvailableTimesForMovieAndDate(movieId, showDate);
     }
 
-    @GetMapping("/{movieId}/schedule")
-    public Map<LocalDate, List<ShowTime>> getMovieSchedule(@PathVariable Long movieId) {
-        // Frontend (optional convenience): fetch full schedule (dates -> times) in one call.
-        // Return format (JSON): {"2025-10-01": [ShowTime, ...], "2025-10-02": [ShowTime, ...], ...}
-        return showTimeService.getMovieShowSchedule(movieId);
+    // @GetMapping("/{movieId}/schedule")
+    // public Map<LocalDate, List<ShowTime>> getMovieSchedule(@PathVariable Long movieId) {
+    //     // Frontend (optional convenience): fetch full schedule (dates -> times) in one call.
+    //     // Return format (JSON): {"2025-10-01": [ShowTime, ...], "2025-10-02": [ShowTime, ...], ...}
+    //     return showTimeService.getMovieShowSchedule(movieId);
+    // }
+
+
+
+
+
+
+    // ===== OPTIMIZED BROWSING ENDPOINTS =====
+
+    /**
+     * Get lightweight movie summaries for browsing (excludes cast, directors, producers).
+     * Perfect for homepage, search results, and movie grids.
+     */
+    // @GetMapping("/browse")
+    // public List<MovieSummary> getMoviesForBrowsing(
+    //         @RequestParam(required = false) String title,
+    //         @RequestParam(required = false) String genres,
+    //         @RequestParam(required = false) Integer month,
+    //         @RequestParam(required = false) Integer day,
+    //         @RequestParam(required = false) Integer year) {
+    //     return movieService.getMoviesForBrowsing(title, genres, month, day, year);
+    // }
+
+    /**
+     * Lightweight version of getNowPlaying() for browsing.
+     */
+    @GetMapping("/browse/now-playing")
+    public List<MovieSummary> getNowPlayingForBrowsing() {
+        return movieService.getNowPlayingForBrowsing();
+    }
+
+    /**
+     * Lightweight version of getUpcoming() for browsing.
+     */
+    @GetMapping("/browse/upcoming")
+    public List<MovieSummary> getUpcomingForBrowsing() {
+        return movieService.getUpcomingForBrowsing();
+    }
+
+
+    /**
+     * Get full movie details by ID (including cast, directors, producers).
+     * Use this only when user clicks on a movie for detailed view.
+     */
+    @GetMapping("/{movieId}")
+    public Movie getMovieDetails(@PathVariable Long movieId) {
+        return movieService.getMovieById(movieId);
     }
 
 }
