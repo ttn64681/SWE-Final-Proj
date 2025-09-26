@@ -25,7 +25,8 @@ public class MovieService {
             // regex:"," looks for a comma, [0] looks for first genre, trim() removes whitespace
             String first = genres.split(",")[0].trim(); 
         
-            return movieRepository.findByGenresIgnoreCase(first);
+            // return movieRepository.findByGenresIgnoreCase(first);
+            return movieRepository.findByGenresContainingIgnoreCase(first);
         }
         if (month != null && day != null) {
             int y = (year != null) ? year : LocalDate.now().getYear();
