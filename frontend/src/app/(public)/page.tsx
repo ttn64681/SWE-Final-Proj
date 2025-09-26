@@ -15,9 +15,12 @@ const sampleMovies = [
     poster: '/poster godzilla.jpg',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Action', 'Sci-Fi', 'Thriller'],
-    score: 9.0,
-    rating: "R",
+    rating: "PG-13",
     duration: '1HR 47MIN',
+    score: 10.0,
+    cast: ['Actor 1', 'Actor 2', 'Actor 3'],
+    producer: 'Producer Name',
+    director: 'Director Name'
   },
   {
     id: 2,
@@ -25,9 +28,12 @@ const sampleMovies = [
     poster: '/cinema people.jpg',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Drama', 'Comedy'],
-    score: 9.0,
-    rating: "R",
+    rating: "PG",
     duration: '2HR 15MIN',
+    score: 8.0,
+    cast: ['Actor 1', 'Actor 2', 'Actor 3', 'Actor 4', 'Actor 5'],
+    producer: 'Producer Name',
+    director: 'Director Name'
   },
   {
     id: 3,
@@ -35,9 +41,12 @@ const sampleMovies = [
     poster: '/poster oldboy.jpg',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Horror', 'Thriller', 'Drama', 'Mystery'],
-    score: 9.0,
     rating: "R",
     duration: '1HR 59MIN',
+    score: 9.0,
+    cast: ['Actor 1', 'Actor 2', 'Actor 3'],
+    producer: 'Producer Name',
+    director: 'Director Name'
   },
 ];
 

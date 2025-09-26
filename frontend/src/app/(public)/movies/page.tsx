@@ -23,7 +23,10 @@ const sampleMovies = [
     genres: ["Action", "Sci-Fi", "Thriller", "Romance", "Adventure", "Fantasy"],
     score: 10.0,
     rating: "PG-13",
-    duration: "1HR 47MIN"
+    duration: "1HR 47MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 2,
@@ -33,7 +36,10 @@ const sampleMovies = [
     genres: ["Drama", "Comedy"],
     score: 8.0,
     rating: "PG",
-    duration: "2HR 15MIN"
+    duration: "2HR 15MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3", "Actor 4", "Actor 5"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 3,
@@ -43,7 +49,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 4,
@@ -53,7 +62,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 5,
@@ -63,7 +75,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 6,
@@ -73,7 +88,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 7,
@@ -83,7 +101,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 8,
@@ -93,7 +114,10 @@ const sampleMovies = [
     genres: ["Horror", "Thriller", "Drama", "Mystery"],
     score: 9.0,
     rating: "R",
-    duration: "1HR 59MIN"
+    duration: "1HR 59MIN",
+    cast: ["Actor 1", "Actor 2", "Actor 3"],
+    producer: "Producer Name",
+    director: "Director Name"
   },
   {
     id: 9,
@@ -182,7 +206,7 @@ export default function MoviesPage() {
 
   return (
     <div>
-      {/* <TrailerEmbed
+      {/*= <TrailerEmbed
         name="Godzilla"
         trailerUrl="https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL"
         isClosed={isClosed}
