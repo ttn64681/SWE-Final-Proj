@@ -24,6 +24,7 @@ interface MovieDetailProps {
   onClose: () => void;
 }
 
+// MOVIE DETAILS POP-UP
 export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
 
   // Dummy data for show dates and times
