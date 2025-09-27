@@ -1,17 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-<<<<<<< HEAD
 This project is ran with Springboot background.
 
 ## Getting Started
 
 To rum the frontend dev server:
-=======
-This project uses 
-
-## Getting Started
-
-First, to run the frontend development server:
->>>>>>> thai_front_to_backend_connection
 
 ```bash
 npm run dev
@@ -32,7 +24,7 @@ source set_env.sh
 # then
 cd backend/ && ./mvnw spring-boot:run
 
-Open [http://localhost:8080] (http://localhost:8080) with your browser to see the result (optional).
+Open [http://localhost:8080](http://localhost:8080) with your browser to see the result (optional).
 
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
