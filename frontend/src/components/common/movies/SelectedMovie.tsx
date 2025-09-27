@@ -200,7 +200,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
               {selectedShowtime ? (
               <div>
                 {/* If a showtime is selected (button clickable) */}
-                <Link href="/booking">
+                <Link href={`/booking?title=${encodeURIComponent(movie.title ?? "")}&time=${encodeURIComponent(selectedShowtime ?? "")}&date=${encodeURIComponent(currentDate ?? "")}`}>
                     <button className="cursor-pointer flex flex-wrap items-center px-6 py-4 border-1 border-acm-pink bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-600 hover:to-pink-600 transition-all rounded-2xl text-white text-center">
                         <p className="flex flex-wrap text-3xl"> &nbsp;TICKETS&nbsp; </p> 
                         <p className="flex flex-wrap text-3xl font-bold"> <RxDoubleArrowRight /> </p>

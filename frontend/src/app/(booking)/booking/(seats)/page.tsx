@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import Navbar from '@/components/common/navBar/NavBar';
 import './seating.css';
 
@@ -155,6 +156,7 @@ export default function SeatingPage() {
                   </div>
                   {/* Submit Button */}
                   <div className="flex justify-end mt-4">
+                    <Link href={`booking/ticket-age?&seats=${encodeURIComponent(selectedSeats.length ?? 0)}`}>
                       <button 
                           id="submitBtn" 
                           onClick={submitSelection} 
@@ -167,6 +169,7 @@ export default function SeatingPage() {
                       >
                           Submit
                       </button>
+                    </Link>
                   </div>
               </div>
 
