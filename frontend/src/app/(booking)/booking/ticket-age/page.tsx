@@ -10,6 +10,7 @@ export default function TicketAgePage() {
     const router = useRouter(); 
     const searchParams = useSearchParams(); 
 
+    // Get the # of seats from the booking page
     const [reservedSeats, setReservedSeats] = useState(Number(searchParams.get('seats')) || 0);
 
     useEffect(() => {

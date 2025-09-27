@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Lightweight movie summary for browsing - excludes heavy fields like cast, directors, producers
+ * Lightweight movie summary for browsing -
+ * excludes "heavy" fields like cast, directors, producers
  * Used for homepage, search results, and movie grids
  */
 @Getter

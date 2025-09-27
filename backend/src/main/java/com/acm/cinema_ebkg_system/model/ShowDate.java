@@ -1,12 +1,12 @@
 package com.acm.cinema_ebkg_system.model;
 
-// JPA = persistence (maps class <-> table)
-import jakarta.persistence.Column;          
-import jakarta.persistence.Entity;          
-import jakarta.persistence.GeneratedValue;   
-import jakarta.persistence.GenerationType;   
-import jakarta.persistence.Id;              
-import jakarta.persistence.Table;            
+// JPA annotations to map this class to the show_dates table
+import jakarta.persistence.Column;           // maps a field to a specific column          
+import jakarta.persistence.Entity;           // marks this class as a DB entity
+import jakarta.persistence.GeneratedValue;   // auto-generate PK values
+import jakarta.persistence.GenerationType;   // strategy for PK generation
+import jakarta.persistence.Id;               // marks primary key field
+import jakarta.persistence.Table;            // maps to a specific table name
 
 // Java time types used by columns
 import java.time.LocalDate; // (YYYY-MM-DD)

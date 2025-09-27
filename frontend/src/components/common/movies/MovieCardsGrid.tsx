@@ -37,7 +37,7 @@ export default function MovieCardsGrid({
       <div className="w-full">        
         {/* Movies Grid */}        
         <div
-          className={movies.length >= 10 ? `grid grid-flow-col grid-rows-2 auto-cols-max gap-6 overflow-x-scroll` : `grid gap-6 grid-cols-${columns.mobile} sm:grid-cols-${columns.tablet} md:grid-cols-${columns.desktop} lg:grid-cols-${columns.large}`}
+          className={movies.length >= 10 ? `grid grid-flow-col grid-rows-2 gap-6 overflow-x-scroll` : `grid gap-6 grid-cols-${columns.mobile} sm:grid-cols-${columns.tablet} md:grid-cols-${columns.desktop} lg:grid-cols-${columns.large}`}
         >
           <div className='absolute inset-y-0 right-0 bottom-0 w-16'>
               <ChevronRightIcon />
