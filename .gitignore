@@ -55,6 +55,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# set_env.sh
+set_env.sh
+
 # vercel
 .vercel
 
