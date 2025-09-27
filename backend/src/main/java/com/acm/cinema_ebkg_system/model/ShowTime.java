@@ -8,14 +8,14 @@ import jakarta.persistence.GenerationType;   // strategy for PK generation
 import jakarta.persistence.Id;               // marks primary key field
 import jakarta.persistence.Table;            // maps to a specific table name
 
-// Java time types
-import java.time.LocalDateTime;             // timestamp
-import java.time.LocalTime;                 // time only (HH:mm:ss)
+// Java time types used by columns
+import java.time.LocalDateTime;             
+import java.time.LocalTime;                
 
-// Lombok annotations for boilerplate
-import lombok.Getter;                       // generates getters
-import lombok.NoArgsConstructor;            // generates a no-args constructor
-import lombok.Setter;                       // generates setters
+// Lombok = auto-generate boilerplate (getters/setters/constructors)
+import lombok.Getter;                      
+import lombok.NoArgsConstructor;           
+import lombok.Setter;                     
 
 @Getter
 @Setter

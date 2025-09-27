@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 
  * JpaRepository<Movie, Long>: Generic type = (EntityType, IDType)
  */
 @Repository
@@ -17,28 +16,28 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     // Automatic methods:
     // findAll(), findById(movie_id), save(), delete(), deleteById(), flush(), saveAndFlush(), etc.
 
-    /**
-     * Title substring search (case-insensitive).
-     * Return: List<Movie>
-     * Example JSON: [ { "movie_id": 1, "title": "Godzilla Minus One", ... } ]
-     */
-    List<Movie> findByTitleContainingIgnoreCase(String titlePart);
+    // /**
+    //  * Title substring search (case-insensitive).
+    //  * Return: List<Movie>
+    //  * Example JSON: [ { "movie_id": 1, "title": "Godzilla Minus One", ... } ]
+    //  */
+    // List<Movie> findByTitleContainingIgnoreCase(String titlePart);
     
-    /**
-     * Genres substring search (case-insensitive) for a single term.
-     * Return: List<Movie>
-     * Example JSON: [ { "movie_id": 2, "genres": "Action, Sci-Fi", ... } ]
-     */
-    @Query("SELECT m FROM Movie m WHERE LOWER(m.genres) LIKE LOWER(CONCAT('%', :genre, '%'))")
-    List<Movie> findByGenresContainingIgnoreCase(@Param("genre") String genre);
+    // /**
+    //  * Genres substring search (case-insensitive) for a single term.
+    //  * Return: List<Movie>
+    //  * Example JSON: [ { "movie_id": 2, "genres": "Action, Sci-Fi", ... } ]
+    //  */
+    // @Query("SELECT m FROM Movie m WHERE LOWER(m.genres) LIKE LOWER(CONCAT('%', :genre, '%'))")
+    // List<Movie> findByGenresContainingIgnoreCase(@Param("genre") String genre);
 
-    /**
-     * Exact release date match using month/day/year on release_date.
-     * Return: List<Movie>
-     * Example JSON: [ { "movie_id": 3, "release_date": "2025-07-11", ... } ]
-     */
-    @Query("select m from Movie m where EXTRACT(MONTH FROM m.release_date) = :month and EXTRACT(DAY FROM m.release_date) = :day and EXTRACT(YEAR FROM m.release_date) = :year")
-    List<Movie> findByReleaseMonthDayYear(@Param("month") int month, @Param("day") int day, @Param("year") int year);
+    // /**
+    //  * Exact release date match using month/day/year on release_date.
+    //  * Return: List<Movie>
+    //  * Example JSON: [ { "movie_id": 3, "release_date": "2025-07-11", ... } ]
+    //  */
+    // @Query("select m from Movie m where EXTRACT(MONTH FROM m.release_date) = :month and EXTRACT(DAY FROM m.release_date) = :day and EXTRACT(YEAR FROM m.release_date) = :year")
+    // List<Movie> findByReleaseMonthDayYear(@Param("month") int month, @Param("day") int day, @Param("year") int year);
 
     /**
      * Combined AND filters with optional parts and multi-genre OR (native Postgres).
