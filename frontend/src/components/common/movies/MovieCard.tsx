@@ -49,7 +49,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
       </div>
 
       {/* Movie Card */}
-      <div className="group cursor-pointer rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-102">
+      <div className="w-64 group cursor-pointer rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-102">
         {/* Movie Poster Container */}
         <div onClick={handleDetailsPopup} className="relative aspect-[2/3] w-full overflow-hidden rounded-t-lg">
           
