@@ -5,6 +5,10 @@ import Link from 'next/link';
 
 import TrailerEmbed from './TrailerEmbed';
 import { IoClose } from "react-icons/io5";
+import { IoChevronDown } from "react-icons/io5";
+import { SlArrowRight } from "react-icons/sl";
+import { IoChevronForwardSharp } from "react-icons/io5";
+import { RxDoubleArrowRight } from "react-icons/rx";
 
 interface MovieDetailProps {
   movie: {
@@ -47,14 +51,14 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
     <div className="fixed inset-0 flex z-50 items-center justify-center">
 
       {/* Overlay */}
-      <div className="flex flex-row items-center w-[70vw] h-[90vh] relative backdrop-blur-xl rounded-3xl shadow-2xl z-10">
+      <div className="mt-8 flex flex-row items-center w-[70vw] h-[90vh] relative backdrop-blur-xl rounded-3xl shadow-2xl z-10">
 
         {/* Close Button */}
-          <div>
-            <button onClick={onClose} className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 z-50 active:text-acm-pink/80 text-6xl hover:cursor-pointer">
+          
+            <button onClick={onClose} className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 z-50 active:text-acm-pink/80 text-4xl hover:cursor-pointer">
               <IoClose />
             </button>
-          </div>
+      
 
         {/* Left Side - Movie Poster + Details */}
         <div className="w-1/2 h-full relative">
@@ -64,6 +68,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
             <Image src={movie.poster} alt={movie.title} className="object-cover" fill />
             <div className="absolute inset-0 bg-black/60" />
             <div className="w-full h-1/2"> </div>
+
             <div className="absolute flex flex-col p-8 gap-8">
 
               {/* Movie Title */}
@@ -100,16 +105,15 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
         <div className="flex flex-col m-8 w-1/2 h-full relative">
 
           {/* Trailer container */}
-          <div className="w-full h-1/3 mt-10 items-center relative border-2 border-gray-600 rounded-lg bg-white/15 text-2xl">
             <iframe
-              className="w-full h-full rounded-2xl"
+              className="w-full h-1/3 mt-16 relative rounded-xl bg-white/15 text-2xl"
               src={trailer ? trailer.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             ></iframe>
-          </div>
+          
           
           {/* Show dates and times container */}
           <div className="w-full h-1/3 flex space-x-4 flex-col relative">
@@ -117,8 +121,13 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
             {/* Show dates */}
             <div 
               onClick={() => setOpenDateDropdown(!openDateDropdown)}
-              className="relative w-40 h-10 mt-8 inline-block rounded-lg bg-gray-600 text-md border-2 items-center border-gray-400">
-                <h2 className="p-1"> {currentDate ?? "Unknown Date"} </h2>
+              className="relative w-30 h-10 mt-8 inline-block rounded-lg bg-black/50 text-lg border-2 border-acm-pink items-center"
+            >
+                <div className="flex flex-row flex-wrap">
+                  <h2 className="mt-1 ml-3 mr-1 flex flex-row flex-wrap"> {currentDate ?? "Unknown Date"} </h2>
+                  <h2 className="mt-2.5 flex flex-row flex-wrap hover:text-acm-pink cursor-pointer"> <IoChevronDown /> </h2>
+                </div>
+                
                 
                 {openDateDropdown && (
                   <div className="absolute mt-2 w-40 rounded-md shadow-lg bg-black z-50">
@@ -130,7 +139,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
                               setCurrentDate(date ?? "");
                               setOpenDateDropdown(false);
                             }}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-400"
+                            className="w-full px-4 py-2 text-left hover:bg-gray-400 hover:text-black cursor-pointer"
                           >
                               {date ?? "unknown"}
                           </button>
@@ -142,18 +151,27 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
            </div>
           
             {/* Showtimes */}
-            <div className="flex space-x-4 mt-4 flex-row items-center relative">
+            
+            <div className="flex space-x-4 mt-8 flex-row items-center relative">
               {availableTimes.map((time) => (
-                <Link href="/booking" key={time ?? "unknown"}>
-                  <button className="text-lg border-2 border-white/40 backdrop-blur-sm px-4 py-2 rounded-full flex-shrink-0 bg-white/10 hover:bg-white/60 hover:border-transparent text-white hover:text-black hover:cursor-pointer w-auto min-w-[90px]">
+                  <button
+                    key={time ?? "unknown"} 
+                    onClick={() => setSelectedShowtime(time)} 
+                    className={
+                      "text-lg border-2 px-4 py-2 rounded-full flex-shrink-0 w-auto min-w-[90px] backdrop-blur-sm hover:cursor-pointer " +
+                      (selectedShowtime === time
+                        ? "bg-acm-pink text-white border-acm-pink"
+                        : "bg-white/10 text-white border-white/40 hover:bg-white/80 hover:border-transparent hover:text-black")
+                    }
+                  >
                     {time ?? "unknown"}
                   </button>
-                </Link>
             ))}
             </div>
+            
 
             {/* Cast */}
-            <div className="flex flex-row mt-4 text-xl text-white flex-wrap">
+            <div className="flex flex-row mt-8 text-xl text-white flex-wrap">
               <h2 className="font-semibold">Cast: &nbsp; </h2>
                 {cast.map((actor, index) => (
                   <span key={actor ?? ""} className="">
@@ -175,12 +193,36 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
               <p> &nbsp; {director ?? ""} </p>
             </div>
 
-          </div>
-
         </div>
+      
+      {/* Book Tickets button */}
+            <div className="absolute bottom-5 right-5 p-6 flex flex-row text-3xl font-semibold text-acm-pink">
+              {selectedShowtime ? (
+              <div>
+                {/* If a showtime is selected (button clickable) */}
+                <Link href="/booking">
+                    <button className="cursor-pointer flex flex-wrap items-center px-6 py-4 border-1 border-acm-pink bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-600 hover:to-pink-600 transition-all rounded-2xl text-white text-center">
+                        <p className="flex flex-wrap text-3xl"> &nbsp;TICKETS&nbsp; </p> 
+                        <p className="flex flex-wrap text-3xl font-bold"> <RxDoubleArrowRight /> </p>
+                    </button>
+                </Link>
+              </div>
+              ) : (
+              <div>
+                {/* If a showtime is not selected (button NOT clickable) */}
+                <button className="cursor-not-allowed flex flex-wrap items-center px-6 py-4 border-1 border-acm-pink rounded-2xl text-white/20 text-center">
+                    <p className="flex flex-wrap text-3xl"> &nbsp;TICKETS&nbsp; </p> 
+                    <p className="flex flex-wrap text-3xl font-bold"> <RxDoubleArrowRight /> </p>
+                </button>
+              </div>
+            )} 
+               
+          </div>
 
       </div>
 
     </div>
+
+  </div>
   );
 }
