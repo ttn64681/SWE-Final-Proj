@@ -6,6 +6,7 @@ node_modules/
 
 # Scripts
 set_env.sh
+set_env.ps1
 
 # Yarn PnP
 /.pnp
@@ -67,17 +68,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-<<<<<<< HEAD
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# set_env.sh
-set_env.sh
-
-# vercel
-=======
->>>>>>> thai_front_to_backend_connection
 .vercel
 
 # TypeScript
