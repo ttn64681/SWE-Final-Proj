@@ -1,9 +1,23 @@
+"use client";
+import React, { useState, useEffect } from "react"; 
+import { useRouter, useSearchParams } from 'next/navigation'; 
+
 import NavBar from "@/components/common/navBar/NavBar";
 import TicketTable from "@/components/specific/booking/ticket-age/TicketTable";
 
 export default function TicketAgePage() {
-    // Placeholder constant- in a later version, this maximum will be carried over from the Seats page.
-    const reservedSeats = 5;
+
+    const router = useRouter(); 
+    const searchParams = useSearchParams(); 
+
+    const [reservedSeats, setReservedSeats] = useState(Number(searchParams.get('seats')) || 0);
+
+    useEffect(() => {
+        const reservedSeats = searchParams.get('seats');
+
+        if (reservedSeats) setReservedSeats(Number(reservedSeats));
+    }, [searchParams]);
+
     
     return (
         <div className="w-screen h-screen bg-black">
