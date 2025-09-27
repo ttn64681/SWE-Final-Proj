@@ -1,9 +1,17 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<<<<<<< HEAD
 This project is ran with Springboot background.
 
 ## Getting Started
 
 To rum the frontend dev server:
+=======
+This project uses 
+
+## Getting Started
+
+First, to run the frontend development server:
+>>>>>>> thai_front_to_backend_connection
 
 ```bash
 npm run dev

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 #----- IMPORTANT -----#
 # Replace the Configuration Placeholders with actual values (provided by me (Team Lead) and/or neon db website)
 
@@ -24,6 +25,29 @@ JWT_SECRET=secret
 JWT_ACCESS_TOKEN_EXPIRATION=access_expiration
 # JWT Refresh Expiration: 14 days
 JWT_REFRESH_TOKEN_EXPIRATION=refresh_expiration
+=======
+#----- IMPORTANT -----
+# 1 - Duplicate this example script and remove '.example/ from file name.
+# 2 - Replace the Configuration Placeholders with actual values (provided by me (Team Lead) and/or neon db website)
+# Might need to set execution perms before running script:
+#   chmod +x setup_env.sh
+# To run, from root:
+#   source set_env.sh
+#----- IMPORTANT -----
+
+# Neon PostgreSQL Database Configuration
+DB_URL='jdbc:postgresql://<your-neon-host>:<your-neon-port>/<your-db-name>?sslmode=require' 
+# Note: keep DB_URL in single quotes
+DB_USERNAME=neondb_owner
+DB_PASSWORD=npg_a5O0zTSCeAVF
+
+# JWT Configuration for authentication
+JWT_SECRET=jwt-long-random-generated-secret
+# JWT Access Expiration: 30 minutes
+JWT_ACCESS_TOKEN_EXPIRATION=1800000
+# JWT Refresh Expiration: 14 days
+JWT_REFRESH_TOKEN_EXPIRATION=1209600000
+>>>>>>> thai_front_to_backend_connection
 
 # Check and save operating system (Darwin (Mac) or Linux or NT... (New Technology Windows))
 OS=$(uname -s)
@@ -40,7 +64,11 @@ if [[ "$OS" == "Linux" ]] || [[ "$OS" == "Darwin" ]]; then
     echo "DATABASE_URL is: $DB_URL"
     echo "DATABASE_USERNAME is: $DB_USERNAME"
     echo "DATABASE_PASSWORD is: $DB_PASSWORD"
+<<<<<<< HEAD
     echo "JWT_SECRET is: Na04FW7TJzOq9rAnDFHGQeR78rhMBGuiatUoI+00lRc="
+=======
+    echo "JWT_SECRET is: $JWT_SECRET"
+>>>>>>> thai_front_to_backend_connection
     echo "JWT_ACCESS_TOKEN_EXPIRATION is: 1800000"
     echo "JWT_REFRESH_TOKEN_EXPIRATION is: 1209600000"
     
@@ -56,7 +84,11 @@ elif [[ "$OS" == *'NT'* ]]; then
     echo "DATABASE_URL is: $DATABASE_URL"
     echo "DATABASE_USERNAME is: $DATABASE_USERNAME"
     echo "DATABASE_PASSWORD is: $DATABASE_PASSWORD"
+<<<<<<< HEAD
     echo "JWT_SECRET is: Na04FW7TJzOq9rAnDFHGQeR78rhMBGuiatUoI+00lRc="
+=======
+    echo "JWT_SECRET is: $JWT_SECRET"
+>>>>>>> thai_front_to_backend_connection
     echo "JWT_ACCESS_TOKEN_EXPIRATION is: 1800000"
     echo "JWT_REFRESH_TOKEN_EXPIRATION is: 1209600000"
 
