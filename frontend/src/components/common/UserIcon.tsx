@@ -1,0 +1,18 @@
+import React from 'react';
+import { FaRegUser } from 'react-icons/fa';
+
+interface UserIconProps {
+  onClick: () => void;
+  className?: string;
+}
+
+export default function UserIcon({
+  onClick,
+  className = 'text-white hover:text-red-500 transition-colors',
+}: UserIconProps) {
+  return (
+    <button onClick={onClick} className={className}>
+      <FaRegUser className="w-6 h-6" />
+    </button>
+  );
+}
