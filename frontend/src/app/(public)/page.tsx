@@ -1,11 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 import MovieCardsGrid from '../../components/common/movies/MovieCardsGrid';
 import NavBar from '@/components/common/navBar/NavBar';
+import Genre from '@/components/common/Genre';
+import Promotion from '@/components/common/Promotion';
+import WhiteSeparator from '@/components/common/WhiteSeparator';
+
+import axios from 'axios'
 
 // DUMMY MOVIE DATA
 const sampleMovies = [
@@ -50,51 +55,115 @@ const sampleMovies = [
   },
 ];
 
+const genres = ["Action", "Thriller", "Comedy", "Psychological", "Animation", "Drama", "Horror", "Romance"]
+
+const promotions = [
+  {
+    discount: "20% DISCOUNT",
+    promo: "FIRST-TIME WATCHER PROMO"
+  },
+  {
+    discount: "15% DISCOUNT",
+    promo: "CONCESSION COMBO MEAL PROMO"
+  },
+  {
+    discount: "10% DISCOUNT",
+    promo: "3+ FAMILY MEMBERS PROMO"
+  },
+  {
+    discount: "95% DISCOUNT",
+    promo: "PROMO PROMO PROMO PROMO"
+  },
+]
+
 export default function Home() {
 
+
+  // Tabs
   const [activeTab, setActiveTab] = useState<"nowplaying" | "upcoming">("nowplaying");
   useEffect(() => {
+    fetchMovies()
+  }, [activeTab])
+
+
+  // Fetching movies
+  const [movies, setMovies] = useState([]);
+  const fetchMovies = async () => {
     if (activeTab == "nowplaying") {
-      // Call "/api/movies/now-playing"
+      try {
+        const response = await axios.get('/api/movies/now-playing')
+        setMovies(response.data)
+        console.log(movies)    
+      } catch (err) {
+        console.log(err)
+      }
     }
     else {
-      // Call "/api/movies/upcoming"
+      try {
+        const response = await axios.get('/api/movies/upcoming')
+        setMovies(response.data)
+        console.log(movies)
+      } catch (err) {
+        console.log(err)
+      }
     }
-  }, [activeTab])
+  }
+
+  // Scroll
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollLeft = el.scrollWidth / 3;
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+
+      setAtStart(scrollLeft < 5);
+      setAtEnd(scrollLeft + clientWidth >= scrollWidth - 1); // -1 avoids rounding errors
+    };
+
+    el.addEventListener("scroll", handleScroll);
+    handleScroll(); // run once on mount
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="flex flex-col">
       <NavBar />
       {/* Hero Section */}
-      <section className="relative h-[60vh] w-full overflow-hidden">
+      <section className="relative h-[70vh] w-full overflow-hidden">
         {/* Background image */}
-        <Image src="/cinema seats.jpg" alt="Cinema seats" fill className="object-cover" priority />
+        <Image src="/cinema seats.jpg" alt="Cinema seats" fill className="object-cover brightness-150" priority />
         {/* Dark overlay + bottom gradient fade to bg-dark */}
-        <div className="pointer-events-none absolute inset-0 bg-black/60" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-[var(--tw-color-bg-dark,rgba(4,6,10,1))]" />
+        <div className="pointer-events-none absolute inset-0 bg-black/40" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0a]" />
 
         {/* Centered text */}
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center px-4">
-          <h1 className="font-pacifico text-5xl md:text-6xl text-white drop-shadow-lg">ACM Cinema</h1>
-          <p className="mt-3 font-redRose text-xl md:text-2xl text-white/90 drop-shadow">Actual Cinema Movies</p>
+          <h1 className="font-pacifico text-8xl bg-gradient-to-r bg-clip-text text-transparent from-acm-pink to-acm-orange drop-shadow-lg">ACM Cinema</h1>
+          <p className="mt-3 font-red-rose font-extrabold text-2xl text-white/90 drop-shadow">Actual Cinema Movies</p>
         </div>
       </section>
 
       {/* Promo Section */}
-      <section className="relative -mt-20 z-20 px-4">
+      <section className="relative -mt-40 z-20 px-4">
         <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 rounded-xl bg-component-purple/90 p-5 backdrop-blur md:grid-cols-2">
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg border-1">
             <Image src="/cinema people.jpg" alt="Cinema people" fill className="object-cover" />
           </div>
-          <div className="flex flex-col justify-center gap-3 text-white">
-            <h3 className="font-redRose text-2xl md:text-3xl">First time 20% OFF</h3>            
-            <p className="text-base text-white/90">
+          <div className="flex flex-col justify-center content-start gap-3 text-white">
+            <h3 className="font-redRose text-acm-pink text-3xl -mb-3">FIRST TIME 20% OFF</h3>
+            <WhiteSeparator />
+            <p className="text-base text-white/90 -mt-1">
               Watch your first ACM movie to get 20% off any one subsequent movie ticket(s)!
             </p>
             <div>
               <Link
                 href="#"
-                className="inline-block rounded-md bg-neon-pink px-4 py-2 font-semibold text-black transition hover:brightness-110"
+                className="inline-block rounded-md bg-neon-pink px-4 py-2 font-semibold text-white transition hover:brightness-110"
               >
                 CLAIM OFFER
               </Link>
@@ -108,7 +177,7 @@ export default function Home() {
         <div className="flex flex-row gap-x-6">
           <div className='flex flex-col items-center'>
             <button
-              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2 hover:cursor-pointer"
+              className={`text-4xl font-extrabold font-red-rose ${activeTab == "nowplaying" ? `text-acm-pink` : `text-white`} mb-2 hover:cursor-pointer`}
               onClick={() => setActiveTab("nowplaying")}
             >
                 Now Playing
@@ -119,7 +188,7 @@ export default function Home() {
           </div>
           <div className='flex flex-col items-center'>
             <button
-              className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2 hover:cursor-pointer"
+              className={`text-4xl font-extrabold font-red-rose ${activeTab == "upcoming" ? `text-acm-pink` : `text-white`} mb-2 hover:cursor-pointer`}
               onClick={() => setActiveTab("upcoming")}
             >
                 Upcoming
@@ -135,13 +204,64 @@ export default function Home() {
           columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
         />
       </div>
+      
 
+      <div className='px-16 opacity-30 my-8'>
+        <WhiteSeparator />
+      </div>
       {/* Genres */}
-      <div className="text-4xl font-extrabold font-red-rose text-acm-pink mb-2">
+      <div className="text-4xl font-extrabold font-red-rose text-white mb-2 px-20">
         Genres
       </div>
-      <div className="flex flex-row overflow-x-scroll">
-            
+      <div className='relative'>
+        <div
+          className="flex flex-row overflow-x-scroll scrollbar-hide py-4 gap-x-4"
+        >
+              {[...Array(3)].map((_, repeatIndex) => 
+                genres.map((genre, index) => (
+                  <Genre
+                    key={index}
+                    text={genre}
+                  />
+                ))
+              )}
+        </div>
+        <div className="pointer-events-none absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-[#0a0a0a] to-transparent z-20 duration-200" />
+        <div className="pointer-events-none absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#0a0a0a] to-transparent z-20" />
+        
+      </div>
+
+
+      <div className='px-16 opacity-30 my-8'>
+        <WhiteSeparator />
+      </div>
+      {/* Promotions */}
+      <div className="text-4xl font-extrabold font-red-rose text-white mb-2 px-20">
+        Promotions
+      </div>
+      <div className='relative px-20 py-4'>
+        <div className="relative flex flex-row overflow-x-scroll scrollbar-hide gap-x-4" ref={scrollRef}>
+              {promotions.map((promotion, index) => (
+                <Promotion
+                  key={index}
+                  discount={promotion.discount}
+                  promo={promotion.promo}
+                />
+              ))}
+        </div>
+
+
+        <div
+          className={`pointer-events-none absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-[#0a0a0a] to-transparent z-20 transition-opacity duration-500 ${
+            atStart ? "opacity-0" : "opacity-100"
+          }`}
+        />
+        <div
+          className={`pointer-events-none absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#0a0a0a] to-transparent z-20 transition-opacity duration-500 ${
+            atEnd ? "opacity-0" : "opacity-100"
+          }`}
+        />
+        
       </div>
     </div>
   );
