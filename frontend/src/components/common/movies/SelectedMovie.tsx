@@ -56,7 +56,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
 
         {/* Close Button */}
           
-            <button onClick={onClose} className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 z-50 active:text-acm-pink/80 text-4xl hover:cursor-pointer">
+            <button title='Close' type='button' onClick={onClose} className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 z-50 active:text-acm-pink/80 text-4xl hover:cursor-pointer">
               <IoClose />
             </button>
       
