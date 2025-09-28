@@ -5,7 +5,10 @@ node_modules/
 # This includes frontend/node_modules as well since it's a sub-directory
 
 # Scripts
-# set_env.sh
+set_env.sh
+set_env.sh.example
+backend/start-backend.sh
+backend.sh
 
 # Yarn PnP
 /.pnp
@@ -57,8 +60,8 @@ node_modules/
 /.nb-gradle/
 
 # Environment files
-# .env*
-# .env.local
+.env*
+.env.local
 
 # Misc files
 .DS_Store
