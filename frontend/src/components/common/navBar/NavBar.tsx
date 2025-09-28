@@ -95,6 +95,8 @@ export default function NavBar() {
         {/* User Icon */}
         <div className="relative">
           <button
+            title="User Menu"
+            type="button"
             ref={userIconRef}
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="text-white hover:text-red-500 transition-colors"
@@ -107,8 +109,7 @@ export default function NavBar() {
           {showUserMenu && (
             <div
               ref={userMenuRef}
-              className="absolute right-0 mt-2 w-48 backdrop-blur-md border border-gray-600 rounded-md shadow-lg z-50 origin-top-right transition-opacity duration-200"
-              style={{backgroundColor: '#BDBDBD'}}
+              className="absolute right-0 mt-2 w-48 bg-[#BDBDBD] backdrop-blur-md border border-gray-600 rounded-md shadow-lg z-50 origin-top-right transition-opacity duration-200"
             >
               <div className="py-1">
                 <Link
@@ -140,6 +141,8 @@ export default function NavBar() {
                   Account
                 </Link>
                 <button
+                  title="Logout"
+                  type="button"
                   className="block w-full text-left px-4 py-2 text-black transition-colors"
                   style={{color: 'black'}}
                   onMouseEnter={(e) => {

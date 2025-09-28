@@ -111,6 +111,22 @@ public class MovieController {
     }
 
     /**
+     * Simple test endpoint - just get all movies without complex queries.
+     */
+    @GetMapping("/simple-test")
+    public List<Movie> getSimpleTest() {
+        return movieService.getAllMoviesSimple();
+    }
+
+    /**
+     * Raw JDBC test to check database connection.
+     */
+    @GetMapping("/db-test")
+    public String getDbTest() {
+        return movieService.testDatabaseConnection();
+    }
+
+    /**
      * Get all available dates for a movie ordered by earliest show_date.
      * Use when displaying the dates for a movie.
      */

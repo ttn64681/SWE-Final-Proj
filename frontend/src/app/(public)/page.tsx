@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -10,7 +10,24 @@ import Genre from '@/components/common/Genre';
 import Promotion from '@/components/common/Promotion';
 import WhiteSeparator from '@/components/common/WhiteSeparator';
 
-import axios from 'axios'
+// import axios from 'axios'
+import { buildUrl, endpoints } from '@/config/api'
+
+// Backend movie data interface
+interface BackendMovie {
+  movie_id: number;
+  title: string;
+  status: string;
+  genres: string;
+  rating: string;
+  release_date: string;
+  synopsis: string;
+  trailer_link: string;
+  poster_link: string;
+  cast_names: string;
+  directors: string;
+  producers: string;
+}
 
 // DUMMY MOVIE DATA
 const sampleMovies = [
@@ -81,39 +98,70 @@ export default function Home() {
 
   // Tabs
   const [activeTab, setActiveTab] = useState<"nowplaying" | "upcoming">("nowplaying");
-  useEffect(() => {
-    fetchMovies()
-  }, [activeTab])
-
-
+  
   // Fetching movies
   const [movies, setMovies] = useState([]);
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     if (activeTab == "nowplaying") {
       try {
-        const response = await axios.get('/api/movies/now-playing')
-        setMovies(response.data)
-        console.log(movies)    
+        const response = await fetch(buildUrl(endpoints.movies.nowPlaying))
+        const backendMovies = await response.json()
+        // Transform backend data to match frontend interface
+        const transformedMovies = backendMovies.map((movie: BackendMovie) => ({
+          id: movie.movie_id,
+          title: movie.title,
+          poster: movie.poster_link,
+          description: movie.synopsis,
+          genres: movie.genres.split(', '), // Convert string to array
+          rating: movie.rating,
+          duration: '2HR 00MIN', // Default duration since not in backend
+          score: 8.5, // Default score since not in backend
+          cast: movie.cast_names.split(', '), // Convert string to array
+          producer: movie.producers,
+          director: movie.directors
+        }))
+        setMovies(transformedMovies)
+        console.log('Now Playing Movies:', transformedMovies)    
       } catch (err) {
         console.log(err)
       }
     }
     else {
       try {
-        const response = await axios.get('/api/movies/upcoming')
-        setMovies(response.data)
-        console.log(movies)
+        const response = await fetch(buildUrl(endpoints.movies.upcoming))
+        const backendMovies = await response.json()
+        // Transform backend data to match frontend interface
+        const transformedMovies = backendMovies.map((movie: BackendMovie) => ({
+          id: movie.movie_id,
+          title: movie.title,
+          poster: movie.poster_link,
+          description: movie.synopsis,
+          genres: movie.genres.split(', '), // Convert string to array
+          rating: movie.rating,
+          duration: '2HR 00MIN', // Default duration since not in backend
+          score: 8.5, // Default score since not in backend
+          cast: movie.cast_names.split(', '), // Convert string to array
+          producer: movie.producers,
+          director: movie.directors
+        }))
+        setMovies(transformedMovies)
+        console.log('Upcoming Movies:', transformedMovies)
       } catch (err) {
         console.log(err)
       }
     }
-  }
+  }, [activeTab])
+
+  useEffect(() => {
+    fetchMovies()
+  }, [activeTab, fetchMovies])
 
   // Scroll
   const scrollRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
+  // purpose: ???
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -150,11 +198,11 @@ export default function Home() {
 
       {/* Promo Section */}
       <section className="relative -mt-40 z-20 px-4">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 rounded-xl bg-component-purple/90 p-5 backdrop-blur md:grid-cols-2">
+        <div className="mx-auto flex flex-row w-[100%] max-w-5xl grid-cols-1 gap-10 rounded-xl p-5 md:grid-cols-2">
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg border-1">
             <Image src="/cinema people.jpg" alt="Cinema people" fill className="object-cover" />
           </div>
-          <div className="flex flex-col justify-center content-start gap-3 text-white">
+          <div className="flex flex-col w-[80vw] justify-center content-start gap-3 text-white">
             <h3 className="font-redRose text-acm-pink text-3xl -mb-3">FIRST TIME 20% OFF</h3>
             <WhiteSeparator />
             <p className="text-base text-white/90 -mt-1">
@@ -200,8 +248,7 @@ export default function Home() {
           </div>
         </div>
         <MovieCardsGrid
-          movies={sampleMovies}
-          columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
+          movies={movies.length > 0 ? movies : sampleMovies}
         />
       </div>
       
@@ -217,7 +264,7 @@ export default function Home() {
         <div
           className="flex flex-row overflow-x-scroll scrollbar-hide py-4 gap-x-4"
         >
-              {[...Array(3)].map((_, repeatIndex) => 
+              {[...Array(3)].map(() => 
                 genres.map((genre, index) => (
                   <Genre
                     key={index}
