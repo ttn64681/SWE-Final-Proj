@@ -6,7 +6,7 @@ node_modules/
 
 # Scripts
 set_env.sh
-set_env.sh.example
+set_env.ps1
 backend/start-backend.sh
 backend.sh
 
