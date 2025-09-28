@@ -88,6 +88,26 @@ public class MovieService {
         return movieRepository.findAllDistinctGenres();
     }
 
+    /**
+     * Simple test method - just get all movies without complex queries.
+     */
+    public List<Movie> getAllMoviesSimple() {
+        return movieRepository.findAll();
+    }
+
+    /**
+     * Test database connection with raw JDBC.
+     */
+    public String testDatabaseConnection() {
+        try {
+            // This will test if we can connect to the database
+            long count = movieRepository.count();
+            return "Database connection successful! Movie count: " + count;
+        } catch (Exception e) {
+            return "Database connection failed: " + e.getMessage();
+        }
+    }
+
 
 
 
