@@ -5,7 +5,7 @@ node_modules/
 # This includes frontend/node_modules as well since it's a sub-directory
 
 # Scripts
-# set_env.sh
+set_env.sh
 
 # Yarn PnP
 /.pnp
