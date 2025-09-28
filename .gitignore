@@ -6,6 +6,9 @@ node_modules/
 
 # Scripts
 set_env.sh
+set_env.ps1
+backend/start-backend.sh
+backend.sh
 
 # Yarn PnP
 /.pnp
@@ -57,8 +60,8 @@ set_env.sh
 /.nb-gradle/
 
 # Environment files
-# .env*
-# .env.local
+.env*
+.env.local
 
 # Misc files
 .DS_Store
@@ -72,4 +75,3 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
-set_env.sh

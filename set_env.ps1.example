@@ -1,0 +1,42 @@
+# PowerShell script to set environment variables for the cinema booking system
+
+#----- IMPORTANT -----
+# FOR WINDOWS POWERSHELL USERS:
+# 1 - This is the PowerShell equivalent of set_env.sh
+# 2 - Replace the Configuration Placeholders with actual values (provided by Team Lead and/or neon db website)
+# To run from PowerShell:
+#   .\set_env.ps1
+#----- IMPORTANT -----
+
+# Neon PostgreSQL Database Configuration
+$DB_URL = 'jdbc:postgresql://<your-neon-host>:<your-neon-port>/<your-db-name>?sslmode=require'
+$DB_USERNAME = 'user'
+$DB_PASSWORD = 'pass'
+
+# JWT Configuration for authentication
+$JWT_SECRET = 'jwt-long-random-generated-secret'
+# JWT Access Expiration: 30 minutes
+$JWT_ACCESS_TOKEN_EXPIRATION = '1800000'
+# JWT Refresh Expiration: 14 days
+$JWT_REFRESH_TOKEN_EXPIRATION = '1209600000'
+
+Write-Host "Detected Windows PowerShell. Setting environment variables..."
+
+# Set environment variables for current session
+$env:DATABASE_URL = $DB_URL
+$env:DATABASE_USERNAME = $DB_USERNAME
+$env:DATABASE_PASSWORD = $DB_PASSWORD
+$env:JWT_SECRET = $JWT_SECRET
+$env:JWT_ACCESS_TOKEN_EXPIRATION = $JWT_ACCESS_TOKEN_EXPIRATION
+$env:JWT_REFRESH_TOKEN_EXPIRATION = $JWT_REFRESH_TOKEN_EXPIRATION
+
+# Display the set variables
+Write-Host "DATABASE_URL is: $DB_URL"
+Write-Host "DATABASE_USERNAME is: $DB_USERNAME" 
+Write-Host "DATABASE_PASSWORD is: $DB_PASSWORD"
+Write-Host "JWT_SECRET is: $JWT_SECRET"
+Write-Host "JWT_ACCESS_TOKEN_EXPIRATION is: $JWT_ACCESS_TOKEN_EXPIRATION"
+Write-Host "JWT_REFRESH_TOKEN_EXPIRATION is: $JWT_REFRESH_TOKEN_EXPIRATION"
+
+Write-Host "`nEnvironment variables have been set for the current PowerShell session."
+Write-Host "Note: These variables will only persist for this PowerShell session."
