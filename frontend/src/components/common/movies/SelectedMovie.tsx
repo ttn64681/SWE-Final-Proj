@@ -24,7 +24,9 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
   const availableDates = ["10/10/25", "10/11/25", "10/12/25"];
   const availableTimes = ["8:00 PM", "9:15 PM", "10:00 PM"];
 
-  const trailer = "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
+  console.log(movie);
+  console.log(movie.trailer_link);
+  const trailer = movie.trailer_link || "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
 
   // Dummy data for cast, producer, director
   const cast = movie.cast_names.split(', ') || ["Actor 1", "Actor 2", "Actor 3", "Actor 4"];
@@ -195,7 +197,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
               <div>
                 {/* If a showtime is selected (button clickable) */}
                 <Link href={`/booking?title=${encodeURIComponent(movie.title ?? "")}&time=${encodeURIComponent(selectedShowtime ?? "")}&date=${encodeURIComponent(currentDate ?? "")}`}>
-                    <button className="cursor-pointer flex flex-wrap items-center px-6 py-4 border-1 border-acm-pink bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-600 hover:to-pink-600 transition-all rounded-2xl text-white text-center">
+                    <button title="Book Tickets" type="button" className="cursor-pointer flex flex-wrap items-center px-6 py-4 border-1 border-acm-pink bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-600 hover:to-pink-600 transition-all rounded-2xl text-white text-center">
                         <p className="flex flex-wrap text-3xl"> &nbsp;TICKETS&nbsp; </p> 
                         <p className="flex flex-wrap text-3xl font-bold"> <RxDoubleArrowRight /> </p>
                     </button>
@@ -204,7 +206,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
               ) : (
               <div>
                 {/* If a showtime is not selected (button NOT clickable) */}
-                <button className="cursor-not-allowed flex flex-wrap items-center px-6 py-4 border-1 border-acm-pink rounded-2xl text-white/20 text-center">
+                <button title="Book Tickets (Unavailable)" type="button" className="cursor-not-allowed flex flex-wrap items-center px-6 py-4 border-1 border-acm-pink rounded-2xl text-white/20 text-center">
                     <p className="flex flex-wrap text-3xl"> &nbsp;TICKETS&nbsp; </p> 
                     <p className="flex flex-wrap text-3xl font-bold"> <RxDoubleArrowRight /> </p>
                 </button>

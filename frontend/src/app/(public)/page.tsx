@@ -27,7 +27,7 @@ const sampleMovies: BackendMovie[] = [
     producers: 'Producer Name',
     directors: 'Director Name',
     status: 'now_playing',
-    trailer_link: '/trailer1.mp4'
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL',
   },
   {
     movie_id: 2,
@@ -41,7 +41,7 @@ const sampleMovies: BackendMovie[] = [
     producers: 'Producer Name',
     directors: 'Director Name',
     status: 'now_playing',
-    trailer_link: '/trailer2.mp4'
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL',
   },
   {
     movie_id: 3,
@@ -55,7 +55,7 @@ const sampleMovies: BackendMovie[] = [
     producers: 'Producer Name',
     directors: 'Director Name',
     status: 'now_playing',
-    trailer_link: '/trailer3.mp4'
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL',
   },
 ];
 
@@ -110,7 +110,7 @@ export default function Home() {
     } finally {
       setIsLoadingMovies(false);
     }
-  }, [activeTab])
+  }, [activeTab]);
 
   // Fetch genres from API (only once on mount)
   const fetchGenres = useCallback(async () => {
