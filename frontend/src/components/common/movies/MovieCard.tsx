@@ -3,6 +3,7 @@ import Image from 'next/image';
 import SelectedMovie from './SelectedMovie';
 import { BackendMovie } from '@/types/movie';
 
+
 interface MovieCardProps {
   movie: BackendMovie;
 }
