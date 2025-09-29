@@ -1,16 +1,14 @@
 "use client";  
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import TrailerEmbed from './TrailerEmbed';
 import { IoClose } from "react-icons/io5";
 import { IoChevronDown } from "react-icons/io5";
-import { SlArrowRight } from "react-icons/sl";
-import { IoChevronForwardSharp } from "react-icons/io5";
 import { RxDoubleArrowRight } from "react-icons/rx";
 
 import { BackendMovie } from '@/types/movie';
+import { buildUrl, endpoints } from '@/config/api';
 
 interface MovieDetailProps {
   movie: BackendMovie;
@@ -19,214 +17,291 @@ interface MovieDetailProps {
 
 // MOVIE DETAILS POP-UP
 export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
-
   // Dummy data for show dates and times
-  const availableDates = ["10/10/25", "10/11/25", "10/12/25"];
-  const availableTimes = ["8:00 PM", "9:15 PM", "10:00 PM"];
+  // const availableDates = ["10/10/25", "10/11/25", "10/12/25"];
+  // const availableTimes = ["8:00 PM", "9:15 PM", "10:00 PM"];
 
-  console.log(movie);
-  console.log(movie.trailer_link);
   const trailer = movie.trailer_link || "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
 
-  // Dummy data for cast, producer, director
-  const cast = movie.cast_names.split(', ') || ["Actor 1", "Actor 2", "Actor 3", "Actor 4"];
+  // Parse cast, producer, director
+  const cast = movie.cast_names ? movie.cast_names.split(', ') : ["Actor 1", "Actor 2", "Actor 3"];
   const producer = movie.producers || "Producer Name";
   const director = movie.directors || "Director Name";
 
-  // Function to open/close date dropdown
+  // State for dropdown and showtime selection
   const [openDateDropdown, setOpenDateDropdown] = useState(false);
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [datesLoading, setDatesLoading] = useState(false);
+  const [datesError, setDatesError] = useState<string | null>(null);
+  const [currentDate, setCurrentDate] = useState<string>('');
 
-  // Function to update selected date
-  const [currentDate, setCurrentDate] = useState(availableDates[0]);
-
-  // Function to select showtime
+  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+  const [timesLoading, setTimesLoading] = useState(false);
+  const [timesError, setTimesError] = useState<string | null>(null);
   const [selectedShowtime, setSelectedShowtime] = useState<string | null>(null);
 
+  // Fetch dates on mount
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchDates() {
+      setDatesLoading(true);
+      setDatesError(null);
+      try {
+        const url = buildUrl(endpoints.movies.dates(movie.movie_id));
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const dates: string[] = await resp.json();
+        if (cancelled) return;
+        setAvailableDates(dates);
+        // Auto-select first date (if available)
+        setCurrentDate(dates[0] || '');
+      } catch (e: any) {
+        if (cancelled) return;
+        setDatesError(e?.message || 'Failed to load dates');
+        setAvailableDates([]);
+        setCurrentDate('');
+      } finally {
+        if (!cancelled) setDatesLoading(false);
+      }
+    }
+    fetchDates();
+    return () => { cancelled = true; };
+  }, [movie.movie_id]);
+
+  // Fetch times when currentDate changes
+  useEffect(() => {
+    if (!currentDate) {
+      setAvailableTimes([]);
+      return;
+    }
+    let cancelled = false;
+    async function fetchTimes() {
+      setTimesLoading(true);
+      setTimesError(null);
+      try {
+        const url = new URL(buildUrl(endpoints.movies.times(movie.movie_id)));
+        // Build date=YYYY-MM-DD as required by backend
+        let isoDate = currentDate;
+        if (currentDate.includes('/')) {
+          const [mRaw, dRaw, yRaw] = currentDate.split('/');
+          const year = (yRaw || '').length === 2 ? `20${yRaw}` : yRaw;
+          const mm = (mRaw || '').padStart(2, '0');
+          const dd = (dRaw || '').padStart(2, '0');
+          isoDate = `${year}-${mm}-${dd}`;
+        }
+        url.searchParams.set('date', isoDate);
+        const resp = await fetch(url.toString());
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const payload = await resp.json();
+        // Support either array of strings or array of objects with start_time
+        const times: string[] = Array.isArray(payload)
+          ? payload.map((t: any) => typeof t === 'string' ? t : (t?.start_time || ''))
+                  .filter((t: string) => !!t)
+          : [];
+        if (cancelled) return;
+        setAvailableTimes(times);
+        setSelectedShowtime(null);
+      } catch (e: any) {
+        if (cancelled) return;
+        setTimesError(e?.message || 'Failed to load times');
+        setAvailableTimes([]);
+      } finally {
+        if (!cancelled) setTimesLoading(false);
+      }
+    }
+    fetchTimes();
+    return () => { cancelled = true; };
+  }, [currentDate, movie.movie_id]);
 
   return (
-    <div className="fixed mt-5 inset-0 flex z-50 items-center justify-center">
-
+    <div className="fixed inset-0 flex z-50 items-center justify-center p-4">
       {/* Overlay */}
-      <div className="mt-8 flex flex-row items-center w-[70vw] h-[90vh] relative backdrop-blur-xl rounded-3xl shadow-2xl z-10">
-
-        {/* Close Button */}
-          
-            <button title='Close' type='button' onClick={onClose} className="absolute top-1 right-1 text-white hover:text-acm-pink duration-200 z-50 active:text-acm-pink/80 text-3xl hover:cursor-pointer">
-              <IoClose />
-            </button>
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       
+      {/* Main Popup Container - Fixed rounded borders */}
+      <div className="relative w-[90vw] max-w-6xl h-[85vh] backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden flex">
+        
+        {/* Close Button */}
+        <button 
+          title='Close' 
+          type='button' 
+          onClick={onClose} 
+          className="absolute top-4 right-4 text-white hover:text-acm-pink duration-200 z-50 text-3xl hover:cursor-pointer"
+        >
+          <IoClose />
+        </button>
 
         {/* Left Side - Movie Poster + Details */}
-        <div className="w-1/2 h-full relative overflow-y-auto">
-
-          {/* Poster */}
+        <div className="w-1/2 h-full relative overflow-hidden rounded-l-3xl">
+          {/* Poster with proper containment */}
           <div className="w-full h-full relative">
-            <Image src={movie.poster_link} alt={movie.title} className="object-cover" fill />
-            <div className="absolute inset-0 bg-black/60" />
-            <div className="w-full h-1/2"> </div>
-
-            <div className="absolute flex flex-col p-8 gap-8">
-
-              {/* Movie Title */}
-              <div className="relative text-white">
-                {movie.title ? (<h2 className="text-5xl font-bold">{movie.title}</h2>) : (<h2 className="">No Title</h2>)}
-
-              {/* Movie Rating */}
-                {movie.rating ? (<h2 className="text-2xl ml-1">Rated {movie.rating}</h2>) : (<h2 className="">No Rating</h2>)}
-              </div>
-
-              {/* Genre Bubbles */}
-              <div className="flex flex-wrap gap-2">
-                {movie.genres.split(', ').map((genre, index) => (
-                  <div
-                    key={index}
-                    className="text-sm backdrop-blur-sm px-4 py-2 rounded-full flex-shrink-0 bg-white/20"
-                  >
-                    {genre}
-                  </div>
-                ))}
-              </div>
-
-            {/* Description */}
-              <div className="w-3/4 h-1/4 mt-8 overflow-auto">
-                <p>{movie.synopsis}</p>
-              </div>
-      
-            </div>
+            <Image 
+              src={movie.poster_link} 
+              alt={movie.title} 
+              className="object-cover rounded-l-3xl" 
+              fill 
+              sizes="45vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent rounded-l-3xl" />
           </div>
 
+          {/* Content positioned at bottom - Compact and non-scrollable */}
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            {/* Movie Title, Rating, and Release Date - Compact */}
+            <div className="mb-4">
+              <h2 className="text-3xl font-bold text-white leading-tight mb-2">
+                {movie.title || "No Title"}
+              </h2>
+              <div className="flex items-center gap-4 text-lg text-white/90">
+                <span>{movie.rating ? `Rated ${movie.rating}` : "No Rating"}</span>
+                <span>{movie.release_date || "No Date"}</span>
+              </div>
+            </div>
+
+            {/* Genre Bubbles - Compact */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {movie.genres.split(', ').map((genre, index) => (
+                <span
+                  key={index}
+                  className="text-xs bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white"
+                >
+                  {genre}
+                </span>
+              ))}
+            </div>
+
+            {/* Description - Limited height, no scroll */}
+            <div className="text-sm text-white/90 leading-relaxed">
+              <p className="line-clamp-4">{movie.synopsis}</p>
+            </div>
+          </div>
         </div>
 
-        {/* Right Side - trailer, description, showtimes, cast */}
-        <div className="flex flex-col m-8 w-1/2 h-full relative overflow-y-auto">
-
+        {/* Right Side - trailer, showtimes, cast */}
+        <div className="w-1/2 h-full p-6 flex flex-col overflow-y-auto bg-black/20 backdrop-blur-sm">
           {/* Trailer container */}
           <iframe
-            className="w-full h-1/3 mt-8 relative rounded-xl bg-white/15 text-2xl"
+            className="w-full h-64 rounded-xl mb-6"
             src={trailer ? trailer.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
-          ></iframe>
+          />
           
-          
-          {/* Show dates and times container */}
-          <div className="flex space-x-4 flex-col relative">
-
-            {/* Show dates */}
+          {/* Show dates and times */}
+          <div className="mb-6">
+            {/* Date dropdown */}
             <div 
               onClick={() => setOpenDateDropdown(!openDateDropdown)}
-              className="relative w-30 h-10 mt-8 inline-block rounded-lg bg-black/50 text-lg border-2 border-acm-pink items-center"
+              className="relative w-40 h-10 mb-4 rounded-lg bg-black/50 text-lg border-2 border-acm-pink flex items-center cursor-pointer"
             >
-                {/* Showdate Dropdown */ }
-                <div className="flex flex-row flex-wrap">
-                  <h2 className="mt-1 ml-3 mr-1 flex flex-row flex-wrap"> {currentDate ?? "Unknown Date"} </h2>
-                  <h2 className="mt-2.5 flex flex-row flex-wrap hover:text-acm-pink cursor-pointer"> <IoChevronDown /> </h2>
+              <span className="ml-3 mr-1">{currentDate}</span>
+              <IoChevronDown className="ml-auto mr-3 hover:text-acm-pink" />
+              
+              {openDateDropdown && (
+                <div className="absolute top-12 left-0 w-40 max-h-56 overflow-auto overscroll-contain rounded-md shadow-lg bg-black z-50">
+                  <ul className="py-1">
+                    {datesLoading && (
+                      <li className="px-4 py-2 text-white/70">Loading dates...</li>
+                    )}
+                    {datesError && (
+                      <li className="px-4 py-2 text-red-400">{datesError}</li>
+                    )}
+                    {!datesLoading && !datesError && availableDates.map((date) => (
+                      <li key={date}>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentDate(date);
+                            setOpenDateDropdown(false);
+                            setSelectedShowtime(null);
+                          }}
+                          className="w-full px-4 py-2 text-left hover:bg-gray-400 hover:text-black"
+                        >
+                            {date}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                
-                {openDateDropdown && (
-                  <div className="absolute mt-2 w-40 rounded-md shadow-lg bg-black z-50">
-                    <ul className="py-1">
-                      {availableDates.map((date) => (
-                        <li key={date ?? "unknown"}>
-                          <button 
-                            onClick={() => {
-                              setCurrentDate(date ?? "");
-                              setOpenDateDropdown(false);
-                            }}
-                            className="w-full px-4 py-2 text-left hover:bg-gray-400 hover:text-black cursor-pointer"
-                          >
-                              {date ?? "unknown"}
-                          </button>
-                        </li>
-                  ))}
-                    </ul>
-                </div>
-                )}
-           </div>
+              )}
+            </div>
           
             {/* Showtimes */}
-            <div className="flex space-x-4 mt-8 flex-row items-center relative">
-              {availableTimes.map((time) => (
-                  <button
-                    key={time ?? "unknown"} 
-                    onClick={() => setSelectedShowtime(time)} 
-                    className={
-                      "text-lg border-2 px-4 py-2 rounded-full flex-shrink-0 w-auto min-w-[90px] backdrop-blur-sm hover:cursor-pointer " +
-                      (selectedShowtime === time
-                        ? "bg-acm-pink text-white border-acm-pink"
-                        : "bg-white/10 text-white border-white/40 hover:bg-white/80 hover:border-transparent hover:text-black")
-                    }
-                  >
-                    {time ?? "unknown"}
-                  </button>
-            ))}
+            <div className="flex gap-3 flex-wrap">
+              {timesLoading && (
+                <span className="text-white/70">Loading times...</span>
+              )}
+              {timesError && (
+                <span className="text-red-400">{timesError}</span>
+              )}
+              {!timesLoading && !timesError && availableTimes.map((time) => (
+                <button
+                  title="Select Showtime"
+                  type="button"
+                  key={time} 
+                  onClick={() => setSelectedShowtime(time)} 
+                  className={[
+                    "px-4 py-2 rounded-full text-sm font-medium transition-all",
+                    selectedShowtime === time
+                      ? "bg-acm-pink text-white border-2 border-acm-pink"
+                      : "bg-white/10 text-white border-2 border-white/40 hover:bg-white/20",
+                  ].join(" ")}
+                >
+                  {time}
+                </button>
+              ))}
             </div>
           </div>
             
           {/* Movie Cast, Producer, Director */}
-          <div className="flex space-x-4 mt-8 flex-col relative">
-
+          <div className="mb-6 space-y-3">
             {/* Cast */}
-            <div className="flex flex-row text-lg text-white flex-wrap">
-              <h2 className="font-semibold">Cast: &nbsp; </h2>
-                {cast.map((actor, index) => (
-                  <span key={actor ?? ""} className="">
-                    {actor ?? ""}
-                    {index < cast.length - 1 && <span>,&nbsp;</span>}
-                  </span>
-                ))}
+            <div className="text-white">
+              <span className="font-semibold">Cast: </span>
+              <span>{cast.join(', ')}</span>
             </div>
               
             {/* Producers */}
-            <div className="flex flex-row mt-4 text-lg text-white">
-              <h2 className="font-semibold"> Producers: </h2>
-              <p> &nbsp; {producer ?? ""} </p>
+            <div className="text-white">
+              <span className="font-semibold">Producers: </span>
+              <span>{producer}</span>
             </div>
 
             {/* Directors */}
-            <div className="flex flex-row mt-4 text-lg text-white">
-              <h2 className="font-semibold"> Directors: </h2>
-              <p> &nbsp; {director ?? ""} </p>
+            <div className="text-white">
+              <span className="font-semibold">Directors: </span>
+              <span>{director}</span>
             </div>
+          </div>
 
-            {/* Book Tickets button */}
-          
-          <div className="w-full flex mt-8 flex-col relative">
-            <div className="absolute right-6 mb-6 flex flex-row text-3xl font-semibold text-acm-pink">
-              {selectedShowtime ? (
-              <div>
-                {/* If a showtime is selected (button clickable) */}
-                <Link href={`/booking?title=${encodeURIComponent(movie.title ?? "")}&time=${encodeURIComponent(selectedShowtime ?? "")}&date=${encodeURIComponent(currentDate ?? "")}`}>
-                    <button title="Book Tickets" type="button" className="cursor-pointer flex flex-wrap items-center px-3 py-2 border-1 border-acm-pink bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-600 hover:to-pink-600 transition-all rounded-2xl text-white text-center">
-                        <p className="flex flex-wrap text-2xl"> &nbsp;TICKETS&nbsp; </p> 
-                        <p className="flex flex-wrap text-2xl font-bold"> <RxDoubleArrowRight /> </p>
-                    </button>
-                </Link>
-              </div>
-              ) : (
-              <div>
-                {/* If a showtime is not selected (button NOT clickable) */}
-                <button title="Book Tickets (Unavailable)" type="button" className="cursor-not-allowed flex flex-wrap items-center px-3 py-2 border-1 border-acm-pink rounded-2xl text-white/20 text-center">
-                    <p className="flex flex-wrap text-2xl"> &nbsp;TICKETS&nbsp; </p> 
-                    <p className="flex flex-wrap text-2xl font-bold"> <RxDoubleArrowRight /> </p>
+          {/* Book Tickets button */}
+          <div className="mt-auto flex justify-end">
+            {selectedShowtime ? (
+              <Link href={`/booking?title=${encodeURIComponent(movie.title ?? "")}&time=${encodeURIComponent(selectedShowtime ?? "")}&date=${encodeURIComponent(currentDate ?? "")}`}>
+                <button 
+                  title="Book Tickets" 
+                  type="button"
+                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-600 hover:to-pink-600 transition-all rounded-2xl text-white font-semibold"
+                >
+                  <span>TICKETS</span>
+                  <RxDoubleArrowRight className="text-xl" />
                 </button>
-              </div>
-            )} 
+              </Link>
+            ) : (
+              <button 
+                title="Book Tickets (Select a showtime)" 
+                disabled
+                className="flex items-center gap-2 px-6 py-3 bg-gray-600 rounded-2xl text-white/50 font-semibold cursor-not-allowed"
+              >
+                <span>TICKETS</span>
+                <RxDoubleArrowRight className="text-xl" />
+              </button>
+            )}
           </div>
-          
-
         </div>
-
-    
-          </div>
-          
-
       </div>
-
     </div>
-
-  </div>
   );
 }

@@ -1,8 +1,54 @@
+'use client';
+
 import Link from 'next/link';
-import { FaSearch, FaSlidersH } from 'react-icons/fa';
+import { PiMagnifyingGlass } from "react-icons/pi";
+import { IoFilterOutline } from "react-icons/io5";
 import UserMenu from './UserMenu';
+import FiltersPopUp from '@/components/specific/movies/FiltersPopUp';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useFilters } from '@/contexts/FiltersContext';
 
 export default function NavBar() {
+  // Track if the filters popup is open/closed
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  // Track what the user typed in the search box
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+  // Get the currently selected filters from shared context
+  const { selectedGenres, selectedDate } = useFilters();
+
+  // When user clicks search button or presses Enter, build URL with all search parameters
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    
+    // Add movie title if user typed something
+    if (searchQuery.trim()) {
+      params.set('title', searchQuery.trim());
+    }
+    
+    // Add selected genres (comma-separated) if any are selected
+    if (selectedGenres.size > 0) {
+      params.set('genres', Array.from(selectedGenres).join(','));
+    }
+    
+    // Add date filters if user selected a date
+    if (selectedDate.month) params.set('month', selectedDate.month);
+    if (selectedDate.day) params.set('day', selectedDate.day);
+    if (selectedDate.year) params.set('year', selectedDate.year);
+    
+    const queryString = params.toString();
+    router.push(`/movies${queryString ? `?${queryString}` : ''}`);
+  };
+
+  // Handle Enter key press in search input
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  
   return (
     <nav className="fixed top-0 left-0 w-full bg-black/70 backdrop-blur-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,7 +59,7 @@ export default function NavBar() {
             <div className="flex-shrink-0 flex items-center">
               <Link
                 href="/"
-                className="text-2xl sm:text-3xl lg:text-4xl acm-gradient font-pacifico leading-none transform translate-y-1"
+                className="text-2xl sm:text-3xl lg:text-4xl acm-gradient font-pacifico leading-none transform -translate-y-1"
               >
                 acm
               </Link>
@@ -22,19 +68,36 @@ export default function NavBar() {
             {/* Search Bar - Always visible, responsive width */}
             <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
               <div className="relative">
+                {/* Search input with controlled state */}
                 <input
                   type="text"
                   placeholder="Search a title"
-                  className="w-full bg-white/10 backdrop-blur-md border border-gray-500 text-white placeholder-gray-400 px-3 py-1.5 sm:px-4 sm:py-2 pl-8 sm:pl-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-sm sm:text-base"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="w-full bg-white/10 backdrop-blur-md border border-gray-500 text-white placeholder-gray-400 px-3 py-1.5 sm:px-4 sm:py-2 pl-8 sm:pl-10 rounded-lg focus:outline-none focus:ring-1 focus:ring-white/70 focus:border-transparent transition-all text-sm sm:text-base"
                 />
-                <FaSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+                {/* Clickable search button */}
+                <button
+                  onClick={handleSearch}
+                  title="Search"
+                  className="absolute left-2 top-2 transform w-3 h-3 text-gray-400 hover:text-white transition-colors"
+                >
+                  <PiMagnifyingGlass className="text-2xl"/>
+                </button>
               </div>
             </div>
 
             {/* Filter Button - Always visible */}
             <div className="flex-shrink-0">
-              <button className="text-white hover:text-red-500 transition-colors p-1.5 sm:p-2" aria-label="filter">
-                <FaSlidersH className="w-4 h-4 sm:w-5 sm:h-5" />
+              <button 
+                title="Filter"
+                type="button"
+                className="text-white hover:text-red-500 transition-colors p-1.5 sm:p-2" 
+                aria-label="filter"
+                onClick={() => setIsFiltersOpen(true)}
+              >
+                <IoFilterOutline className="text-2xl"/>
               </button>
             </div>
           </div>
@@ -57,7 +120,7 @@ export default function NavBar() {
             {/* Authentication Actions */}
             <Link
               href="/auth/register"
-              className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-md transition-all duration-200 font-medium text-sm sm:text-base"
+              className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1 sm:px-4 rounded-md transition-all duration-200 font-medium text-sm sm:text-base"
             >
               Join
             </Link>
@@ -67,6 +130,12 @@ export default function NavBar() {
           </div>
         </div>
       </div>
+      
+      {/* Filters Popup */}
+      <FiltersPopUp 
+        isClosed={!isFiltersOpen} 
+        setIsClosed={(closed) => setIsFiltersOpen(!closed)}
+      />
     </nav>
   );
 }

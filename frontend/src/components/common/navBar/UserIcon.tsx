@@ -12,7 +12,7 @@ export default function UserIcon({
 }: UserIconProps) {
   return (
     <button title="User Icon" type='button' onClick={onClick} className={className}>
-      <FaRegUser className="w-6 h-6" />
+      <FaRegUser className="w-6 h-6 hover:cursor-pointer translate-y-[4px]" />
     </button>
   );
 }
