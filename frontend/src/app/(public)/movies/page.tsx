@@ -1,10 +1,9 @@
 'use client';
 
 import SearchBar from "@/components/specific/movies/SearchBar";
-import MovieCard from "@/components/common/movies/MovieCard";
 import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
 import WhiteSeparator from "@/components/common/WhiteSeparator";
-import TrailerEmbed from "@/components/common/movies/TrailerEmbed";
+import { BackendMovie } from "@/types/movie";
 
 import Image from "next/image";
 
@@ -188,8 +187,9 @@ const sampleMovies = [
 
 interface Filters {
   genre: string[];
-  start: string;
-  end: string;
+  year: number;
+  month: number;
+  day: number;
 }
 
 export default function MoviesPage() {
@@ -204,15 +204,16 @@ export default function MoviesPage() {
   const [isFilterClosed, setIsFilterClosed] = useState(true);
 
   const [filters, setFilters] = useState<Filters>({
-    genre: [],
-    start: "2023-01-01",
-    end: "2023-12-31"
+    genre: ["Action", "Sci-Fi", "Thriller", "Romance", "Adventure", "Fantasy"],
+    year: 2023,
+    month: 1,
+    day: 1,
   });
-  const addFilter = (genre : string, start: string, end: string) => {
+  const addFilter = (genre : string, year: number, month: number, day: number) => {
 
     setFilters(
       (filters) => {
-        return { genre: [...filters.genre, genre], start: start, end: end };
+        return { genre: [...filters.genre, genre], year: year, month: month, day: day };
       }
     );
 
@@ -248,6 +249,8 @@ export default function MoviesPage() {
             />
           </div>
           <button 
+          title="Filter"
+          type='button'
           className="ml-3"
           onClick={() => setIsFilterClosed(false)}>
             <IoFilterOutline className="text-white text-3xl hover:text-acm-pink hover:scale-105 hover:cursor-pointer" />
@@ -258,16 +261,14 @@ export default function MoviesPage() {
         <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">Now Playing</h2>
         <WhiteSeparator />
         <MovieCardsGrid 
-          movies={sampleMovies} 
-          columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
+          movies={sampleMovies as BackendMovie[]} 
         />
       </div>
       <div className="w-screen relative px-16">
         <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">Upcoming</h2>
         <WhiteSeparator />
         <MovieCardsGrid 
-          movies={sampleMovies} 
-          columns={{ mobile: 2, tablet: 3, desktop: 4, large: 5 }}
+          movies={sampleMovies as BackendMovie[]} 
         />
       </div>
     </div>

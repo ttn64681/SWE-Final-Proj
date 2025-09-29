@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { FaSearch, FaSlidersH } from 'react-icons/fa';
-import UserMenu from '../UserMenu';
+import UserMenu from './UserMenu';
 
 export default function NavBar() {
   return (

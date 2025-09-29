@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override // Need to override addCorsMappings to add custom CORS mappings
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:3000") // Next.js frontend
+                .allowedOrigins("http://localhost:3000", "http://localhost:3001") // Next.js frontend
                 // OPTIONS is an implicit preflight request sent by browser to check if the server allows the request
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
