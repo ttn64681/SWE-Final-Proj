@@ -22,7 +22,7 @@ export default function TrailerEmbed({ name, trailerUrl, isClosed, setIsClosed }
           >
             <IoClose />
           </button>
-          <h1 className="text-7xl font-bold font-afacad">{name}</h1>
+          <h1 className="p-2 text-5xl font-bold font-afacad">{name}</h1>
           <iframe
             className="w-full h-full rounded-2xl"
             src={trailerUrl ? trailerUrl.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
