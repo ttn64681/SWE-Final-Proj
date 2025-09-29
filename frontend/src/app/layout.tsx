@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Afacad, Red_Rose, Pacifico } from 'next/font/google';
+import { FiltersProvider } from '@/contexts/FiltersContext';
 
 export const metadata: Metadata = {
   title: 'ACM Actual Cinema Movies',
@@ -37,7 +38,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`}>
-        {children}
+        <FiltersProvider>
+          {children}
+        </FiltersProvider>
       </body>
     </html>
   );
