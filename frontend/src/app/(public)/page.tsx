@@ -133,7 +133,7 @@ export default function Home() {
     } finally {
       setIsLoadingGenres(false);
     }
-  }, [])
+  }, []);
 
   // Fetch movies when tab changes
   useEffect(() => {
