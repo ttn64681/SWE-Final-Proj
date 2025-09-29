@@ -26,7 +26,8 @@ const sampleMovies = [
     duration: "1HR 47MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 2,
@@ -39,7 +40,8 @@ const sampleMovies = [
     duration: "2HR 15MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3", "Actor 4", "Actor 5","Actor 6","Actor 7","Actor 8"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 3,
@@ -52,7 +54,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 4,
@@ -65,7 +68,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 5,
@@ -78,7 +82,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 6,
@@ -91,7 +96,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 7,
@@ -104,7 +110,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 8,
@@ -117,7 +124,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3",],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 9,
@@ -130,7 +138,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 10,
@@ -143,7 +152,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 11,
@@ -156,7 +166,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 12,
@@ -169,7 +180,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
   {
     id: 13,
@@ -182,7 +194,8 @@ const sampleMovies = [
     duration: "1HR 59MIN",
     cast: ["Actor 1", "Actor 2", "Actor 3"],
     producer: "Producer Name",
-    director: "Director Name"
+    director: "Director Name",
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL'
   },
 ];
 

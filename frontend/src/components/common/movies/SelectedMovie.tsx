@@ -20,6 +20,7 @@ interface MovieDetailProps {
     cast: string[];
     producer: string;
     director: string;
+    trailer: string;
   }
   onClose: () => void;
 }
@@ -31,7 +32,9 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
   const availableDates = ["10/10/25", "10/11/25", "10/12/25"];
   const availableTimes = ["8:00 PM", "9:15 PM", "10:00 PM"];
 
-  const trailer = "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
+  console.log(movie);
+  console.log(movie.trailer);
+  const trailer = movie.trailer || "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
 
   // Dummy data for cast, producer, director
   const cast = movie.cast || ["Actor 1", "Actor 2", "Actor 3", "Actor 4"];
