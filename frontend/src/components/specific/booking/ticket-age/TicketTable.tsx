@@ -51,80 +51,79 @@ export default function TicketTable( { reservedSeats }: props) {
     }
 
     return (
-        <div className="flex flex-col">
-            <table className="table-auto w-[80vw] h-[70vh] mt-8 ml-8 text-white text-2xl">
-                <tbody>
-                    {/* Labels */}
-                    <tr>
-                        <td className="p-4 text-3xl font-semibold"> Ticket</td>
-                        <td className="p-4 text-3xl font-semibold"> Quantity </td>
-                        <td className="p-4 text-3xl font-semibold"> Price</td>
-                        <td> </td>
-                    </tr>
-                    {/* Adult tickets */}
-                    <tr>
-                        <td className="p-4"> Adult</td>
-                        <td className="p-4"> 
+        <div className="mt-6">
+            <div className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                {/* Header row */}
+                <div className="grid grid-cols-4 items-center px-4 py-3 text-white/80 text-base sm:text-lg font-semibold border-b border-white/10">
+                    <div>Ticket</div>
+                    <div className="text-center">Quantity</div>
+                    <div className="text-right">Price</div>
+                    <div></div>
+                </div>
+
+                {/* Rows */}
+                <div className="divide-y divide-white/10">
+                    <div className="grid grid-cols-4 items-center px-4 py-3 sm:py-4 text-white">
+                        <div className="text-sm sm:text-base">Adult</div>
+                        <div className="flex justify-center">
                             <TicketCounter
-                                index={0} 
+                                index={0}
                                 maxTickets={reservedSeats}
-                                ticketsByCategory={ticketsByCategory} 
+                                ticketsByCategory={ticketsByCategory}
                                 currentlySelected={totalTickets}
-                                onCountChange={(count) => updateSelectedTickets(0, count)} 
-                            /> 
-                        </td>
-                        <td className="p-4"> $5.00</td>
-                        <td> </td>
-                    </tr>
-                    {/* Child tickets */}
-                    <tr>
-                        <td className="p-4"> Child</td>
-                        <td className="p-4"> 
-                            <TicketCounter
-                                index={1} 
-                                maxTickets={reservedSeats}
-                                ticketsByCategory={ticketsByCategory} 
-                                currentlySelected={totalTickets}
-                                onCountChange={(count) => updateSelectedTickets(1, count)} 
-                            /> 
-                        </td>
-                        <td className="p-4"> $3.50</td>
-                        <td> </td>
-                    </tr>
-                    {/* Senior tickets */}
-                    <tr>
-                        <td className="p-4"> Senior</td>
-                        <td className="p-4"> 
-                            <TicketCounter
-                                index={2} 
-                                maxTickets={reservedSeats}
-                                ticketsByCategory={ticketsByCategory} 
-                                currentlySelected={totalTickets}
-                                onCountChange={(count) => updateSelectedTickets(2, count)} 
-                            /> 
-                        </td>
-                        <td className="p-4"> $2.00</td>
-                        <td> </td>
-                    </tr>
-                    {/* Totals */}
-                    <tr>
-                        <td className="p-4 text-3xl font-semibold text-acm-pink"> Total:</td>
-                        <td className="p-8 text-3xl font-semibold text-acm-pink"> {totalTickets} / {reservedSeats} </td>
-                        <td className="p-2 text-3xl font-semibold text-acm-pink"> 
-                            <div className="flex flex-row text-3xl font-semibold text-acm-pink">
-                                <h1 className="text-black"> {padString(calculatePrice())} </h1> <h1> {formatPriceString((calculatePrice()))} </h1>
-                            </div>
-                        </td>
-                        {/* Checkout button: Only clickable after all tickets are selected */}
-                        <td> 
-                            <CheckoutButton 
-                                tickets={totalTickets}
-                                seats={reservedSeats}
+                                onCountChange={(count) => updateSelectedTickets(0, count)}
                             />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </div>
+                        <div className="text-right text-sm sm:text-base">$5.00</div>
+                        <div></div>
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center px-4 py-3 sm:py-4 text-white">
+                        <div className="text-sm sm:text-base">Child</div>
+                        <div className="flex justify-center">
+                            <TicketCounter
+                                index={1}
+                                maxTickets={reservedSeats}
+                                ticketsByCategory={ticketsByCategory}
+                                currentlySelected={totalTickets}
+                                onCountChange={(count) => updateSelectedTickets(1, count)}
+                            />
+                        </div>
+                        <div className="text-right text-sm sm:text-base">$3.50</div>
+                        <div></div>
+                    </div>
+
+                    <div className="grid grid-cols-4 items-center px-4 py-3 sm:py-4 text-white">
+                        <div className="text-sm sm:text-base">Senior</div>
+                        <div className="flex justify-center">
+                            <TicketCounter
+                                index={2}
+                                maxTickets={reservedSeats}
+                                ticketsByCategory={ticketsByCategory}
+                                currentlySelected={totalTickets}
+                                onCountChange={(count) => updateSelectedTickets(2, count)}
+                            />
+                        </div>
+                        <div className="text-right text-sm sm:text-base">$2.00</div>
+                        <div></div>
+                    </div>
+                </div>
+
+                {/* Footer / totals */}
+                <div className="px-4 py-4 border-t border-white/10">
+                    <div className="grid grid-cols-4 items-center gap-2">
+                        <div className="text-lg sm:text-xl font-semibold text-acm-pink">Total</div>
+                        <div className="text-center text-lg sm:text-xl text-acm-pink">{totalTickets} / {reservedSeats}</div>
+                        <div className="text-right text-2xl sm:text-3xl font-extrabold text-acm-pink leading-none">
+                            <span className="invisible">{padString(calculatePrice())}</span>
+                            <span>{formatPriceString(calculatePrice())}</span>
+                        </div>
+                        <div className="flex justify-end items-center">
+                            <CheckoutButton tickets={totalTickets} seats={reservedSeats} />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
