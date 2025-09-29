@@ -23,6 +23,7 @@ To run the backend dev serv:
 source set_env.sh
 # then
 cd backend/ && ./mvnw spring-boot:run
+```
 
 Open [http://localhost:8080](http://localhost:8080) with your browser to see the result (optional).
 
