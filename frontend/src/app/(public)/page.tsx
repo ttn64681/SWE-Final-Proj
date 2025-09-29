@@ -35,6 +35,7 @@ const sampleMovies = [
     id: 1,
     title: 'Godzilla',
     poster: '/poster godzilla.jpg',
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Action', 'Sci-Fi', 'Thriller'],
     rating: "PG-13",
@@ -48,6 +49,7 @@ const sampleMovies = [
     id: 2,
     title: 'Cinema People',
     poster: '/cinema people.jpg',
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Drama', 'Comedy'],
     rating: "PG",
@@ -61,6 +63,7 @@ const sampleMovies = [
     id: 3,
     title: 'Old Boy',
     poster: '/poster oldboy.jpg',
+    trailer_link: 'https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL',
     description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: ['Horror', 'Thriller', 'Drama', 'Mystery'],
     rating: "R",
@@ -118,12 +121,13 @@ export default function Home() {
           score: 8.5, // Default score since not in backend
           cast: movie.cast_names.split(', '), // Convert string to array
           producer: movie.producers,
-          director: movie.directors
-        }))
-        setMovies(transformedMovies)
-        console.log('Now Playing Movies:', transformedMovies)    
+          director: movie.directors,
+          trailer: movie.trailer_link
+        }));
+        setMovies(transformedMovies);
+        console.log('Now Playing Movies:', transformedMovies); 
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     }
     else {
@@ -141,16 +145,20 @@ export default function Home() {
           duration: '2HR 00MIN', // Default duration since not in backend
           score: 8.5, // Default score since not in backend
           cast: movie.cast_names.split(', '), // Convert string to array
-          producer: movie.producers,
-          director: movie.directors
-        }))
+          producers: movie.producers,
+          directors: movie.directors,
+          trailer: movie.trailer_link,
+        }));
         setMovies(transformedMovies)
-        console.log('Upcoming Movies:', transformedMovies)
+        console.log('Upcoming Movies:', transformedMovies);
+        console.log();
+
       } catch (err) {
-        console.log(err)
+        console.log("there is an error");
+        console.log(err);
       }
     }
-  }, [activeTab])
+  }, [activeTab]);
 
   useEffect(() => {
     fetchMovies()
