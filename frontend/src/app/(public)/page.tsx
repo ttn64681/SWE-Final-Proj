@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import { RxDoubleArrowRight } from "react-icons/rx";
 import Image from 'next/image';
 
 import MovieCardsGrid from '../../components/common/movies/MovieCardsGrid';
@@ -9,6 +10,7 @@ import NavBar from '@/components/common/navBar/NavBar';
 import GenresSection from '@/components/common/genres/GenresSection';
 import SmallPromo from '@/components/common/promos/SmallPromoSection';
 import WhiteSeparator from '@/components/common/WhiteSeparator';
+import Footer from '@/components/specific/home/Footer';
 
 import { buildUrl, endpoints } from '@/config/api';
 import { BackendMovie } from '@/types/movie';
@@ -131,7 +133,7 @@ export default function Home() {
     } finally {
       setIsLoadingGenres(false);
     }
-  }, [])
+  }, []);
 
   // Fetch movies when tab changes
   useEffect(() => {
@@ -170,17 +172,19 @@ export default function Home() {
             <Image src="/cinema people.jpg" alt="Cinema people" fill className="object-cover" />
           </div>
           <div className="flex flex-col w-[80vw] justify-center content-start gap-3 text-white">
-            <h3 className="font-redRose text-acm-pink text-3xl -mb-3">FIRST TIME 20% OFF</h3>
+            <h3 className="font-redRose text-acm-pink text-4xl font-bold -mb-3">FIRST TIME 20% OFF</h3>
             <WhiteSeparator />
-            <p className="text-base text-white/90 -mt-1">
+            <p className="text-base text-[1.3rem] text-white/90 -mt-1">
               Watch your first ACM movie to get 20% off any one subsequent movie ticket(s)!
             </p>
-            <div>
+            <div className="pt-2">
               <Link
                 href="#"
-                className="inline-block rounded-md bg-neon-pink px-4 py-2 font-semibold text-white transition hover:brightness-110"
+                aria-label="Claim first-time watcher discount"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-acm-pink to-acm-orange px-5 py-2.5 text-white font-semibold shadow-lg ring-1 ring-white/20 hover:brightness-110 hover:-translate-y-0.5 active:translate-y-0 transition-transform"
               >
-                CLAIM OFFER
+                <span>Claim Offer</span>
+                <span className="text-xl leading-none"><RxDoubleArrowRight /></span>
               </Link>
             </div>
           </div>
@@ -234,6 +238,7 @@ export default function Home() {
       <div className='px-16 opacity-30 my-8'>
         <WhiteSeparator />
       </div>
+      <Footer />
     </div>
   );
 }
