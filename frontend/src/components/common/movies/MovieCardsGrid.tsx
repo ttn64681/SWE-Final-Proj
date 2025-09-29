@@ -12,6 +12,7 @@ interface Movie {
   cast: string[];
   producer: string;
   director: string;
+  trailer: string;
 }
 
 interface MovieCardsGridProps {
