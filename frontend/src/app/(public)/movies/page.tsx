@@ -216,6 +216,86 @@ export default function MoviesPage() {
   const [genres, setGenres] = useState<string[]>([]);
   const [isLoadingMovies, setIsLoadingMovies] = useState(false);
   const [isLoadingGenres, setIsLoadingGenres] = useState(false);
+  const [searchedMovies, setSearchedMovies] = useState<BackendMovie[]>([]);
+  const [searchedTitle, setSearchedTitle] = useState("");
+  const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
+  
+
+  useEffect(() => {
+    fetchSearchedNowPlayingMovies();
+    fetchSearchedUpcomingMovies();
+  }, [selectedGenres])
+  
+  // '/search-now-playing'
+  const fetchSearchedNowPlayingMovies = async () => {
+
+    if (searchedTitle == "" && selectedGenres.size == 0) fetchNowPlayingMovies();
+    try {
+      const genresArray = Array.from(selectedGenres);
+      const genresString = genresArray.join(',');
+      let endpoint = endpoints.movies.searchNowPlaying;
+
+      if (searchedTitle != "" || selectedGenres.size > 0) endpoint += "?"
+      if (searchedTitle != "") {
+        endpoint += `title=${searchedTitle}`;
+        if (selectedGenres.size > 0) endpoint += `&genres=${genresString}`;
+      }
+      else {
+        if (selectedGenres.size > 0) endpoint += `genres=${genresString}`;
+      }
+      console.log("Endpoint: " + endpoint);
+      
+      
+
+      const response = await fetch(buildUrl(endpoint));
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const backendMovies = await response.json();
+      setNowPlayingMovies(backendMovies);
+      console.log(`Now Playing Movies:`, backendMovies);
+    } catch (err) {
+      console.error('Error fetching movies:', err);
+      setNowPlayingMovies([]); // Clear movies on error
+    } finally {
+      setIsLoadingMovies(false);
+    }
+
+  }
+
+  const fetchSearchedUpcomingMovies = async () => {
+
+    if (searchedTitle == "" && selectedGenres.size == 0) fetchUpcomingMovies();
+    try {
+      const genresArray = Array.from(selectedGenres);
+      const genresString = genresArray.join(',');
+      let endpoint = endpoints.movies.searchUpcoming;
+
+      if (searchedTitle != "" || selectedGenres.size > 0) endpoint += "?"
+      if (searchedTitle != "") {
+        endpoint += `title=${searchedTitle}`;
+        if (selectedGenres.size > 0) endpoint += `&genres=${genresString}`;
+      }
+      else {
+        if (selectedGenres.size > 0) endpoint += `genres=${genresString}`;
+      }
+      console.log(endpoint);
+      
+      
+
+      const response = await fetch(buildUrl(endpoint));
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const backendMovies = await response.json();
+      setUpcomingMovies(backendMovies);
+      console.log(`Now Playing Movies:`, backendMovies);
+    } catch (err) {
+      console.error('Error fetching movies:', err);
+      setUpcomingMovies([]); // Clear movies on error
+    } finally {
+      setIsLoadingMovies(false);
+    }
+
+  }
   
   const fetchNowPlayingMovies = async () => {
     setIsLoadingMovies(true);
@@ -325,6 +405,8 @@ export default function MoviesPage() {
       <FiltersPopUp 
         isClosed={isFilterClosed}
         setIsClosed={setIsFilterClosed}
+        selectedGenres={selectedGenres}
+        setSelectedGenres={setSelectedGenres}
       />
       <div className="w-screen h-[60vh] relative flex flex-col items-center gap-8 py-36 overflow-hidden">
         <Image
@@ -340,6 +422,9 @@ export default function MoviesPage() {
           <PiMagnifyingGlass className="mr-3 text-white text-3xl" />
           <div className="flex-1">
             <SearchBar 
+              setSearchedTitle={setSearchedTitle}
+              getSearchedNowPlayingMovies={fetchSearchedNowPlayingMovies}
+              getSearchedUpcomingMovies={fetchSearchedUpcomingMovies}
             />
           </div>
           <button 

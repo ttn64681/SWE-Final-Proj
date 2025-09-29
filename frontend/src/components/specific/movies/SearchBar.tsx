@@ -19,11 +19,14 @@ interface SearchBarProps {
         year: String
       }
     }
+  setSearchedTitle: (title: string) => void;
+  getSearchedNowPlayingMovies: () => void;
+  getSearchedUpcomingMovies: () => void;
 }
 
 
 
-export default function SearchBar({genres, dates} : SearchBarProps) {
+export default function SearchBar({genres, dates, setSearchedTitle, getSearchedNowPlayingMovies, getSearchedUpcomingMovies} : SearchBarProps) {
 
 
   const searchParams = useSearchParams();
@@ -32,18 +35,17 @@ export default function SearchBar({genres, dates} : SearchBarProps) {
 
   // Called everytime someone passes in input
   const handleSearch = (searchTerm: string) => {
-      const params = new URLSearchParams(searchParams);
-      if (searchTerm) { // if someone typed in input
-          params.set("q", searchTerm);
-          params.set("test", "");
-      } else { // if nothing is typed
-          params.delete("q");          
-      }
-      replace(`${pathname}?${params.toString()}`); // replace current url without rerendering
-  }
-
-  async function fetchMovies() {
-
+      setSearchedTitle(searchTerm);
+      getSearchedNowPlayingMovies();
+      getSearchedUpcomingMovies();
+      // const params = new URLSearchParams(searchParams);
+      // if (searchTerm) { // if someone typed in input
+      //     params.set("q", searchTerm);
+      //     params.set("test", "");
+      // } else { // if nothing is typed
+      //     params.delete("q");          
+      // }
+      // replace(`${pathname}?${params.toString()}`); // replace current url without rerendering
   }
 
   return (

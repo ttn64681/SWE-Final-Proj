@@ -9,18 +9,21 @@ import { useState } from "react";
 interface FiltersPopUpProps {
     isClosed: boolean;
     setIsClosed: (value: boolean) => void;
+    selectedGenres: Set<string>;
+    setSelectedGenres: any;
 }
 
-export default function FiltersPopUp({ isClosed, setIsClosed }: FiltersPopUpProps) {
+export default function FiltersPopUp({ isClosed, setIsClosed, selectedGenres, setSelectedGenres }: FiltersPopUpProps) {
 
   const allGenres = [
     "Action",
     "Adventure",
-    "Comedy",
-    "Drama",
+    "Crime",
     "Horror",
     "Romance",
     "Sci-Fi",
+    "Fantasy",
+    "Thriller"
   ];
 
   const months: string[] = [
@@ -28,10 +31,9 @@ export default function FiltersPopUp({ isClosed, setIsClosed }: FiltersPopUpProp
     "July", "August", "September", "October", "November", "December"
   ];
 
-  const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
 
   const toggleGenre = (genre: string) => {
-    setSelectedGenres(prev => {
+    setSelectedGenres((prev : Set<string>) => {
       const next = new Set(prev);
       console.log(next)
       if (next.has(genre)) next.delete(genre);
