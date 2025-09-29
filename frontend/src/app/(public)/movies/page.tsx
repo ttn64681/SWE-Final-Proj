@@ -1,16 +1,19 @@
 'use client';
 
+import NavBar from '@/components/common/navBar/NavBar';
 import SearchBar from "@/components/specific/movies/SearchBar";
 import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
 import WhiteSeparator from "@/components/common/WhiteSeparator";
+
 import { BackendMovie } from "@/types/movie";
+import { buildUrl, endpoints } from '@/config/api';
 
 import Image from "next/image";
 
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { IoFilterOutline } from "react-icons/io5";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from 'react';
 import FiltersPopUp from "@/components/specific/movies/FiltersPopUp";
 
 const sampleMovies = [
@@ -206,6 +209,83 @@ interface Filters {
 }
 
 export default function MoviesPage() {
+  
+  // Fetching movies
+  const [nowPlayingMovies, setNowPlayingMovies] = useState<BackendMovie[]>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<BackendMovie[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [isLoadingMovies, setIsLoadingMovies] = useState(false);
+  const [isLoadingGenres, setIsLoadingGenres] = useState(false);
+  
+  const fetchNowPlayingMovies = async () => {
+    setIsLoadingMovies(true);
+    try {
+      const endpoint = endpoints.movies.nowPlaying;
+      
+      const response = await fetch(buildUrl(endpoint));
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const backendMovies = await response.json();
+      setNowPlayingMovies(backendMovies);
+      console.log(`Now Playing Movies:`, backendMovies);
+    } catch (err) {
+      console.error('Error fetching movies:', err);
+      setNowPlayingMovies([]); // Clear movies on error
+    } finally {
+      setIsLoadingMovies(false);
+    }
+  }
+
+  const fetchUpcomingMovies = async () => {
+    setIsLoadingMovies(true);
+    try {
+      console.log('Fetching upcoming movies...');
+      const endpoint = endpoints.movies.upcoming;
+      
+      const response = await fetch(buildUrl(endpoint));
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const backendMovies = await response.json();
+      setUpcomingMovies(backendMovies);
+      console.log(`Upcoming Movies:`, backendMovies);
+    } catch (err) {
+      console.error('Error fetching movies:', err);
+      setUpcomingMovies([]); // Clear movies on error
+    } finally {
+      setIsLoadingMovies(false);
+    }
+  }
+
+  // Fetch genres from API (only once on mount)
+  const fetchGenres = useCallback(async () => {
+    setIsLoadingGenres(true);
+    try {
+      const url = buildUrl(endpoints.movies.genres);
+      console.log('Fetching genres from:', url);
+      const response = await fetch(url);
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const genreNames = await response.json();
+      console.log('Genres received:', genreNames);
+      setGenres(genreNames);
+    } catch (err) {
+      console.error('Error fetching genres:', err);
+      setGenres([]); // Clear genres on error
+    } finally {
+      setIsLoadingGenres(false);
+    }
+  }, [])
+
+  // Fetch only once on mount
+  useEffect(() => {
+    fetchNowPlayingMovies();
+    fetchUpcomingMovies();
+    fetchGenres()
+  }, [fetchGenres])
+  
 
   const [tab, setTab] = useState('now'); // Initial active tab
 
@@ -235,6 +315,7 @@ export default function MoviesPage() {
 
   return (
     <div>
+      <NavBar />
       {/*= <TrailerEmbed
         name="Godzilla"
         trailerUrl="https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL"
@@ -274,14 +355,14 @@ export default function MoviesPage() {
         <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">Now Playing</h2>
         <WhiteSeparator />
         <MovieCardsGrid 
-          movies={sampleMovies as BackendMovie[]} 
+          movies={nowPlayingMovies as BackendMovie[]} 
         />
       </div>
       <div className="w-screen relative px-16">
         <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">Upcoming</h2>
         <WhiteSeparator />
         <MovieCardsGrid 
-          movies={sampleMovies as BackendMovie[]} 
+          movies={upcomingMovies as BackendMovie[]} 
         />
       </div>
     </div>
