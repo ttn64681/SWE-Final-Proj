@@ -2,6 +2,7 @@
 
 import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
 import WhiteSeparator from "@/components/common/WhiteSeparator";
+
 import { BackendMovie } from "@/types/movie";
 import NavBar from '@/components/common/navBar/NavBar';
 
@@ -17,7 +18,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useFilters } from '@/contexts/FiltersContext';
 
 export default function MoviesPage() {
-
   const searchParams = useSearchParams();
   const router = useRouter();
   // Get the currently selected filters from shared context (same as navbar)
@@ -95,7 +95,7 @@ export default function MoviesPage() {
     }
 
     // Build API request parameters according to backend API specification
-          const params = new URLSearchParams();
+    const params = new URLSearchParams();
     if (title) params.set('title', title);
     if (genres) params.set('genres', genres);
     if (month) params.set('month', month); // Backend expects Integer, URLSearchParams handles conversion
@@ -137,7 +137,7 @@ export default function MoviesPage() {
     } finally {
       setIsLoadingUpcoming(false);
     }
-  }, [searchParams]);
+  }, [searchParams, setNowPlayingMovies, setUpcomingMovies]);
 
   // Fetch results when component mounts or search params change
   useEffect(() => {
