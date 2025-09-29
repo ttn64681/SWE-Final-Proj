@@ -80,8 +80,6 @@ const promotions = [
 ]
 
 export default function Home() {
-
-
   // Tabs
   const [activeTab, setActiveTab] = useState<"nowplaying" | "upcoming">("nowplaying");
   
