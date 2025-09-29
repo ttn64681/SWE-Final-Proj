@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import SelectedMovie from './SelectedMovie';
+import TrailerEmbed from './TrailerEmbed';
 import { BackendMovie } from '@/types/movie';
+import { IoPlay } from 'react-icons/io5';
 
 
 interface MovieCardProps {
@@ -10,6 +12,7 @@ interface MovieCardProps {
 
 export default function MovieCard({ movie }: MovieCardProps) {
   const [selectedMovie, setSelectedMovie] = useState<BackendMovie | null>(null);
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
   // Genres string to array
   // Memoize genre splitting to avoid repeated computation
@@ -26,6 +29,11 @@ export default function MovieCard({ movie }: MovieCardProps) {
     setSelectedMovie(null);
   }
 
+  const handlePreviewClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    setIsTrailerOpen(true);
+  }
+
   return (
     <div className="relative">
       {/* Conditional Movie Details Popup */}
@@ -37,6 +45,14 @@ export default function MovieCard({ movie }: MovieCardProps) {
           />
         </div>
       )}
+
+      {/* Trailer Embed Popup */}
+      <TrailerEmbed
+        name={movie.title}
+        trailerUrl={movie.trailer_link}
+        isClosed={!isTrailerOpen}
+        setIsClosed={(closed) => setIsTrailerOpen(!closed)}
+      />
 
       {/* Movie Card - Clean responsive design */}
       <div 
@@ -89,6 +105,18 @@ export default function MovieCard({ movie }: MovieCardProps) {
                   <span className="text-sm font-semibold whitespace-nowrap flex-shrink-0">{movie.release_date}</span>
                 </div>
               </div>
+            </div>
+
+            {/* Preview Button - Only show on hover, positioned at bottom */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+              <button
+                onClick={handlePreviewClick}
+                className="flex items-center gap-2 bg-acm-pink hover:bg-acm-pink/80 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105"
+                title="Preview Trailer"
+              >
+                <IoPlay className="text-lg" />
+                Preview
+              </button>
             </div>
           </div>
         </div>

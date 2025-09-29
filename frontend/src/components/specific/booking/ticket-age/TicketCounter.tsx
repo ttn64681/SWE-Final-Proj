@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { IoAdd, IoRemove } from 'react-icons/io5';
 
 interface props {
     index: number;
@@ -33,18 +34,28 @@ export default function TicketCounter({ index, ticketsByCategory, currentlySelec
     }
 
     return (
-        <div className="text-xl flex flex-row text-center text-white relative gap-4">
-                <button onClick={decrement} className="flex items-center justify-center h-8 w-8 rounded-full border-white border-2 hover:border-acm-pink hover:text-acm-pink">
-                    - 
-                </button>
+        <div className="text-xl flex flex-row items-center text-white gap-3">
+            <button
+              onClick={decrement}
+              title="Decrease"
+              type="button"
+              className="flex items-center justify-center h-9 w-9 rounded-full border border-white/40 hover:border-acm-pink hover:text-acm-pink transition-colors"
+            >
+              <IoRemove />
+            </button>
 
-                <div className="flex items-center justify-center h-8 w-8 rounded-full">
-                    <h1> {ticketCount} </h1>
-                </div>
-                
-                <button onClick={increment} className="flex items-center justify-center h-8 w-8 rounded-full border-white border-2 hover:border-acm-pink hover:text-acm-pink">
-                    + 
-                </button>
+            <div className="min-w-9 flex items-center justify-center h-9 px-3 rounded-md bg-white/10 border border-white/20">
+              <span className="tabular-nums">{ticketCount}</span>
+            </div>
+
+            <button
+              onClick={increment}
+              title="Increase"
+              type="button"
+              className="flex items-center justify-center h-9 w-9 rounded-full border border-white/40 hover:border-acm-pink hover:text-acm-pink transition-colors"
+            >
+              <IoAdd />
+            </button>
         </div>
     );
 }

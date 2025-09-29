@@ -112,37 +112,36 @@ export default function SeatingPage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-black">
         <Navbar />
-        
-        {/* Back Button and Movie Title */}
-        <div className="pt-20 px-6 pl-70">
-          <div className="w-80">
-            <button
-              onClick={goBack}
-              className="text-white hover:text-gray-300 transition-colors flex items-center space-x-2 text-lg"
-            >
-              <span>←</span>
-              <span>Back</span>
-            </button>
-            
-            {/* Movie Title and Showtime */}
-            <div className="mt-4">
-              <h1 className="text-3xl font-bold color-acm-pink" style={{color: '#FE478A'}}>{movieTitle}</h1>
-              <div className="w-fit">
-                <div className="h-px bg-gray-300 mt-2 mb-2"></div>
-                <p className="text-xl text-gray-300 whitespace-nowrap">{date} | {time}</p>
-              </div>
+
+        {/* Header */}
+        <div className="pt-20 px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={goBack}
+                className="text-white hover:text-gray-300 transition-colors flex items-center gap-2 text-base"
+              >
+                <span>←</span>
+                <span>Back</span>
+              </button>
+            </div>
+            {/* Movie Info Card */}
+            <div className="mt-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-acm-pink">{movieTitle}</h1>
+              <p className="text-sm sm:text-base text-white/80 mt-1">{date} • {time}</p>
             </div>
           </div>
         </div>
-        
-          <main className="flex-grow flex items-center justify-center p-6 pt-4">
-            {/* Outline */}
-            <div className="p-3 rounded-lg shadow-xl w-full max-w-4xl border-[1px] border-gray">
-              <div className="gray-900 p-8 rounded-lg shadow-xl w-full max-w-4xl">
+
+          <main className="flex-grow p-6">
+            <div className="max-w-5xl mx-auto">
+              {/* Outline */}
+              <div className="p-3 rounded-xl shadow-xl w-full border border-white/10 bg-white/5 backdrop-blur-sm">
+                <div className="p-6 sm:p-8 rounded-lg">
                   {/* Screen */}
-                  <div className="gray-700 rounded-t-lg h-4 w-3/4 mx-auto mb-16 relative shadow-lg"></div>
+                  <div className="rounded-t-lg h-4 w-3/4 mx-auto mb-10 relative shadow-lg bg-white/20"></div>
                   {/* Seats */}
                   <div>
                     {renderFrontSeats(1)}
@@ -155,15 +154,15 @@ export default function SeatingPage() {
                     {renderBackSeats(7)}
                   </div>
                   {/* Submit Button */}
-                  <div className="flex justify-end mt-4">
-                    <Link href={`booking/ticket-age?&seats=${encodeURIComponent(selectedSeats.length ?? 0)}`}>
+                  <div className="flex justify-end mt-6">
+                    <Link href={`booking/ticket-age?seats=${encodeURIComponent(selectedSeats.length ?? 0)}&title=${encodeURIComponent(movieTitle)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`}>
                       <button 
                           id="submitBtn" 
                           onClick={submitSelection} 
-                          className={`font-bold transition-colors px-8 py-4 text-xl ${
+                          className={`font-bold transition-colors px-6 py-3 text-lg rounded-lg border ${
                               selectedSeats.length > 0 
-                                  ? 'text-white hover:text-[#FE478A] active:opacity-50' 
-                                  : 'text-gray-500'
+                                  ? 'text-white border-acm-pink hover:text-acm-pink active:opacity-70' 
+                                  : 'text-gray-500 border-white/20 cursor-not-allowed'
                           }`}
                           disabled={selectedSeats.length === 0}
                       >
@@ -171,10 +170,25 @@ export default function SeatingPage() {
                       </button>
                     </Link>
                   </div>
+                </div>
               </div>
-
             </div>
           </main>
+
+
+          
+          {/* Skinny Promo Banner */}
+          <div className="max-w-5xl mx-auto px-6 pb-10">
+            <div className="mt-8 rounded-xl border border-white/10 bg-gradient-to-r from-acm-pink/25 via-acm-orange/25 to-transparent backdrop-blur-sm px-5 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-white font-semibold text-base sm:text-lg">Limited-Time Discount: Save 20% on your order</p>
+                  <p className="text-white/80 text-xs sm:text-sm">Apply your discount now to lock it in at checkout.</p>
+                </div>
+                <Link href="/booking/checkout" className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-acm-pink text-white hover:brightness-110 whitespace-nowrap text-sm font-semibold">Apply Now!</Link>
+              </div>
+            </div>
+          </div>
       </div>
   );
 }
