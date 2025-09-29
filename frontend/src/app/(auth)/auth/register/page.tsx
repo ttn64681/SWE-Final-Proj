@@ -52,12 +52,13 @@ export default function RegisterPage() {
       
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Create an Account</h1>
-            <p className="text-gray-400">Step 1 of 3</p>
-          </div>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-xl">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-bold text-white">Create an Account</h1>
+              <p className="text-white/70 text-sm mt-1">Step 1 of 3</p>
+            </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-white text-sm mb-2">
                 Email Address*
@@ -67,8 +68,8 @@ export default function RegisterPage() {
                 id="email"
                 value={data.email}
                 onChange={(e) => updateData({ email: e.target.value })}
-                placeholder="Input text"
-                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.email ? 'border-2 border-red-500' : ''}`}
+                placeholder="you@example.com"
+                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.email ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
                 required
               />
               {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
@@ -83,8 +84,8 @@ export default function RegisterPage() {
                 id="password"
                 value={data.password}
                 onChange={(e) => updateData({ password: e.target.value })}
-                placeholder="Input text"
-                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.password ? 'border-2 border-red-500' : ''}`}
+                placeholder="••••••••"
+                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.password ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
                 required
               />
               {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
@@ -99,8 +100,8 @@ export default function RegisterPage() {
                 id="confirmPassword"
                 value={data.confirmPassword}
                 onChange={(e) => updateData({ confirmPassword: e.target.value })}
-                placeholder="Input text"
-                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.confirmPassword ? 'border-2 border-red-500' : ''}`}
+                placeholder="••••••••"
+                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.confirmPassword ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
                 required
               />
               {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>}
@@ -108,19 +109,20 @@ export default function RegisterPage() {
 
             <button
               type="submit"
-              className="inline-block bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-2 rounded-full font-semibold hover:from-red-600 hover:to-pink-600 transition-all"
+              className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
             >
               Continue
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-400">
+            <p className="text-white/70 text-sm">
               Already have an account?{' '}
-              <Link href="/auth/login" className="text-red-500 hover:text-red-400 transition-colors">
+              <Link href="/auth/login" className="text-acm-pink hover:text-acm-pink/80 transition-colors">
                 Sign in
               </Link>
             </p>
+          </div>
           </div>
         </div>
       </div>
