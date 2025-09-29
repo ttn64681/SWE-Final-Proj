@@ -11,7 +11,7 @@ export default function UserIcon({
   className = 'text-white hover:text-red-500 transition-colors',
 }: UserIconProps) {
   return (
-    <button onClick={onClick} className={className}>
+    <button title="User Icon" type='button' onClick={onClick} className={className}>
       <FaRegUser className="w-6 h-6" />
     </button>
   );

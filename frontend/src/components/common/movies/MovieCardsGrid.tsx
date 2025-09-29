@@ -1,21 +1,8 @@
 import MovieCard from './MovieCard';
-
-interface Movie {
-  id: number;
-  title: string;
-  poster: string;
-  description: string;
-  genres: string[];
-  score: number;
-  rating: string;
-  duration: string;
-  cast: string[];
-  producer: string;
-  director: string;
-}
+import { BackendMovie } from '@/types/movie';
 
 interface MovieCardsGridProps {
-  movies: Movie[];
+  movies: BackendMovie[];
 }
 
 export default function MovieCardsGrid({ movies }: MovieCardsGridProps) {
@@ -25,7 +12,7 @@ export default function MovieCardsGrid({ movies }: MovieCardsGridProps) {
         {/* Movies Grid - Clean responsive grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
           {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <MovieCard key={movie.movie_id} movie={movie} />
           ))}
         </div>
 
