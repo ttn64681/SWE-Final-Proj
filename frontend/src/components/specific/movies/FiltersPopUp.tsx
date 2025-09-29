@@ -62,6 +62,8 @@ export default function FiltersPopUp({ isClosed, setIsClosed }: FiltersPopUpProp
             {/* Popup Window with Blur */}
             <div className="flex flex-col items-center gap-y-8 w-3/5 relative backdrop-blur-xl rounded-3xl shadow-2xl z-10 border-1 border-white/20">
                 <button
+                  title="Close"
+                  type='button'
                   className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 active:text-acm-pink/80 text-6xl hover:cursor-pointer"
                   onClick={() => setIsClosed(true)}
                 >
@@ -109,6 +111,8 @@ export default function FiltersPopUp({ isClosed, setIsClosed }: FiltersPopUpProp
             </div>
             {/* Overlay */}
             <button
+              title="Close"
+              type='button'
               className="fixed inset-0 z-0"
               onClick={() => setIsClosed(true)}
             >

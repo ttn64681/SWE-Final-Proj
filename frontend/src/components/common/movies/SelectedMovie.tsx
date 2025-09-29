@@ -10,17 +10,10 @@ import { SlArrowRight } from "react-icons/sl";
 import { IoChevronForwardSharp } from "react-icons/io5";
 import { RxDoubleArrowRight } from "react-icons/rx";
 
+import { BackendMovie } from '@/types/movie';
+
 interface MovieDetailProps {
-  movie: {
-    title: string;
-    rating: string;
-    poster: string;
-    description: string;
-    genres: string[];
-    cast: string[];
-    producer: string;
-    director: string;
-  }
+  movie: BackendMovie;
   onClose: () => void;
 }
 
@@ -34,9 +27,9 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
   const trailer = "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
 
   // Dummy data for cast, producer, director
-  const cast = movie.cast || ["Actor 1", "Actor 2", "Actor 3", "Actor 4"];
-  const producer = movie.producer || "Producer Name";
-  const director = movie.director || "Director Name";
+  const cast = movie.cast_names.split(', ') || ["Actor 1", "Actor 2", "Actor 3", "Actor 4"];
+  const producer = movie.producers || "Producer Name";
+  const director = movie.directors || "Director Name";
 
   // Function to open/close date dropdown
   const [openDateDropdown, setOpenDateDropdown] = useState(false);
@@ -66,7 +59,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
 
           {/* Poster */}
           <div className="w-full h-full relative">
-            <Image src={movie.poster} alt={movie.title} className="object-cover" fill />
+            <Image src={movie.poster_link} alt={movie.title} className="object-cover" fill />
             <div className="absolute inset-0 bg-black/60" />
             <div className="w-full h-1/2"> </div>
 
@@ -82,7 +75,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
 
               {/* Genre Bubbles */}
               <div className="flex flex-wrap gap-2">
-                {movie.genres.map((genre, index) => (
+                {movie.genres.split(', ').map((genre, index) => (
                   <div
                     key={index}
                     className="text-sm backdrop-blur-sm px-4 py-2 rounded-full flex-shrink-0 bg-white/20"
@@ -94,7 +87,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
 
             {/* Description */}
               <div className="w-3/4 h-1/4 mt-8 overflow-auto">
-                <p>{movie.description}</p>
+                <p>{movie.synopsis}</p>
               </div>
       
             </div>

@@ -6,73 +6,59 @@ import Image from 'next/image';
 
 import MovieCardsGrid from '../../components/common/movies/MovieCardsGrid';
 import NavBar from '@/components/common/navBar/NavBar';
-import Genre from '@/components/common/Genre';
-import Promotion from '@/components/common/Promotion';
+import GenresSection from '@/components/common/genres/GenresSection';
+import SmallPromo from '@/components/common/promos/SmallPromoSection';
 import WhiteSeparator from '@/components/common/WhiteSeparator';
 
-// import axios from 'axios'
-import { buildUrl, endpoints } from '@/config/api'
-
-// Backend movie data interface
-interface BackendMovie {
-  movie_id: number;
-  title: string;
-  status: string;
-  genres: string;
-  rating: string;
-  release_date: string;
-  synopsis: string;
-  trailer_link: string;
-  poster_link: string;
-  cast_names: string;
-  directors: string;
-  producers: string;
-}
+import { buildUrl, endpoints } from '@/config/api';
+import { BackendMovie } from '@/types/movie';
 
 // DUMMY MOVIE DATA
-const sampleMovies = [
+const sampleMovies: BackendMovie[] = [
   {
-    id: 1,
+    movie_id: 1,
     title: 'Godzilla',
-    poster: '/poster godzilla.jpg',
-    description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
-    genres: ['Action', 'Sci-Fi', 'Thriller'],
+    poster_link: '/poster godzilla.jpg',
+    synopsis: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
+    genres: 'Action, Sci-Fi, Thriller',
     rating: "PG-13",
-    duration: '1HR 47MIN',
-    score: 10.0,
-    cast: ['Actor 1', 'Actor 2', 'Actor 3'],
-    producer: 'Producer Name',
-    director: 'Director Name'
+    release_date: '2024-03-15',
+    cast_names: 'Actor 1, Actor 2, Actor 3',
+    producers: 'Producer Name',
+    directors: 'Director Name',
+    status: 'now_playing',
+    trailer_link: '/trailer1.mp4'
   },
   {
-    id: 2,
+    movie_id: 2,
     title: 'Cinema People',
-    poster: '/cinema people.jpg',
-    description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
-    genres: ['Drama', 'Comedy'],
+    poster_link: '/cinema people.jpg',
+    synopsis: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
+    genres: 'Drama, Comedy',
     rating: "PG",
-    duration: '2HR 15MIN',
-    score: 8.0,
-    cast: ['Actor 1', 'Actor 2', 'Actor 3', 'Actor 4', 'Actor 5'],
-    producer: 'Producer Name',
-    director: 'Director Name'
+    release_date: '2024-04-20',
+    cast_names: 'Actor 1, Actor 2, Actor 3, Actor 4, Actor 5',
+    producers: 'Producer Name',
+    directors: 'Director Name',
+    status: 'now_playing',
+    trailer_link: '/trailer2.mp4'
   },
   {
-    id: 3,
+    movie_id: 3,
     title: 'Old Boy',
-    poster: '/poster oldboy.jpg',
-    description: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
-    genres: ['Horror', 'Thriller', 'Drama', 'Mystery'],
+    poster_link: '/poster oldboy.jpg',
+    synopsis: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
+    genres: 'Horror, Thriller, Drama, Mystery',
     rating: "R",
-    duration: '1HR 59MIN',
-    score: 9.0,
-    cast: ['Actor 1', 'Actor 2', 'Actor 3'],
-    producer: 'Producer Name',
-    director: 'Director Name'
+    release_date: '2024-05-10',
+    cast_names: 'Actor 1, Actor 2, Actor 3',
+    producers: 'Producer Name',
+    directors: 'Director Name',
+    status: 'now_playing',
+    trailer_link: '/trailer3.mp4'
   },
 ];
 
-const genres = ["Action", "Thriller", "Comedy", "Psychological", "Animation", "Drama", "Horror", "Romance"]
 
 const promotions = [
   {
@@ -100,84 +86,67 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"nowplaying" | "upcoming">("nowplaying");
   
   // Fetching movies
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState<BackendMovie[]>([]);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [isLoadingMovies, setIsLoadingMovies] = useState(false);
+  const [isLoadingGenres, setIsLoadingGenres] = useState(false);
+  
   const fetchMovies = useCallback(async () => {
-    if (activeTab == "nowplaying") {
-      try {
-        const response = await fetch(buildUrl(endpoints.movies.nowPlaying))
-        const backendMovies = await response.json()
-        // Transform backend data to match frontend interface
-        const transformedMovies = backendMovies.map((movie: BackendMovie) => ({
-          id: movie.movie_id,
-          title: movie.title,
-          poster: movie.poster_link,
-          description: movie.synopsis,
-          genres: movie.genres.split(', '), // Convert string to array
-          rating: movie.rating,
-          duration: '2HR 00MIN', // Default duration since not in backend
-          score: 8.5, // Default score since not in backend
-          cast: movie.cast_names.split(', '), // Convert string to array
-          producer: movie.producers,
-          director: movie.directors
-        }))
-        setMovies(transformedMovies)
-        console.log('Now Playing Movies:', transformedMovies)    
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    else {
-      try {
-        const response = await fetch(buildUrl(endpoints.movies.upcoming))
-        const backendMovies = await response.json()
-        // Transform backend data to match frontend interface
-        const transformedMovies = backendMovies.map((movie: BackendMovie) => ({
-          id: movie.movie_id,
-          title: movie.title,
-          poster: movie.poster_link,
-          description: movie.synopsis,
-          genres: movie.genres.split(', '), // Convert string to array
-          rating: movie.rating,
-          duration: '2HR 00MIN', // Default duration since not in backend
-          score: 8.5, // Default score since not in backend
-          cast: movie.cast_names.split(', '), // Convert string to array
-          producer: movie.producers,
-          director: movie.directors
-        }))
-        setMovies(transformedMovies)
-        console.log('Upcoming Movies:', transformedMovies)
-      } catch (err) {
-        console.log(err)
-      }
+    setIsLoadingMovies(true);
+    try {
+      const endpoint = activeTab === "nowplaying" 
+        ? endpoints.movies.nowPlaying 
+        : endpoints.movies.upcoming;
+      
+      const response = await fetch(buildUrl(endpoint));
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const backendMovies = await response.json();
+      setMovies(backendMovies);
+      console.log(`${activeTab} Movies:`, backendMovies);
+    } catch (err) {
+      console.error('Error fetching movies:', err);
+      setMovies([]); // Clear movies on error
+    } finally {
+      setIsLoadingMovies(false);
     }
   }, [activeTab])
 
+  // Fetch genres from API (only once on mount)
+  const fetchGenres = useCallback(async () => {
+    setIsLoadingGenres(true);
+    try {
+      const url = buildUrl(endpoints.movies.genres);
+      console.log('Fetching genres from:', url);
+      const response = await fetch(url);
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const genreNames = await response.json();
+      console.log('Genres received:', genreNames);
+      setGenres(genreNames);
+    } catch (err) {
+      console.error('Error fetching genres:', err);
+      setGenres([]); // Clear genres on error
+    } finally {
+      setIsLoadingGenres(false);
+    }
+  }, [])
+
+  // Fetch movies when tab changes
   useEffect(() => {
     fetchMovies()
   }, [activeTab, fetchMovies])
 
-  // Scroll
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-
-  // purpose: ???
+  // Fetch genres only once on mount
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollLeft = el.scrollWidth / 3;
-    const handleScroll = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = el;
+    fetchGenres()
+  }, [fetchGenres])
 
-      setAtStart(scrollLeft < 5);
-      setAtEnd(scrollLeft + clientWidth >= scrollWidth - 1); // -1 avoids rounding errors
-    };
 
-    el.addEventListener("scroll", handleScroll);
-    handleScroll(); // run once on mount
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  // Homepage
   return (
     <div className="flex flex-col">
       <NavBar />
@@ -196,7 +165,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Promo Section */}
+      {/* Hero Promo Section */}
       <section className="relative -mt-40 z-20 px-4">
         <div className="mx-auto flex flex-row w-[100%] max-w-5xl grid-cols-1 gap-10 rounded-xl p-5 md:grid-cols-2">
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg border-1">
@@ -247,6 +216,7 @@ export default function Home() {
         
           </div>
         </div>
+        
         <MovieCardsGrid
           movies={movies.length > 0 ? movies : sampleMovies}
         />
@@ -256,59 +226,15 @@ export default function Home() {
       <div className='px-16 opacity-30 my-8'>
         <WhiteSeparator />
       </div>
-      {/* Genres */}
-      <div className="text-4xl font-extrabold font-red-rose text-white mb-2 px-20">
-        Genres
-      </div>
-      <div className='relative'>
-        <div
-          className="flex flex-row overflow-x-scroll scrollbar-hide py-4 gap-x-4"
-        >
-              {[...Array(3)].map(() => 
-                genres.map((genre, index) => (
-                  <Genre
-                    key={index}
-                    text={genre}
-                  />
-                ))
-              )}
-        </div>
-        <div className="pointer-events-none absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-[#0a0a0a] to-transparent z-20 duration-200" />
-        <div className="pointer-events-none absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#0a0a0a] to-transparent z-20" />
-        
-      </div>
 
+      {/* Genres Section */}
+      <GenresSection genres={genres} />
+
+      {/* Small Promo Section */}
+      <SmallPromo promotions={promotions} />
 
       <div className='px-16 opacity-30 my-8'>
         <WhiteSeparator />
-      </div>
-      {/* Promotions */}
-      <div className="text-4xl font-extrabold font-red-rose text-white mb-2 px-20">
-        Promotions
-      </div>
-      <div className='relative px-20 py-4'>
-        <div className="relative flex flex-row overflow-x-scroll scrollbar-hide gap-x-4" ref={scrollRef}>
-              {promotions.map((promotion, index) => (
-                <Promotion
-                  key={index}
-                  discount={promotion.discount}
-                  promo={promotion.promo}
-                />
-              ))}
-        </div>
-
-
-        <div
-          className={`pointer-events-none absolute top-0 left-0 h-full w-1/3 bg-gradient-to-r from-[#0a0a0a] to-transparent z-20 transition-opacity duration-500 ${
-            atStart ? "opacity-0" : "opacity-100"
-          }`}
-        />
-        <div
-          className={`pointer-events-none absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#0a0a0a] to-transparent z-20 transition-opacity duration-500 ${
-            atEnd ? "opacity-0" : "opacity-100"
-          }`}
-        />
-        
       </div>
     </div>
   );
