@@ -153,7 +153,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-[70vh] w-full overflow-hidden">
         {/* Background image */}
-        <Image src="/cinema seats.jpg" alt="Cinema seats" fill className="object-cover brightness-150" priority />
+        <Image src="/cinema_seats.jpg" alt="Cinema seats" fill className="object-cover brightness-150" priority />
         {/* Dark overlay + bottom gradient fade to bg-dark */}
         <div className="pointer-events-none absolute inset-0 bg-black/40" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0a]" />
