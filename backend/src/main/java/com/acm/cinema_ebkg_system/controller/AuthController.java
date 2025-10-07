@@ -10,24 +10,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Authentication Controller - Handles all authentication-related API endpoints
+ * 
+ * This controller manages user registration, login, token refresh, and logout operations.
+ * It integrates with the UserService for business logic and JwtUtil for token management.
+ * 
+ * Available Endpoints:
+ * - POST /api/auth/register - Register a new user
+ * - POST /api/auth/login - Authenticate existing user
+ * - POST /api/auth/refresh - Refresh access token
+ * - POST /api/auth/logout - Logout user (client-side token removal)
+ * 
+ * Security Features:
+ * - CORS enabled for frontend integration
+ * - JWT token-based authentication
+ * - Password hashing via BCrypt
+ * - Input validation and error handling
+ * 
+ * @author ACM Cinema Team
+ * @version 1.0
+ */
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class AuthController {
 
+    // ========== DEPENDENCY INJECTION ==========
+    
     @Autowired
-    private UserService userService;
+    private UserService userService;  // Service layer for user business logic
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;  // Utility for JWT token operations
 
+    // ========== API ENDPOINTS ==========
+    
+    /**
+     * Register a new user in the system
+     * 
+     * Process Flow:
+     * 1. Create User entity from request data
+     * 2. Call UserService to register user (validates email uniqueness, hashes password)
+     * 3. Generate JWT access and refresh tokens
+     * 4. Return success response with tokens and user data
+     * 
+     * @param request RegisterRequest containing user registration data
+     * @return ResponseEntity<AuthResponse> with success status, tokens, and user info
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         try {
-            // Create user from request
+            // Step 1: Create User entity from request data
             User user = new User();
             user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
+            user.setPassword(request.getPassword());  // Will be hashed in UserService
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
             user.setPhoneNumber(request.getPhoneNumber());
@@ -35,14 +72,14 @@ public class AuthController {
             user.setState(request.getState());
             user.setCountry(request.getCountry());
 
-            // Register user
+            // Step 2: Register user (validates email uniqueness, hashes password, saves to DB)
             User savedUser = userService.registerUser(user);
 
-            // Generate tokens
+            // Step 3: Generate JWT tokens for immediate authentication
             String token = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getId());
             String refreshToken = jwtUtil.generateRefreshToken(savedUser.getEmail(), savedUser.getId());
 
-            // Create user DTO
+            // Step 4: Create user DTO (excludes sensitive data like password)
             AuthResponse.UserDto userDto = new AuthResponse.UserDto(
                 savedUser.getId(),
                 savedUser.getEmail(),
@@ -54,26 +91,39 @@ public class AuthController {
                 savedUser.getCountry()
             );
 
+            // Step 5: Return success response with tokens and user data
             AuthResponse response = new AuthResponse(true, "User registered successfully", token, refreshToken, userDto);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            // Handle any errors (email already exists, validation failures, etc.)
             AuthResponse response = new AuthResponse(false, e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
 
+    /**
+     * Authenticate an existing user and provide access tokens
+     * 
+     * Process Flow:
+     * 1. Validate user credentials (email/password) via UserService
+     * 2. Generate new JWT access and refresh tokens
+     * 3. Return success response with tokens and user data
+     * 
+     * @param request LoginRequest containing email and password
+     * @return ResponseEntity<AuthResponse> with success status, tokens, and user info
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         try {
-            // Authenticate user
+            // Step 1: Authenticate user credentials (validates email exists and password matches)
             User user = userService.authenticateUser(request.getEmail(), request.getPassword());
 
-            // Generate tokens
+            // Step 2: Generate new JWT tokens for authenticated session
             String token = jwtUtil.generateToken(user.getEmail(), user.getId());
             String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
 
-            // Create user DTO
+            // Step 3: Create user DTO (excludes sensitive data like password)
             AuthResponse.UserDto userDto = new AuthResponse.UserDto(
                 user.getId(),
                 user.getEmail(),
@@ -85,34 +135,58 @@ public class AuthController {
                 user.getCountry()
             );
 
+            // Step 4: Return success response with tokens and user data
             AuthResponse response = new AuthResponse(true, "Login successful", token, refreshToken, userDto);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            // Handle authentication failures (user not found, invalid password, etc.)
             AuthResponse response = new AuthResponse(false, e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
 
+    /**
+     * Refresh an expired access token using a valid refresh token
+     * 
+     * Process Flow:
+     * 1. Validate the provided refresh token
+     * 2. Extract user information from the refresh token
+     * 3. Generate a new access token
+     * 4. Return the new access token (refresh token remains the same)
+     * 
+     * @param refreshToken The refresh token to validate and use for generating new access token
+     * @return ResponseEntity<AuthResponse> with new access token
+     */
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestParam String refreshToken) {
         try {
-            // Validate refresh token
+            // Step 1: Validate refresh token and extract user information
             String email = jwtUtil.getUsernameFromToken(refreshToken);
             Long userId = jwtUtil.getUserIdFromToken(refreshToken);
 
-            // Generate new access token
+            // Step 2: Generate new access token with same user information
             String newToken = jwtUtil.generateToken(email, userId);
 
+            // Step 3: Return new access token (refresh token stays the same)
             AuthResponse response = new AuthResponse(true, "Token refreshed successfully", newToken, refreshToken, null);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
+            // Handle invalid or expired refresh token
             AuthResponse response = new AuthResponse(false, "Invalid refresh token");
             return ResponseEntity.badRequest().body(response);
         }
     }
 
+    /**
+     * Logout endpoint - primarily for client-side token cleanup
+     * 
+     * Note: Since we use stateless JWT tokens, logout is handled client-side by removing tokens.
+     * This endpoint provides a standard logout response for consistency.
+     * 
+     * @return ResponseEntity<AuthResponse> confirming successful logout
+     */
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout() {
         AuthResponse response = new AuthResponse(true, "Logout successful");

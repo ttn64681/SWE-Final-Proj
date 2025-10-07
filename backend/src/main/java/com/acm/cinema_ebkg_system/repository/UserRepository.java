@@ -6,8 +6,48 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * User Repository - Data access layer for User entities
+ * 
+ * This repository interface extends JpaRepository to provide standard CRUD operations
+ * for User entities, plus custom query methods for authentication purposes.
+ * 
+ * Key Features:
+ * - Standard JPA repository methods (save, findById, findAll, delete, etc.)
+ * - Custom query methods for email-based operations
+ * - Automatic query generation from method names
+ * - Integration with Spring Data JPA
+ * 
+ * Available Methods:
+ * - findByEmail(String email) - Find user by email address
+ * - existsByEmail(String email) - Check if user exists with given email
+ * - Standard JPA methods inherited from JpaRepository
+ * 
+ * @author ACM Cinema Team
+ * @version 1.0
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    
+    /**
+     * Find a user by their email address
+     * 
+     * This method is used during login to locate the user account.
+     * Returns Optional<User> to handle cases where email doesn't exist.
+     * 
+     * @param email User's email address
+     * @return Optional<User> User if found, empty Optional if not found
+     */
     Optional<User> findByEmail(String email);
+    
+    /**
+     * Check if a user exists with the given email address
+     * 
+     * This method is used during registration to prevent duplicate accounts.
+     * Returns boolean for quick existence check without loading the full entity.
+     * 
+     * @param email Email address to check
+     * @return boolean true if user exists, false otherwise
+     */
     boolean existsByEmail(String email);
 }
