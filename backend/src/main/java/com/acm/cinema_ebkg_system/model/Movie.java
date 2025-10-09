@@ -9,9 +9,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /*
  * DB Fields: 
@@ -28,9 +27,8 @@ import lombok.Setter;
  * directors, 
  * producers
  */
-@Getter
-@Setter
-@NoArgsConstructor
+@Data                    // Lombok: auto-generates getters, setters, toString, equals, hashCode (replaces @Getter @Setter)
+@NoArgsConstructor      // Lombok: generates default constructor (required by JPA)
 @Entity
 @Table(name = "movies")
 public class Movie {
