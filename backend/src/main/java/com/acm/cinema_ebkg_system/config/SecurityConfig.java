@@ -69,7 +69,7 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions().sameOrigin()); // For H2 console (for database management)
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())); // Updated for H2 console (for database management)
 
         return http.build();
     }
