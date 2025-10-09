@@ -1,18 +1,59 @@
 package com.acm.cinema_ebkg_system.dto;
 
+/**
+ * Register Request DTO - Data Transfer Object for user registration
+ * 
+ * This DTO represents the data structure sent from the frontend during user registration.
+ * It contains all the information needed to create a new user account in the system.
+ * 
+ * Fields:
+ * - email: User's email address (used as username for login)
+ * - password: Plain text password (will be hashed before storage)
+ * - firstName: User's first name
+ * - lastName: User's last name
+ * - phoneNumber: Optional contact number
+ * - address: Optional street address
+ * - state: Optional state/province
+ * - country: Optional country
+ * 
+ * Usage:
+ * This DTO is used in the AuthController.register() endpoint to receive
+ * registration data from the frontend and create a new User entity.
+ * 
+ * @author ACM Cinema Team
+ * @version 1.0
+ */
 public class RegisterRequest {
-    private String email;
-    private String password;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private String address;
-    private String state;
-    private String country;
+    // ========== REGISTRATION FIELDS ==========
+    
+    private String email;        // User's email address (required, unique)
+    private String password;     // Plain text password (required, will be hashed)
+    private String firstName;    // User's first name (required)
+    private String lastName;     // User's last name (required)
+    private String phoneNumber;  // Optional contact number
+    private String address;      // Optional street address
+    private String state;        // Optional state/province
+    private String country;      // Optional country
 
-    // Constructors
+    // ========== CONSTRUCTORS ==========
+    
+    /**
+     * Default constructor required for JSON deserialization
+     */
     public RegisterRequest() {}
 
+    /**
+     * Constructor with all fields for creating a complete registration request
+     * 
+     * @param email User's email address
+     * @param password Plain text password
+     * @param firstName User's first name
+     * @param lastName User's last name
+     * @param phoneNumber Optional phone number
+     * @param address Optional street address
+     * @param state Optional state/province
+     * @param country Optional country
+     */
     public RegisterRequest(String email, String password, String firstName, String lastName, 
                           String phoneNumber, String address, String state, String country) {
         this.email = email;
@@ -25,7 +66,8 @@ public class RegisterRequest {
         this.country = country;
     }
 
-    // Getters and Setters
+    // ========== GETTERS AND SETTERS ==========
+    // Standard getter/setter methods for all fields
     public String getEmail() {
         return email;
     }
