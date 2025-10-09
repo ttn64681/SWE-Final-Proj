@@ -1,6 +1,9 @@
 package com.acm.cinema_ebkg_system.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
@@ -20,6 +23,9 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "users")
+@Data                    // Lombok: auto-generates getters, setters, toString, equals, hashCode
+@NoArgsConstructor      // Lombok: generates default constructor (required by JPA)
+@AllArgsConstructor     // Lombok: generates constructor with all fields
 public class User {
     // Primary key - auto-generated unique identifier
     @Id
@@ -62,22 +68,7 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // ========== CONSTRUCTORS ==========
-    
-    /**
-     * Default constructor required by JPA
-     */
-    public User() {}
-
-    /**
-     * Constructor for creating a new user with basic required information
-     * Automatically sets creation and update timestamps
-     * 
-     * @param email User's email address (used for login)
-     * @param password User's password (will be hashed before saving)
-     * @param firstName User's first name
-     * @param lastName User's last name
-     */
+    // Custom constructor for registration (kept for business logic)
     public User(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
@@ -87,102 +78,6 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // ========== GETTERS AND SETTERS ==========
-    // Standard getter/setter methods for all fields
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    // ========== JPA LIFECYCLE CALLBACKS ==========
-    
-    /**
-     * JPA callback method - automatically called before saving a new entity
-     * Sets the creation and update timestamps
-     */
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

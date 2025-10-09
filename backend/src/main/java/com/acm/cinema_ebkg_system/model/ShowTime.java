@@ -13,13 +13,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;                
 
 // Lombok = auto-generate boilerplate (getters/setters/constructors)
-import lombok.Getter;                      
-import lombok.NoArgsConstructor;           
-import lombok.Setter;                     
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data                    // Lombok: auto-generates getters, setters, toString, equals, hashCode (replaces @Getter @Setter)
+@NoArgsConstructor      // Lombok: generates default constructor (required by JPA)
 @Entity
 @Table(name = "show_times")
 public class ShowTime {
