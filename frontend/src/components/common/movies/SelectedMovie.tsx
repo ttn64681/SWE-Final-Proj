@@ -120,7 +120,7 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
       
       {/* Main Popup Container - Fixed rounded borders */}
       <div className="relative w-[90vw] max-w-6xl h-[85vh] backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden flex">
-        
+
         {/* Close Button */}
         <button 
           title='Close' 
@@ -128,8 +128,8 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
           onClick={onClose} 
           className="absolute top-4 right-4 text-white hover:text-acm-pink duration-200 z-50 text-3xl hover:cursor-pointer"
         >
-          <IoClose />
-        </button>
+              <IoClose />
+            </button>
 
         {/* Left Side - Movie Poster + Details */}
         <div className="w-1/2 h-full relative overflow-hidden rounded-l-3xl">
@@ -156,19 +156,19 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
                 <span>{movie.rating ? `Rated ${movie.rating}` : "No Rating"}</span>
                 <span>{movie.release_date || "No Date"}</span>
               </div>
-            </div>
+              </div>
 
             {/* Genre Bubbles - Compact */}
             <div className="flex flex-wrap gap-2 mb-4">
-              {movie.genres.split(', ').map((genre, index) => (
+                {movie.genres.split(', ').map((genre, index) => (
                 <span
-                  key={index}
+                    key={index}
                   className="text-xs bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white"
-                >
-                  {genre}
+                  >
+                    {genre}
                 </span>
-              ))}
-            </div>
+                ))}
+              </div>
 
             {/* Description - Limited height, no scroll */}
             <div className="text-sm text-white/90 leading-relaxed">
@@ -198,10 +198,10 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
             >
               <span className="ml-3 mr-1">{currentDate}</span>
               <IoChevronDown className="ml-auto mr-3 hover:text-acm-pink" />
-              
-              {openDateDropdown && (
+                
+                {openDateDropdown && (
                 <div className="absolute top-12 left-0 w-40 max-h-56 overflow-auto overscroll-contain rounded-md shadow-lg bg-black z-50">
-                  <ul className="py-1">
+                    <ul className="py-1">
                     {datesLoading && (
                       <li className="px-4 py-2 text-white/70">Loading dates...</li>
                     )}
@@ -210,23 +210,23 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
                     )}
                     {!datesLoading && !datesError && availableDates.map((date) => (
                       <li key={date}>
-                        <button 
+                          <button 
                           onClick={(e) => {
                             e.stopPropagation();
                             setCurrentDate(date);
-                            setOpenDateDropdown(false);
+                              setOpenDateDropdown(false);
                             setSelectedShowtime(null);
-                          }}
+                            }}
                           className="w-full px-4 py-2 text-left hover:bg-gray-400 hover:text-black"
-                        >
+                          >
                             {date}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                          </button>
+                        </li>
+                  ))}
+                    </ul>
                 </div>
-              )}
-            </div>
+                )}
+           </div>
           
             {/* Showtimes */}
             <div className="flex gap-3 flex-wrap">
@@ -237,11 +237,11 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
                 <span className="text-red-400">{timesError}</span>
               )}
               {!timesLoading && !timesError && availableTimes.map((time) => (
-                <button
+                  <button
                   title="Select Showtime"
                   type="button"
                   key={time} 
-                  onClick={() => setSelectedShowtime(time)} 
+                    onClick={() => setSelectedShowtime(time)} 
                   className={[
                     "px-4 py-2 rounded-full text-sm font-medium transition-all",
                     selectedShowtime === time
@@ -250,8 +250,8 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
                   ].join(" ")}
                 >
                   {time}
-                </button>
-              ))}
+                  </button>
+            ))}
             </div>
           </div>
             
@@ -274,12 +274,12 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
               <span className="font-semibold">Directors: </span>
               <span>{director}</span>
             </div>
-          </div>
+            </div>
 
-          {/* Book Tickets button */}
+            {/* Book Tickets button */}
           <div className="mt-auto flex justify-end">
-            {selectedShowtime ? (
-              <Link href={`/booking?title=${encodeURIComponent(movie.title ?? "")}&time=${encodeURIComponent(selectedShowtime ?? "")}&date=${encodeURIComponent(currentDate ?? "")}`}>
+              {selectedShowtime ? (
+                <Link href={`/booking?title=${encodeURIComponent(movie.title ?? "")}&time=${encodeURIComponent(selectedShowtime ?? "")}&date=${encodeURIComponent(currentDate ?? "")}`}>
                 <button 
                   title="Book Tickets" 
                   type="button"
@@ -287,8 +287,8 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
                 >
                   <span>TICKETS</span>
                   <RxDoubleArrowRight className="text-xl" />
-                </button>
-              </Link>
+                    </button>
+                </Link>
             ) : (
               <button 
                 title="Book Tickets (Select a showtime)" 
@@ -297,11 +297,11 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
               >
                 <span>TICKETS</span>
                 <RxDoubleArrowRight className="text-xl" />
-              </button>
-            )}
+                </button>
+            )} 
           </div>
         </div>
       </div>
-    </div>
+  </div>
   );
 }
