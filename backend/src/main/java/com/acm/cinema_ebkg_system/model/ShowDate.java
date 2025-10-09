@@ -13,13 +13,11 @@ import java.time.LocalDate; // (YYYY-MM-DD)
 import java.time.LocalDateTime; // date + time (timestamp)
 
 // Lombok = auto-generate boilerplate (getters/setters/constructors)
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data                    // Lombok: auto-generates getters, setters, toString, equals, hashCode (replaces @Getter @Setter)
+@NoArgsConstructor      // Lombok: generates default constructor (required by JPA)
 @Entity
 @Table(name = "show_dates")
 public class ShowDate {
