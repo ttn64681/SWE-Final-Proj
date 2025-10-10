@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
 
 /**
  * User Service - Business logic layer for user operations
@@ -144,5 +145,28 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    // ========== USER DATA UPDATE ==========
+
+    public User updatePersonalInfo(Long id, String firstName) {
+        User user = getUserById(id);
+        
+        user.setFirstName(firstName);
+
+    /*  user.setAddress(address);
+        user.setPhoneNumber(phoneNumber); */
+
+        return userRepository.save(user);
+    }
+
+    // ========== ADMIN ONLY OPERATIONS ==========
+
+    /**
+     * Retrieve all users in the system (for admin use)
+     * * @return List<User> List of all users
+     */
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
