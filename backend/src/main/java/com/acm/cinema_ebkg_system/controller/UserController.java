@@ -45,8 +45,7 @@ public class UserController {
 
     // Update a user's personal information
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable Long userId, @RequestBody String firstName) {
-        System.out.println(userId + firstName);
-        return userService.updatePersonalInfo(userId, firstName);
+    public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
+        return userService.updatePersonalInfo(userId, user);
     }
 }
