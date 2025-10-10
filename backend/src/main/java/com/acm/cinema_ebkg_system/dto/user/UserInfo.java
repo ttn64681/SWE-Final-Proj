@@ -1,4 +1,4 @@
-package com.acm.cinema_ebkg_system.dto;
+package com.acm.cinema_ebkg_system.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data                    // Lombok: auto-generates getters, setters, toString, equals, hashCode
 @NoArgsConstructor      // Lombok: generates default constructor
 @AllArgsConstructor     // Lombok: generates constructor with all fields
-public class RegisterRequest {
+public class UserInfo {
     private String email;
     private String password;
     private String firstName;
