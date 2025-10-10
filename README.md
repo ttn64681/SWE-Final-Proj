@@ -89,58 +89,28 @@ export DATABASE_URL="your-neon-connection-string"
 
 **Automatic daily backups:**
 ```bash
-./scripts/setup_daily_backup.sh
+source set_env.sh
+# then
+cd backend/ && ./mvnw spring-boot:run # Mac/Linux
+(mvn spring-boot:run ) # Windows
 ```
 
-## Development
+Open [http://localhost:8080](http://localhost:8080) with your browser to see the result (optional).
 
-### Project Structure
 
-```
-├── frontend/          # Next.js application
-├── backend/           # Spring Boot application
-├── scripts/           # Database backup scripts
-└── README.md         # This file
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### Environment Variables
+## Learn More
 
-Set these in your environment or `.env` file:
+To learn more about Next.js, take a look at the following resources:
 
-- `DATABASE_URL`: Neon PostgreSQL connection string
-- `NEXT_PUBLIC_API_URL`: Backend API URL (default: http://localhost:8080)
-- `JWT_SECRET`: Secret key for JWT tokens
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### API Endpoints
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-- `GET /api/movies/now-playing` - Current movies
-- `GET /api/movies/upcoming` - Upcoming movies
-- `GET /api/movies/search-now-playing` - Search current movies
-- `GET /api/movies/{id}` - Movie details
+## Deploy on Vercel
 
-## Deployment
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### Frontend (Vercel)
-
-1. Connect your GitHub repository to Vercel
-2. Set environment variable: `NEXT_PUBLIC_API_URL=https://your-backend-url.com`
-3. Deploy
-
-### Backend
-
-Deploy to your preferred platform (Railway, Render, AWS, etc.) with:
-- Java 17 runtime
-- PostgreSQL database
-- Environment variables configured
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
