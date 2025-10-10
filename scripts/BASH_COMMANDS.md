@@ -216,11 +216,10 @@ brew link --force libpq
 
 # Check if pg_dump is installed
 which pg_dump
-# which : shows full path to command (or nothing if not found)
+# which : shows full path to command
 
 # Check PostgreSQL version
 pg_dump --version
 pg_restore --version
 psql --version
-# --version : shows version information for each tool
 ```
