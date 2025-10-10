@@ -2,6 +2,7 @@ package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.service.UserService;
+import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
