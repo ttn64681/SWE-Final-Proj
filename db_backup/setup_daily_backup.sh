@@ -4,7 +4,9 @@ set -euo pipefail
 
 # Daily Backup Setup Script
 # Sets up automatic daily backups at 2:00 AM using cron job
-# Requires: DATABASE_URL environment variable and PostgreSQL client tools
+# Requires: PG_DATABASE_URL environment variable and PostgreSQL client tools
+
+# Usage: ./db_backup/setup_daily_backup.sh
 
 echo "Setting up daily database backups..."
 
@@ -14,9 +16,9 @@ if [[ ! -f "db_backup/backup_postgres.sh" ]]; then
   exit 1
 fi
 
-# Check if DATABASE_URL is set
-if [[ -z "${DATABASE_URL:-}" ]]; then
-  echo "ERROR: DATABASE_URL environment variable is not set"
+# Check if PG_DATABASE_URL is set (in set_env.sh)
+if [[ -z "${PG_DATABASE_URL:-}" ]]; then
+  echo "ERROR: PG_DATABASE_URL environment variable is not set"
   exit 1
 fi
 
@@ -41,7 +43,7 @@ chmod +x "$PROJECT_DIR/db_backup/cleanup_backups.sh"
 
 # Create cron job entry (runs daily at 2:00 AM)
 # Includes backup + cleanup to keep storage clean
-BACKUP_CMD="DATABASE_URL='$DATABASE_URL' '$BACKUP_SCRIPT'"
+BACKUP_CMD="PG_DATABASE_URL='$PG_DATABASE_URL' '$BACKUP_SCRIPT'"
 CLEANUP_CMD="'$PROJECT_DIR/db_backup/cleanup_backups.sh'"
 CRON_JOB="0 2 * * * cd '$PROJECT_DIR' && $BACKUP_CMD && $CLEANUP_CMD >> '$LOG_DIR/backup.log' 2>&1"
 
