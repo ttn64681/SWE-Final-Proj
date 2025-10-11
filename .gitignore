@@ -75,3 +75,9 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Database backups and logs
+db_backup/backups/
+db_backup/logs/
+backups/
+logs/

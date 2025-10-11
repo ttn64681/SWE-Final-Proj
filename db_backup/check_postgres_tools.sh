@@ -65,7 +65,8 @@ else
   echo "All PostgreSQL client tools are installed and ready!"
   echo ""
   echo "You can now use the backup scripts:"
-  echo "  ./scripts/backup_postgres.sh"
-  echo "  ./scripts/restore_postgres.sh"
-  echo "  ./scripts/setup_daily_backup.sh"
+  echo "  ./db_backup/backup_postgres.sh"
+  echo "  ./db_backup/restore_postgres.sh"
+  echo "  ./db_backup/setup_daily_backup.sh"
+  echo "  ./db_backup/cleanup_backups.sh"
 fi
