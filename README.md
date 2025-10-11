@@ -78,21 +78,28 @@ CREATE TABLE users (
 
 **Manual backup:**
 ```bash
-export DATABASE_URL="your-neon-connection-string"
-./scripts/backup_postgres.sh
+source set_env.sh  # Sets both DATABASE_URL and PG_DATABASE_URL
+./db_backup/backup_postgres.sh
 ```
 
 **Restore from backup:**
 ```bash
-./scripts/restore_postgres.sh backups/backup_2024-10-07_143022.dump "your-restore-url"
+# Restore to same database (uses PG_DATABASE_URL automatically)
+./db_backup/restore_postgres.sh db_backup/backups/backup_2024-10-07_143022.dump
+
+# Restore to different database
+./db_backup/restore_postgres.sh db_backup/backups/backup_2024-10-07_143022.dump "postgresql://user:pass@host:5432/different_db"
 ```
 
 **Automatic daily backups:**
 ```bash
 source set_env.sh
-# then
-cd backend/ && ./mvnw spring-boot:run # Mac/Linux
-(mvn spring-boot:run ) # Windows
+./db_backup/setup_daily_backup.sh
+```
+
+**Manual cleanup:**
+```bash
+./db_backup/cleanup_backups.sh [backup_folder] [days_to_keep]
 ```
 
 Open [http://localhost:8080](http://localhost:8080) with your browser to see the result (optional).
