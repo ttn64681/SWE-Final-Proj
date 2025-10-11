@@ -2,11 +2,14 @@ package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
+import com.acm.cinema_ebkg_system.dto.user.UserInfo;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Encrypt function
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.List;
 
 /**
  * User Service - Business logic layer for user operations
@@ -144,5 +147,39 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    // ========== USER DATA UPDATE ==========
+
+    public User updatePersonalInfo(Long id, UserInfo dtoUser) {
+        User user = getUserById(id);
+        String firstName = dtoUser.getFirstName();
+        String lastName = dtoUser.getLastName();
+        String address = dtoUser.getAddress();
+        String country = dtoUser.getCountry();
+        String state = dtoUser.getState();
+        String phoneNumber = dtoUser.getPhoneNumber();
+
+        if (firstName != null) { user.setFirstName(dtoUser.getFirstName()); }
+        if (lastName != null) { user.setLastName(dtoUser.getLastName()); }
+        if (address != null) { user.setAddress(dtoUser.getAddress()); }
+        if (country != null) { user.setCountry(dtoUser.getCountry()); }
+        if (state != null) { user.setState(dtoUser.getState()); }
+        if (phoneNumber != null) { user.setPhoneNumber(dtoUser.getPhoneNumber()); }
+
+    /*  user.setAddress(address);
+        user.setPhoneNumber(phoneNumber); */
+
+        return userRepository.save(user);
+    }
+
+    // ========== ADMIN ONLY OPERATIONS ==========
+
+    /**
+     * Retrieve all users in the system (for admin use)
+     * * @return List<User> List of all users
+     */
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
