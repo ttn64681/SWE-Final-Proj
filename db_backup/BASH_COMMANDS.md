@@ -1,4 +1,4 @@
-# Bash Commands Reference - Script Development
+# Bash Commands Reference - For Dev/Learning Purposes
 
 ## Table of Contents
 - [Script Development Commands](#script-development-commands)
@@ -13,6 +13,15 @@
   - [File and Directory Checks](#file-and-directory-checks)
   - [Variable Operations](#variable-operations)
   - [Error Handling](#error-handling)
+  - [Command Checking and Validation](#command-checking-and-validation)
+  - [Text Processing Commands](#text-processing-commands)
+  - [File Operations with Flags](#file-operations-with-flags)
+  - [Numeric Comparisons](#numeric-comparisons)
+  - [Logical Operators](#logical-operators)
+  - [Advanced Variable Operations](#advanced-variable-operations)
+  - [Input/Output Redirection](#inputoutput-redirection)
+  - [Input Reading](#input-reading)
+  - [Cron Job Management](#cron-job-management)
 - [PostgreSQL Installation Commands](#postgresql-installation-commands)
 
 ## Script Development Commands
@@ -20,11 +29,11 @@
 ### File Creation and Permissions
 ```bash
 # Create script files
-touch scripts/backup_postgres.sh scripts/restore_postgres.sh scripts/setup_daily_backup.sh scripts/check_postgres_tools.sh
+touch db_backup/backup_postgres.sh db_backup/restore_postgres.sh db_backup/setup_daily_backup.sh db_backup/check_postgres_tools.sh db_backup/cleanup_backups.sh
 # touch: creates empty files if they don't exist, updates timestamp if they do
 
 # Make scripts executable
-chmod +x scripts/*.sh
+chmod +x db_backup/*.sh
 # chmod: changes file permissions
 # +x: adds execute permission (allows running the script)
 # *.sh: wildcard matching all files ending in .sh
@@ -33,11 +42,11 @@ chmod +x scripts/*.sh
 ### Script Testing and Debugging
 ```bash
 # Test script syntax without running it
-bash -n scripts/backup_postgres.sh
+bash -n db_backup/backup_postgres.sh
 # -n: "no execute" flag - checks syntax without running the script
 
 # Run script with debug output
-bash -x scripts/backup_postgres.sh
+bash -x db_backup/backup_postgres.sh
 # -x: "debug" flag - shows each command as it's executed (helpful for troubleshooting)
 ```
 
@@ -91,7 +100,7 @@ tail -f logs/backup.log
 # -f: "follow" - continues watching file for new content (like live streaming)
 
 # Check script permissions
-ls -la scripts/*.sh
+ls -la db_backup/*.sh
 # ls: lists files and directories
 # -l: "long format" - shows detailed info (permissions, size, date)
 # -a: "all" - shows hidden files too
@@ -101,12 +110,12 @@ ls -la scripts/*.sh
 ### Script Testing and Cleanup
 ```bash
 # Test script error handling
-./scripts/backup_postgres.sh nonexistent_folder
+./db_backup/backup_postgres.sh nonexistent_folder
 # ./: runs script from current directory
 # nonexistent_folder: tests what happens when script gets invalid input
 
 # Verify script works with custom folder
-./scripts/backup_postgres.sh test_backups
+./db_backup/backup_postgres.sh test_backups
 # test_backups: custom backup folder name to test script flexibility
 
 # Clean up test files
@@ -198,12 +207,192 @@ if command_that_might_fail; then
 else
     echo "Command failed"
 fi
-# $? : exit code of last command (0 = success, non-zero = failure)
+# $? : exit code of last command ($? -> 0 = success, non-zero = failure)
+# $? : 1 - General error, 126 - Command found but not executable
+# $? : 127 - Command not found, 128 - Invalid exit argument
+```
+
+### Command Checking and Validation
+```bash
+# Check if command exists
+if command -v pg_dump &> /dev/null; then
+    echo "pg_dump is installed"
+fi
+# command -v : checks if a command exists in PATH
+# &> /dev/null : redirects both stdout and stderr to /dev/null (silences output)
+
+# Check if command exists (alternative)
+which pg_dump
+# which : shows full path to command or nothing if not found
+
+# Check if file is executable
+if [[ -x "script.sh" ]]; then
+    echo "Script is executable"
+fi
+# -x : checks if file has execute permission
+```
+
+### Text Processing Commands
+```bash
+# Extract specific column from output
+ps aux | awk '{print $2}'
+# awk : text processing tool for extracting/manipulating columns
+# {print $2} : prints the second column (space-separated)
+
+# Search for lines that DON'T match pattern
+grep -v "pattern" file.txt
+# grep -v : "invert match" - shows lines that DON'T contain the pattern
+
+# Search quietly (no output, just exit code)
+grep -q "pattern" file.txt
+# grep -q : "quiet" mode - only returns exit code (0=found, 1=not found)
+
+# Count lines in file
+wc -l file.txt
+# wc -l : word count with line count
+```
+
+### File Operations with Flags
+```bash
+# List files with human-readable sizes and details
+ls -lh
+# ls -l : long format (permissions, size, date)
+# ls -h : human-readable sizes (KB, MB, GB instead of bytes)
+
+# List files with sizes
+ls -l
+# Shows file sizes in bytes
+
+# List all files including hidden
+ls -la
+# -a : shows all files including hidden ones (starting with .)
+```
+
+### Numeric Comparisons
+```bash
+# Check if numbers are equal
+if [[ $count -eq 5 ]]; then
+    echo "Count equals 5"
+fi
+# -eq : equals (for numbers)
+# -ne : not equals
+# -lt : less than
+# -le : less than or equal
+# -gt : greater than
+# -ge : greater than or equal
+
+# String vs numeric comparison
+if [[ $count == 5 ]]; then
+    echo "String comparison"
+fi
+# == : string comparison
+# -eq : numeric comparison
+```
+
+### Logical Operators
+```bash
+# Logical NOT
+if [[ ! -f "file.txt" ]]; then
+    echo "File does not exist"
+fi
+# ! : logical NOT operator
+
+# Logical AND
+if [[ -f "file.txt" && -r "file.txt" ]]; then
+    echo "File exists AND is readable"
+fi
+# && : logical AND
+
+# Logical OR
+if [[ -f "file.txt" || -f "backup.txt" ]]; then
+    echo "At least one file exists"
+fi
+# || : logical OR
+```
+
+### Advanced Variable Operations
+```bash
+# Parameter expansion with default value
+BACKUP_DIR=${1:-"backups"}
+# ${1:-"backups"} : uses $1 if set, otherwise defaults to "backups"
+
+# Parameter expansion with substring
+TIMESTAMP=${BACKUP_FILE:0:10}
+# ${var:start:length} : extracts substring from position 0, length 10 
+
+# Remove file extension
+BASENAME=${FILE%.dump}
+# ${var%pattern} : removes shortest match of pattern from end
+
+# Remove directory path
+FILENAME=${FILE##*/}
+# ${var##pattern} : removes longest match of pattern from beginning
+```
+
+### Input/Output Redirection
+```bash
+# Redirect stderr to /dev/null (hide errors)
+command 2>/dev/null
+# 2> : redirects stderr (file descriptor 2)
+# /dev/null : discards output (black hole)
+
+# Redirect stdout and stderr to /dev/null
+command &>/dev/null
+# &> : redirects both stdout and stderr
+
+# Redirect stderr to stdout
+command 2>&1
+# 2>&1 : redirects stderr (2) to stdout (1)
+
+# Redirect stdout to file
+command > output.txt
+# > : redirects stdout to file (overwrites)
+
+# Append stdout to file
+command >> output.txt
+# >> : redirects stdout to file (appends)
+```
+
+### Input Reading
+```bash
+# Read line from input
+read -r line
+# read : reads input from user or file
+# -r : treats backslashes literally (doesn't interpret escape sequences)
+
+# Read with prompt
+read -p "Enter name: " name
+# -p : displays prompt before reading
+
+# Read password (hidden)
+read -s password
+# -s : silent mode (doesn't echo input, for passwords)
+```
+
+### Cron Job Management
+```bash
+# List current cron jobs
+crontab -l
+# crontab : manages scheduled tasks
+# -l : list current cron jobs
+
+# Edit cron jobs
+crontab -e
+# -e : edit cron jobs in default editor
+
+# Remove all cron jobs
+crontab -r
+# -r : remove all cron jobs
+
+# Cron syntax: minute hour day month dayofweek command
+# 0 2 * * * : runs at 2:00 AM every day
+# */15 * * * * : runs every 15 minutes
+# 0 */6 * * * : runs every 6 hours
 ```
 
 ## PostgreSQL Installation Commands
 ```bash
-# Mac - Install PostgreSQL client tools
+# Mac - Install PostgreSQL client tools 
 brew install postgresql@17
 # brew : package manager for macOS
 # postgresql@17 : installs PostgreSQL version 17
