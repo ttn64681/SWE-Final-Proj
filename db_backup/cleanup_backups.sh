@@ -25,11 +25,8 @@ FILES_BEFORE=$(find "$BACKUP_DIR" -name "*.dump" -type f | wc -l)
 echo "Found $FILES_BEFORE backup files"
 
 # Remove old backup files
-# find: searches for files
-# -name "*.dump": only .dump files
-# -type f: only files (not directories)
-# -mtime +$DAYS_TO_KEEP: files older than specified days
-# -delete: removes the files
+# IFS is Internal Field Separator (used to separate the input into words)
+# While loop reads each file in the backup directory
 DELETED_COUNT=0
 while IFS= read -r -d '' file; do
     echo "Deleting: $(basename "$file")"
