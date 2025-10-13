@@ -49,19 +49,11 @@ export default function RegisterStep3Page() {
       const response = await authAPI.register(registrationData);
 
       if (response.success) {
-        // Store token and user data
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
-        }
-        if (response.user) {
-          localStorage.setItem('user', JSON.stringify(response.user));
-        }
-
         // Clear registration data
         clearData();
 
-        // Redirect to home page
-        router.push('/');
+        // Redirect to email verification page with registration flag
+        router.push('/auth/verify-email?from=registration');
       } else {
         setSubmitError(response.message);
       }

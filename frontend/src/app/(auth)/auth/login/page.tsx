@@ -71,6 +71,16 @@ export default function LoginPage() {
             {error && (
               <div className="mb-4 p-3 bg-red-900/40 border border-red-500/60 rounded-md">
                 <p className="text-red-200 text-sm">{error}</p>
+                {error.includes('verify your email') && (
+                  <div className="mt-2">
+                    <Link 
+                      href="/auth/resend-verification" 
+                      className="text-blue-300 hover:text-blue-200 text-sm underline"
+                    >
+                      Resend verification email
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
 
