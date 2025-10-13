@@ -4,6 +4,7 @@ import com.acm.cinema_ebkg_system.dto.AuthResponse;
 import com.acm.cinema_ebkg_system.dto.LoginRequest;
 import com.acm.cinema_ebkg_system.dto.RegisterRequest;
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.repository.UserRepository;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class AuthController {
     private UserService userService;  // Service layer for user business logic
 
     @Autowired
+    private UserRepository userRepository;  // Repository for direct database access
+
+    @Autowired
     private JwtUtil jwtUtil;  // Utility for JWT token operations
 
     // ========== API ENDPOINTS ==========
@@ -74,25 +78,12 @@ public class AuthController {
 
             // Step 2: Register user (validates email uniqueness, hashes password, saves to DB)
             User savedUser = userService.registerUser(user);
+            
+            // Step 3: Generate verification token and send email
+            userService.generateVerificationToken(savedUser);
 
-            // Step 3: Generate JWT tokens for immediate authentication
-            String token = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getId());
-            String refreshToken = jwtUtil.generateRefreshToken(savedUser.getEmail(), savedUser.getId());
-
-            // Step 4: Create user DTO (excludes sensitive data like password)
-            AuthResponse.UserDto userDto = new AuthResponse.UserDto(
-                savedUser.getId(),
-                savedUser.getEmail(),
-                savedUser.getFirstName(),
-                savedUser.getLastName(),
-                savedUser.getPhoneNumber(),
-                savedUser.getAddress(),
-                savedUser.getState(),
-                savedUser.getCountry()
-            );
-
-            // Step 5: Return success response with tokens and user data
-            AuthResponse response = new AuthResponse(true, "User registered successfully", token, refreshToken, userDto);
+            // Step 4: Return success response (no tokens until email is verified)
+            AuthResponse response = new AuthResponse(true, "Registration successful! Please check your email to verify your account.");
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -118,12 +109,18 @@ public class AuthController {
         try {
             // Step 1: Authenticate user credentials (validates email exists and password matches)
             User user = userService.authenticateUser(request.getEmail(), request.getPassword());
+            
+            // Step 2: Check if user is active (email verified)
+            if (!user.isActive()) {
+                AuthResponse response = new AuthResponse(false, "Please verify your email before logging in. Check your inbox for the verification link.");
+                return ResponseEntity.status(403).body(response);
+            }
 
-            // Step 2: Generate new JWT tokens for authenticated session
+            // Step 3: Generate new JWT tokens for authenticated session
             String token = jwtUtil.generateToken(user.getEmail(), user.getId());
             String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
 
-            // Step 3: Create user DTO (excludes sensitive data like password)
+            // Step 4: Create user DTO (excludes sensitive data like password)
             AuthResponse.UserDto userDto = new AuthResponse.UserDto(
                 user.getId(),
                 user.getEmail(),
@@ -135,7 +132,7 @@ public class AuthController {
                 user.getCountry()
             );
 
-            // Step 4: Return success response with tokens and user data
+            // Step 5: Return success response with tokens and user data
             AuthResponse response = new AuthResponse(true, "Login successful", token, refreshToken, userDto);
             return ResponseEntity.ok(response);
 
@@ -175,6 +172,62 @@ public class AuthController {
         } catch (Exception e) {
             // Handle invalid or expired refresh token
             AuthResponse response = new AuthResponse(false, "Invalid refresh token");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
+     * Verify email using verification token
+     * 
+     * @param token Verification token from email
+     * @return ResponseEntity<AuthResponse> with success status and tokens
+     */
+    @PostMapping("/verify-email")
+    public ResponseEntity<AuthResponse> verifyEmail(@RequestParam String token) {
+        try {
+            // Step 1: Verify the email token and activate user
+            User user = userService.verifyEmail(token);
+            
+            // Step 2: Generate JWT tokens for verified user
+            String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getId());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
+            
+            // Step 3: Create user DTO
+            AuthResponse.UserDto userDto = new AuthResponse.UserDto(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber(),
+                user.getAddress(),
+                user.getState(),
+                user.getCountry()
+            );
+            
+            // Step 4: Return success response with tokens
+            AuthResponse response = new AuthResponse(true, "Email verified successfully! You can now use all features.", jwtToken, refreshToken, userDto);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            AuthResponse response = new AuthResponse(false, e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
+     * Resend verification email
+     * 
+     * @param email User's email address
+     * @return ResponseEntity<AuthResponse> with success status
+     */
+    @PostMapping("/resend-verification")
+    public ResponseEntity<AuthResponse> resendVerification(@RequestParam String email) {
+        try {
+            userService.resendVerificationEmail(email);
+            AuthResponse response = new AuthResponse(true, "Verification email has been resent. Please check your inbox.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            AuthResponse response = new AuthResponse(false, e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
