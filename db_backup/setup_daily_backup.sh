@@ -43,9 +43,15 @@ chmod +x "$PROJECT_DIR/db_backup/cleanup_backups.sh"
 
 # Create cron job entry (runs daily at 2:00 AM)
 # Includes backup + cleanup to keep storage clean
+# Set PATH to include PostgreSQL tools and source environment
 BACKUP_CMD="PG_DATABASE_URL='$PG_DATABASE_URL' '$BACKUP_SCRIPT'"
 CLEANUP_CMD="'$PROJECT_DIR/db_backup/cleanup_backups.sh'"
-CRON_JOB="0 2 * * * cd '$PROJECT_DIR' && $BACKUP_CMD && $CLEANUP_CMD >> '$LOG_DIR/backup.log' 2>&1"
+# Cron syntax: "0 2 * * *" = daily at 2:00 AM
+# "cd '$PROJECT_DIR'" = set working directory
+# "export PATH=..." = add PostgreSQL tools to PATH (crucial fix!)
+# "&&" = run commands sequentially (only if previous succeeds)
+# ">> '$LOG_DIR/backup.log' 2>&1" = redirect output and errors to log file
+CRON_JOB="0 2 * * * cd '$PROJECT_DIR' && export PATH='/usr/local/bin:/usr/bin:/bin' && $BACKUP_CMD && $CLEANUP_CMD >> '$LOG_DIR/backup.log' 2>&1"
 
 echo ""
 echo "Cron job to be added:"
@@ -81,7 +87,7 @@ echo "Daily backup cron job added successfully!"
 echo ""
 echo "What happens now:"
 echo "   • Every day at 2:00 AM, your database will be backed up"
-echo "   • Backups are saved to: $PROJECT_DIR/backups/"
+echo "   • Backups are saved to: $PROJECT_DIR/db_backup/backups/"
 echo "   • Logs are saved to: $LOG_DIR/backup.log"
 echo ""
 echo "To check your cron jobs:"

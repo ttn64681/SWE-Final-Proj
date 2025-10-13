@@ -1,13 +1,8 @@
-export default function AdminProfilePage() {
+export default function AdminPage() {
   return (
-    <div>
-      <h2 className="text-xl font-semibold">Admin Dashboard</h2>
-      <ul className="list-disc pl-6 text-sm opacity-90">
-        <li>Manage movies</li>
-        <li>Manage users</li>
-        <li>Manage prices and promotions</li>
-        <li>View statistics</li>
-      </ul>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold text-white mb-4">Admin Dashboard</h1>
+      <p className="text-white/70">Admin dashboard page coming soon...</p>
     </div>
   );
 }

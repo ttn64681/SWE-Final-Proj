@@ -1,6 +1,10 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import UserIcon from './UserIcon';
 import MenuItem from './MenuItem';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface UserMenuProps {
   onMenuToggle?: (isOpen: boolean) => void;
@@ -9,6 +13,8 @@ interface UserMenuProps {
 export default function UserMenu({ onMenuToggle }: UserMenuProps) {
   // State for controlling dropdown visibility
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   // useRef creates a reference to DOM elements that persists across re-renders
   // Unlike state, changing ref.current doesn't trigger a re-render
@@ -49,6 +55,13 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
     onMenuToggle?.(false);
   };
 
+  const handleLogout = async () => {
+    await logout();
+    setShowUserMenu(false);
+    onMenuToggle?.(false);
+    router.push('/');
+  };
+
   return (
     <div className="relative">
       {/* User icon button - ref allows us to detect clicks on this element */}
@@ -60,18 +73,31 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
       {showUserMenu && (
         <div
           ref={userMenuRef}
-          className="absolute right-0 mt-2 w-48 backdrop-blur-md border border-gray-600 rounded-md shadow-lg z-50 origin-top-right transition-opacity duration-200"
-          style={{ backgroundColor: '#BDBDBD' }}
+          className="absolute right-0 mt-2 w-56 bg-black/95 backdrop-blur-md border border-white/20 rounded-lg shadow-xl z-50 origin-top-right transition-all duration-200"
         >
+          {/* User info header */}
+          <div className="px-4 py-3 border-b border-white/10">
+            <p className="text-white font-medium text-sm">
+              {user?.firstName} {user?.lastName}
+            </p>
+            <p className="text-white/60 text-xs">{user?.email}</p>
+          </div>
+          
           <div className="py-1">
             {/* Menu items with hover effects */}
             <MenuItem href="/user/orders" onClick={handleMenuItemClick}>
               Order History
             </MenuItem>
-            <MenuItem href="/user" onClick={handleMenuItemClick}>
-              Account
+            <MenuItem href="/user/profile" onClick={handleMenuItemClick}>
+              My Profile
             </MenuItem>
-            <MenuItem onClick={handleMenuItemClick}>Logout</MenuItem>
+            <MenuItem href="/user" onClick={handleMenuItemClick}>
+              Account Settings
+            </MenuItem>
+            <div className="border-t border-white/10 my-1"></div>
+            <MenuItem onClick={handleLogout}>
+              Sign Out
+            </MenuItem>
           </div>
         </div>
       )}

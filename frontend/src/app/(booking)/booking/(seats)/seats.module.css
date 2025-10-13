@@ -1,0 +1,97 @@
+/* Seats Page Specific Styles */
+
+/* Continue button - used in seats page "Continue with X seats" button */
+.continueButton {
+  background: linear-gradient(135deg, #FF478B 0%, #FF5C33 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px 0 rgba(255, 71, 139, 0.3);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-width: 12rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.continueButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px 0 rgba(255, 71, 139, 0.4);
+  background: linear-gradient(135deg, #FF5C33 0%, #FF478B 100%);
+}
+
+.continueButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 14px 0 rgba(255, 71, 139, 0.3);
+}
+
+.continueButton:disabled {
+  background: #6B7280;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Disabled continue button - used in seats page when no seats selected */
+.continueButtonDisabled {
+  background: transparent;
+  color: white;
+  border: 1px solid #FF478B;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: not-allowed;
+  position: relative;
+  overflow: hidden;
+  min-width: 12rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: #6B7280;
+  color: #9CA3AF;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Reset button - matches continue button styling but with transparent background */
+.resetButton {
+  background: transparent;
+  color: white;
+  border: 1px solid #6B7280;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-width: 12rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resetButton:hover:not(:disabled) {
+  background: rgba(107, 114, 128, 0.1);
+  border-color: #9CA3AF;
+  transform: translateY(-1px);
+}
+
+.resetButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
