@@ -13,10 +13,19 @@ export interface RegistrationData {
   lastName: string;
   phoneNumber: string;
   
-  // Step 3
-  address: string;
-  state: string;
-  country: string;
+  // // Step 3
+  // address: string;
+  // state: string;
+  // country: string;
+  
+  // Step 3 - Payment Method (Optional)
+  cardType?: string;
+  cardNumber?: string;
+  expirationDate?: string;
+  cvv?: string;
+  billingStreet?: string;
+  billingCity?: string;
+  billingState?: string;
 }
 
 interface RegistrationContextType {
@@ -33,9 +42,18 @@ const initialData: RegistrationData = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
-  address: '',
-  state: '',
-  country: '',
+
+  // address: '',
+  // state: '',
+  // country: '',
+
+  cardType: '',
+  cardNumber: '',
+  expirationDate: '',
+  cvv: '',
+  billingStreet: '',
+  billingCity: '',
+  billingState: '',
 };
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
@@ -80,10 +98,13 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
           data.phoneNumber
         );
       case 3:
-        return !!(
-          data.state &&
-          data.country
-        );
+        // return !!(
+        //   data.state &&
+        //   data.country
+        // );
+
+        // Step 3 is now optional - payment method can be empty
+        return true;
       default:
         return false;
     }

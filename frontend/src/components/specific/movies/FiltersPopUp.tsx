@@ -24,7 +24,11 @@ export default function FiltersPopUp({
   const [isLoadingGenres, setIsLoadingGenres] = useState(false);
   const [hasFetchedGenres, setHasFetchedGenres] = useState(false);
 
-  // Cached function to fetch genres from backend - only runs once per component lifecycle
+  // Memoize fetch function to prevent recreation on every render
+  // When would this recreate? Never (empty dependency array)
+  // When would it recreate without this? Every time FiltersPopUp re-renders
+  // (which happens when isClosed state changes, parent re-renders, etc.)
+  // Performance impact: Prevents unnecessary function recreation and potential re-fetching
   const fetchGenres = useCallback(async () => {
     if (hasFetchedGenres) return; // Don't fetch if already fetched
     
@@ -90,15 +94,14 @@ export default function FiltersPopUp({
   return (
       <div className="fixed top-16 left-0 right-0 flex items-center justify-center z-[60] p-4">
             {/* blurry overlay over navbar */}
-            <div 
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-0"
-            />
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-0"/>
             {/* Popup Window with Blur */}
-            <div className="flex flex-col items-center gap-y-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative backdrop-blur-xl rounded-3xl shadow-2xl z-10 border border-white/20 bg-black/80">
+            <div className="flex flex-col items-center gap-y-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative rounded-3xl shadow-2xl z-10 border border-white/20 bg-black/80">
+                {/* Close Button */}
                 <button
                   title="Close"
                   type='button'
-                  className="absolute top-2 right-2 text-white hover:text-acm-pink duration-200 active:text-acm-pink/80 text-6xl hover:cursor-pointer"
+                  className="absolute top-6 right-6 z-[60] bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full p-2 text-white hover:text-acm-pink duration-200 text-2xl hover:cursor-pointer border border-white/20 hover:border-acm-pink/50"
                   onClick={() => setIsClosed(true)}
                 >
                   <IoClose />
@@ -129,6 +132,7 @@ export default function FiltersPopUp({
                         )}                          
                       </div>
                   </div>
+
                   <div className="flex flex-col gap-2 basis-1/2 px-4 py-2">
                       <h1 className="text-3xl font-bold font-afacad">Date</h1>
                       <FiltersDate
@@ -142,6 +146,8 @@ export default function FiltersPopUp({
                 {/* Apply Filters Button */}
                 <div className="flex justify-center pb-6">
                   <button
+                    type='button'
+                    title="Apply Filters"
                     onClick={applyFilters}
                     className="bg-acm-pink hover:bg-acm-pink/80 text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors"
                     >

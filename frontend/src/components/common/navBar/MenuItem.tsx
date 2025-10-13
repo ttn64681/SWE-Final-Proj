@@ -12,17 +12,18 @@ export default function MenuItem({
   href,
   onClick,
   children,
-  className = 'block px-4 py-2 text-black transition-colors',
+  className = 'block px-4 py-3 text-white text-sm transition-all duration-200 hover:bg-white/10 hover:text-acm-pink',
 }: MenuItemProps) {
-  const baseStyle = { color: 'black' };
-  const hoverStyle = '#D9D9D9';
+  const baseStyle = { color: 'white' };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
-    e.currentTarget.style.backgroundColor = hoverStyle;
+    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'; // transparent white color w/ 10% opacity
+    e.currentTarget.style.color = '#FF478B'; // light pink color
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
     e.currentTarget.style.backgroundColor = 'transparent';
+    e.currentTarget.style.color = 'white';
   };
 
   // If href is provided, render as Link, otherwise as button
@@ -35,6 +36,7 @@ export default function MenuItem({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={onClick}
+        title="Menu Item"
       >
         {children}
       </Link>
@@ -43,11 +45,12 @@ export default function MenuItem({
 
   return (
     <button
-      className={`w-full text-left ${className}`}
-      style={baseStyle}
+      type='button'
+      className={`w-full text-left text-white ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
+      title="Menu Item"
     >
       {children}
     </button>

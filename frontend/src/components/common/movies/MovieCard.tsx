@@ -14,8 +14,10 @@ export default function MovieCard({ movie }: MovieCardProps) {
   const [selectedMovie, setSelectedMovie] = useState<BackendMovie | null>(null);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
-  // Genres string to array
-  // Memoize genre splitting to avoid repeated computation
+  // CACHES: Genres array ["Action", "Drama", "Thriller"] - persists across MovieCard re-renders
+  // CHANGES: Never (movie.genres is static) - BUT will recreate if MovieCard component unmounts/remounts or movie prop changes
+  // WITHOUT useMemo: Array recreated on every MovieCard re-render (hover, click, parent changes)
+  // WHY MATTERS: Minimal - string split is fast, mostly unnecessary optimization
   const genresArray = useMemo(() => 
     movie.genres.split(', '), 
     [movie.genres]
@@ -34,16 +36,15 @@ export default function MovieCard({ movie }: MovieCardProps) {
     setIsTrailerOpen(true);
   }
 
+
   return (
     <div className="relative">
       {/* Conditional Movie Details Popup */}
       {selectedMovie && ( 
-        <div className="absolute z-50">
-          <SelectedMovie 
-            movie={selectedMovie} 
-            onClose={handleClose} 
-          />
-        </div>
+        <SelectedMovie 
+          movie={selectedMovie} 
+          onClose={handleClose} 
+        />
       )}
 
       {/* Trailer Embed Popup */}
@@ -67,7 +68,9 @@ export default function MovieCard({ movie }: MovieCardProps) {
             fill 
             className="object-cover" 
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-            priority={false}
+            priority={false} // Lazy load images
+            placeholder="blur" // Show blur while loading
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=" // Base64 blur placeholder
           />
 
           {/* MPAA Rating Badge - Above overlay */}

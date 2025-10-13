@@ -10,8 +10,11 @@
 #----- IMPORTANT -----
 
 # Neon PostgreSQL Database Configuration
+# DB_URL is jdbc url for java backend to use
 DB_URL='url'
-# Note: keep DB_URL in single quotes
+# PG_DATABASE_URL is postgresql url for command-line tools like pg_dump and pg_restore
+PG_URL='url'
+# Note: keep DB_URL and PG_URL in single quotes
 DB_USERNAME=
 DB_PASSWORD=
 
@@ -31,6 +34,7 @@ OS=$(uname -s)
 if [[ "$OS" == "Linux" ]] || [[ "$OS" == "Darwin" ]]; then
     echo "Detected macOS/Linux. Using 'export'..."
     export DATABASE_URL="$DB_URL"
+    export PG_DATABASE_URL="$PG_URL"
     export DATABASE_USERNAME="$DB_USERNAME"
     export DATABASE_PASSWORD="$DB_PASSWORD"
     export JWT_SECRET="$JWT_SECRET"
@@ -38,6 +42,7 @@ if [[ "$OS" == "Linux" ]] || [[ "$OS" == "Darwin" ]]; then
     export JWT_REFRESH_TOKEN_EXPIRATION="$JWT_REFRESH_TOKEN_EXPIRATION"
     
     echo "DATABASE_URL is: $DB_URL"
+    echo "PG_DATABASE_URL is: $PG_URL"
     echo "DATABASE_USERNAME is: $DB_USERNAME"
     echo "DATABASE_PASSWORD is: $DB_PASSWORD"
     echo "JWT_SECRET is: $JWT_SECRET"
@@ -47,6 +52,7 @@ if [[ "$OS" == "Linux" ]] || [[ "$OS" == "Darwin" ]]; then
 elif [[ "$OS" == *'NT'* ]]; then
     echo "Detected Windows (Git Bash). Using 'set'..."
     export DATABASE_URL="$DB_URL"
+    export PG_DATABASE_URL="$PG_URL"
     export DATABASE_USERNAME="$DB_USERNAME"
     export DATABASE_PASSWORD="$DB_PASSWORD"
     export JWT_SECRET="$JWT_SECRET"
@@ -54,6 +60,7 @@ elif [[ "$OS" == *'NT'* ]]; then
     export JWT_REFRESH_TOKEN_EXPIRATION="$JWT_REFRESH_TOKEN_EXPIRATION"
     
     echo "DATABASE_URL is: $DATABASE_URL"
+    echo "PG_DATABASE_URL is: $PG_DATABASE_URL"
     echo "DATABASE_USERNAME is: $DATABASE_USERNAME"
     echo "DATABASE_PASSWORD is: $DATABASE_PASSWORD"
     echo "JWT_SECRET is: $JWT_SECRET"
@@ -62,6 +69,6 @@ elif [[ "$OS" == *'NT'* ]]; then
 
 else
     echo "IDK what wonky system this is... please set variables manually."
-    echo "For Windows Command Prompt, use: set DATABASE_URL=..."
+    echo "For Windows Command Prompt, use: set DATABASE_URL=... and set PG_DATABASE_URL=..."
     echo "For Mac/Linux, use: export DATABASE_URL=..."
 fi
