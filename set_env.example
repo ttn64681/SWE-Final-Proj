@@ -25,6 +25,12 @@ JWT_ACCESS_TOKEN_EXPIRATION=1800000
 # JWT Refresh Expiration: 14 days
 JWT_REFRESH_TOKEN_EXPIRATION=1209600000
 
+# Email Configuration (Gmail SMTP)
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=
+MAIL_PASSWORD=
+
 # Frontend API Configuration
 NEXT_PUBLIC_API_URL=http://localhost:8080
 
@@ -40,6 +46,10 @@ if [[ "$OS" == "Linux" ]] || [[ "$OS" == "Darwin" ]]; then
     export JWT_SECRET="$JWT_SECRET"
     export JWT_ACCESS_TOKEN_EXPIRATION="$JWT_ACCESS_TOKEN_EXPIRATION"
     export JWT_REFRESH_TOKEN_EXPIRATION="$JWT_REFRESH_TOKEN_EXPIRATION"
+    export MAIL_HOST="$MAIL_HOST"
+    export MAIL_PORT="$MAIL_PORT"
+    export MAIL_USERNAME="$MAIL_USERNAME"
+    export MAIL_PASSWORD="$MAIL_PASSWORD"
     
     echo "DATABASE_URL is: $DB_URL"
     echo "PG_DATABASE_URL is: $PG_URL"
@@ -48,9 +58,13 @@ if [[ "$OS" == "Linux" ]] || [[ "$OS" == "Darwin" ]]; then
     echo "JWT_SECRET is: $JWT_SECRET"
     echo "JWT_ACCESS_TOKEN_EXPIRATION is: 1800000"
     echo "JWT_REFRESH_TOKEN_EXPIRATION is: 1209600000"
+    echo "MAIL_HOST is: $MAIL_HOST"
+    echo "MAIL_PORT is: $MAIL_PORT"
+    echo "MAIL_USERNAME is: $MAIL_USERNAME"
+    echo "MAIL_PASSWORD is: $MAIL_PASSWORD"
     
 elif [[ "$OS" == *'NT'* ]]; then
-    echo "Detected Windows (Git Bash). Using 'set'..."
+    echo "Detected Windows (Git Bash). Using 'export'..."
     export DATABASE_URL="$DB_URL"
     export PG_DATABASE_URL="$PG_URL"
     export DATABASE_USERNAME="$DB_USERNAME"
@@ -58,6 +72,10 @@ elif [[ "$OS" == *'NT'* ]]; then
     export JWT_SECRET="$JWT_SECRET"
     export JWT_ACCESS_TOKEN_EXPIRATION="$JWT_ACCESS_TOKEN_EXPIRATION"
     export JWT_REFRESH_TOKEN_EXPIRATION="$JWT_REFRESH_TOKEN_EXPIRATION"
+    export MAIL_HOST="$MAIL_HOST"
+    export MAIL_PORT="$MAIL_PORT"
+    export MAIL_USERNAME="$MAIL_USERNAME"
+    export MAIL_PASSWORD="$MAIL_PASSWORD"
     
     echo "DATABASE_URL is: $DATABASE_URL"
     echo "PG_DATABASE_URL is: $PG_DATABASE_URL"
@@ -66,6 +84,10 @@ elif [[ "$OS" == *'NT'* ]]; then
     echo "JWT_SECRET is: $JWT_SECRET"
     echo "JWT_ACCESS_TOKEN_EXPIRATION is: 1800000"
     echo "JWT_REFRESH_TOKEN_EXPIRATION is: 1209600000"
+    echo "MAIL_HOST is: $MAIL_HOST"
+    echo "MAIL_PORT is: $MAIL_PORT"
+    echo "MAIL_USERNAME is: $MAIL_USERNAME"
+    echo "MAIL_PASSWORD is: $MAIL_PASSWORD"
 
 else
     echo "IDK what wonky system this is... please set variables manually."
