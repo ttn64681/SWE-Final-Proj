@@ -6,6 +6,7 @@ import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Encrypt function
+
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -151,6 +152,11 @@ public class UserService {
 
     // ========== USER DATA UPDATE ==========
 
+    /**
+     * Update a user's personal info (used in editing profile or during account creation)
+     * Uses a DTO to update only the params the user requests to change
+     * @return User with updated information
+     */
     public User updatePersonalInfo(Long id, UserInfo dtoUser) {
         User user = getUserById(id);
         String firstName = dtoUser.getFirstName();
@@ -167,11 +173,24 @@ public class UserService {
         if (state != null) { user.setState(dtoUser.getState()); }
         if (phoneNumber != null) { user.setPhoneNumber(dtoUser.getPhoneNumber()); }
 
-    /*  user.setAddress(address);
-        user.setPhoneNumber(phoneNumber); */
-
         return userRepository.save(user);
     }
+
+    /**
+     * Reset a user's password when they request to
+     * @return User with updated password
+     */
+    
+     /* 
+     public String resetPassword(Long id, String newPassword) {
+        User user = getUserById(id);
+        
+        String oldPassword = user.getPassword();
+
+        userRepository.save(user);
+        return newPassword;
+        
+     } */
 
     // ========== ADMIN ONLY OPERATIONS ==========
 

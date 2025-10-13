@@ -49,4 +49,10 @@ public class UserController {
     public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.updatePersonalInfo(userId, user);
     }
+
+    // Reset a user's password
+    /* @PutMapping("/{userId}")
+    public String updatePassword(@PathVariable Long userId, @RequestBody String newPassword) {
+        return userService.resetPassword(userId, newPassword);
+    }*/
 }
