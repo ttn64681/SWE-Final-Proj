@@ -3,6 +3,8 @@
  * Centralized endpoint management for all backend API calls
  */
 
+import axios from 'axios';
+
 // Get the base URL from environment variables
 const getApiUrl = (): string => {
   // Next.js automatically loads .env files from the project root
@@ -51,6 +53,16 @@ export const apiConfig = {
       profile: '/api/users/update-profile',
       history: '/api/users/history',
     },
+    
+    // 🔐 AUTH ENDPOINTS
+    auth: {
+      login: '/api/auth/login',
+      register: '/api/auth/register',
+      logout: '/api/auth/logout',
+      refresh: '/api/auth/refresh',
+      verifyEmail: '/api/auth/verify-email',
+      resendVerification: '/api/auth/resend-verification',
+    },
   },
   
   // Helper function to build full URLs
@@ -59,5 +71,30 @@ export const apiConfig = {
   },
 };
 
+// Create axios instance with base configuration
+const api = axios.create({
+  baseURL: apiConfig.baseUrl,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add request interceptor for JWT tokens
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Export individual functions for convenience
 export const { buildUrl, endpoints } = apiConfig;
+
+// Export the axios instance as default
+export default api;
