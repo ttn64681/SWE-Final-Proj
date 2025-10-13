@@ -1,11 +1,11 @@
 "use client";  
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 
 import { IoClose } from "react-icons/io5";
 import { IoChevronDown } from "react-icons/io5";
-import { RxDoubleArrowRight } from "react-icons/rx";
+import SelectedMovieBookButton from './SelectedMovieBookButton.tsx';
 
 import { BackendMovie } from '@/types/movie';
 import { buildUrl, endpoints } from '@/config/api';
@@ -21,104 +21,87 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
   // const availableDates = ["10/10/25", "10/11/25", "10/12/25"];
   // const availableTimes = ["8:00 PM", "9:15 PM", "10:00 PM"];
 
-  const trailer = movie.trailer_link || "https://www.youtube.com/embed/UJ2cYbw6vX0?si=unIGRoDNLg9rKZPL";
+  const trailer = movie.trailer_link || "https://youtu.be/xvFZjo5PgG0?si=m8MvlXG6nrugG0nO";
 
   // Parse cast, producer, director
   const cast = movie.cast_names ? movie.cast_names.split(', ') : ["Actor 1", "Actor 2", "Actor 3"];
   const producer = movie.producers || "Producer Name";
   const director = movie.directors || "Director Name";
 
-  // State for dropdown and showtime selection
+  // State for dropdown and showtime selection - cleaner with useQuery
   const [openDateDropdown, setOpenDateDropdown] = useState(false);
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [datesLoading, setDatesLoading] = useState(false);
-  const [datesError, setDatesError] = useState<string | null>(null);
   const [currentDate, setCurrentDate] = useState<string>('');
-
-  const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-  const [timesLoading, setTimesLoading] = useState(false);
-  const [timesError, setTimesError] = useState<string | null>(null);
   const [selectedShowtime, setSelectedShowtime] = useState<string | null>(null);
 
-  // Fetch dates on mount
-  useEffect(() => {
-    let cancelled = false;
-    async function fetchDates() {
-      setDatesLoading(true);
-      setDatesError(null);
-      try {
-        const url = buildUrl(endpoints.movies.dates(movie.movie_id));
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const dates: string[] = await resp.json();
-        if (cancelled) return;
-        setAvailableDates(dates);
-        // Auto-select first date (if available)
-        setCurrentDate(dates[0] || '');
-      } catch (e: any) {
-        if (cancelled) return;
-        setDatesError(e?.message || 'Failed to load dates');
-        setAvailableDates([]);
-        setCurrentDate('');
-      } finally {
-        if (!cancelled) setDatesLoading(false);
-      }
-    }
-    fetchDates();
-    return () => { cancelled = true; };
-  }, [movie.movie_id]);
+  // Fetch dates with useQuery 
+  const { 
+    data: availableDates = [], 
+    isLoading: datesLoading, 
+    error: datesError 
+  } = useQuery({
+    queryKey: ['movie-dates', movie.movie_id], // uniqueKey for system to invalidate query if movie ID changes
+    queryFn: async () => {
+      const url = buildUrl(endpoints.movies.dates(movie.movie_id));
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return resp.json();
+    },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
 
-  // Fetch times when currentDate changes
+  // Auto-select first date when dates load
   useEffect(() => {
-    if (!currentDate) {
-      setAvailableTimes([]);
-      return;
+    if (availableDates.length > 0 && !currentDate) {
+      setCurrentDate(availableDates[0]);
     }
-    let cancelled = false;
-    async function fetchTimes() {
-      setTimesLoading(true);
-      setTimesError(null);
-      try {
-        const url = new URL(buildUrl(endpoints.movies.times(movie.movie_id)));
-        // Build date=YYYY-MM-DD as required by backend
-        let isoDate = currentDate;
-        if (currentDate.includes('/')) {
-          const [mRaw, dRaw, yRaw] = currentDate.split('/');
-          const year = (yRaw || '').length === 2 ? `20${yRaw}` : yRaw;
-          const mm = (mRaw || '').padStart(2, '0');
-          const dd = (dRaw || '').padStart(2, '0');
-          isoDate = `${year}-${mm}-${dd}`;
-        }
-        url.searchParams.set('date', isoDate);
-        const resp = await fetch(url.toString());
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        const payload = await resp.json();
-        // Support either array of strings or array of objects with start_time
-        const times: string[] = Array.isArray(payload)
-          ? payload.map((t: any) => typeof t === 'string' ? t : (t?.start_time || ''))
-                  .filter((t: string) => !!t)
-          : [];
-        if (cancelled) return;
-        setAvailableTimes(times);
-        setSelectedShowtime(null);
-      } catch (e: any) {
-        if (cancelled) return;
-        setTimesError(e?.message || 'Failed to load times');
-        setAvailableTimes([]);
-      } finally {
-        if (!cancelled) setTimesLoading(false);
+  }, [availableDates, currentDate]);
+
+  // Fetch times with useQuery - Automatic dependency management
+  const { 
+    data: availableTimes = [], 
+    isLoading: timesLoading, 
+    error: timesError 
+  } = useQuery({
+    queryKey: ['movie-times', movie.movie_id, currentDate], // uniqueKey for system to invalidate query if movie ID or date changes
+    queryFn: async () => {
+      const url = new URL(buildUrl(endpoints.movies.times(movie.movie_id)));
+      // Build date=YYYY-MM-DD as required by backend
+      let isoDate = currentDate;
+      // currentDate is in form MM/DD/YYYY, we need to convert it to YYYY-MM-DD
+      if (currentDate.includes('/')) {
+        const [mRaw, dRaw, yRaw] = currentDate.split('/');
+        const year = (yRaw || '').length === 2 ? `20${yRaw}` : yRaw;
+        const mm = (mRaw || '').padStart(2, '0'); // padStart(2, '0') pads with 0s to make it 2 digits
+        const dd = (dRaw || '').padStart(2, '0'); // this results in 01, 02, 03, etc.
+        isoDate = `${year}-${mm}-${dd}`;
       }
-    }
-    fetchTimes();
-    return () => { cancelled = true; };
-  }, [currentDate, movie.movie_id]);
+      url.searchParams.set('date', isoDate); // set the date parameter in the URL
+      
+      const resp = await fetch(url.toString());
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const payload = await resp.json();
+      
+      // Support either array of strings or array of objects with start_time
+      return Array.isArray(payload)
+        ? payload.map((t: string | { start_time: string }) => typeof t === 'string' ? t : (t?.start_time || ''))
+                .filter((t: string) => !!t)
+        : [];
+    },
+    enabled: !!currentDate, // Only fetch when date is selected
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes (shorter for times)
+  });
+
+  // Reset selected showtime when times change
+  useEffect(() => {
+    setSelectedShowtime(null);
+  }, [availableTimes]);
 
   return (
     <div className="fixed inset-0 flex z-50 items-center justify-center p-4">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       
-      {/* Main Popup Container - Fixed rounded borders */}
+      {/* Main Popup Container */}
       <div className="relative w-[90vw] max-w-6xl h-[85vh] backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden flex">
 
         {/* Close Button */}
@@ -126,10 +109,10 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
           title='Close' 
           type='button' 
           onClick={onClose} 
-          className="absolute top-4 right-4 text-white hover:text-acm-pink duration-200 z-50 text-3xl hover:cursor-pointer"
+          className="absolute top-5 right-6 z-[60] bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full p-2 text-white hover:text-acm-pink duration-200 text-2xl hover:cursor-pointer border border-white/20 hover:border-acm-pink/50"
         >
-              <IoClose />
-            </button>
+          <IoClose />
+        </button>
 
         {/* Left Side - Movie Poster + Details */}
         <div className="w-1/2 h-full relative overflow-hidden rounded-l-3xl">
@@ -178,46 +161,67 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
         </div>
 
         {/* Right Side - trailer, showtimes, cast */}
-        <div className="w-1/2 h-full p-6 flex flex-col overflow-y-auto bg-black/20 backdrop-blur-sm">
-          {/* Trailer container */}
-          <iframe
-            className="w-full h-64 rounded-xl mb-6"
-            src={trailer ? trailer.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
+        <div className="w-1/2 h-full p-6 flex flex-col overflow-y-auto bg-gradient-to-br from-black/90 to-gray-900/90 backdrop-blur-sm">
           
-          {/* Show dates and times */}
-          <div className="mb-6">
+          {/* Trailer Section */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-1 h-6 bg-gradient-to-b from-acm-pink to-red-500 rounded-full"></div>
+              <h3 className="text-white font-bold text-xl">Watch Trailer</h3>
+            </div>
+            <div className="mt-2 relative w-full h-64 rounded-2xl overflow-hidden border border-white/10 hover:border-acm-pink/30 transition-all duration-300 bg-black/50">
+              <iframe
+                className="w-full h-full"
+                src={trailer ? trailer.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+            </div>
+          </div>
+          
+          {/* Showtimes Section */}
+          <div className="mb-0">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-1 h-6 bg-gradient-to-b from-acm-pink to-red-500 rounded-full"></div>
+              <h3 className="text-white font-bold text-xl">Showtimes</h3>
+            </div>
+            
             {/* Date dropdown */}
-            <div 
-              onClick={() => setOpenDateDropdown(!openDateDropdown)}
-              className="relative w-40 h-10 mb-4 rounded-lg bg-black/50 text-lg border-2 border-acm-pink flex items-center cursor-pointer"
-            >
-              <span className="ml-3 mr-1">{currentDate}</span>
-              <IoChevronDown className="ml-auto mr-3 hover:text-acm-pink" />
+            <div className="mb-6">
+              <label className="block text-white/80 text-sm font-medium mb-2">Select Date</label>
+              <div 
+                onClick={() => setOpenDateDropdown(!openDateDropdown)}
+                className="relative w-full max-w-xs h-12 rounded-xl bg-black/60 text-lg z-49 border-2 border-white/20 hover:border-acm-pink/50 flex items-center cursor-pointer transition-all duration-200 backdrop-blur-sm"
+              >
+                <span className="ml-4 mr-2 text-white">{currentDate}</span>
+                <IoChevronDown className="ml-auto mr-4 text-white/60 hover:text-acm-pink transition-colors" />
                 
                 {openDateDropdown && (
-                <div className="absolute top-12 left-0 w-40 max-h-56 overflow-auto overscroll-contain rounded-md shadow-lg bg-black z-50">
+                <div className="absolute top-12 left-0 w-40 max-h-56 overflow-auto overscroll-contain rounded-lg shadow-xl bg-black/95 backdrop-blur-md border border-white/20 z-50">
                     <ul className="py-1">
                     {datesLoading && (
-                      <li className="px-4 py-2 text-white/70">Loading dates...</li>
+                      <li className="block px-4 py-3 text-white/60 text-sm transition-all duration-200">Loading dates...</li>
                     )}
                     {datesError && (
-                      <li className="px-4 py-2 text-red-400">{datesError}</li>
+                      <li className="block px-4 py-3 text-red-400 text-sm transition-all duration-200">
+                        {datesError instanceof Error ? datesError.message : 'Failed to load dates'}
+                      </li>
                     )}
-                    {!datesLoading && !datesError && availableDates.map((date) => (
+                    {!datesLoading && !datesError && availableDates.map((date: string) => (
                       <li key={date}>
                           <button 
+                          title="Select Date"
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             setCurrentDate(date);
                               setOpenDateDropdown(false);
                             setSelectedShowtime(null);
                             }}
-                          className="w-full px-4 py-2 text-left hover:bg-gray-400 hover:text-black"
+                          className="block px-4 py-3 text-white text-sm transition-all duration-200 hover:bg-white/10 hover:text-acm-pink w-full text-left"
                           >
                             {date}
                           </button>
@@ -229,79 +233,77 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
            </div>
           
             {/* Showtimes */}
-            <div className="flex gap-3 flex-wrap">
-              {timesLoading && (
-                <span className="text-white/70">Loading times...</span>
-              )}
-              {timesError && (
-                <span className="text-red-400">{timesError}</span>
-              )}
-              {!timesLoading && !timesError && availableTimes.map((time) => (
+            <div className="mb-4 mt-2">
+              <label className="block text-white/80 text-sm font-medium mb-2">Available Times</label>
+              <div className="flex gap-3 flex-wrap">
+                {timesLoading && (
+                  <div className="flex items-center gap-2 text-white/70">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-acm-pink rounded-full animate-spin"></div>
+                    <span>Loading times...</span>
+                  </div>
+                )}
+                {timesError && (
+                  <div className="flex items-center gap-2 text-red-400">
+                    <span>⚠️</span>
+                    <span>{timesError instanceof Error ? timesError.message : 'Failed to load times'}</span>
+                  </div>
+                )}
+                {!timesLoading && !timesError && availableTimes.map((time) => (
                   <button
-                  title="Select Showtime"
-                  type="button"
-                  key={time} 
+                    title="Select Showtime"
+                    type="button"
+                    key={time} 
                     onClick={() => setSelectedShowtime(time)} 
-                  className={[
-                    "px-4 py-2 rounded-full text-sm font-medium transition-all",
-                    selectedShowtime === time
-                      ? "bg-acm-pink text-white border-2 border-acm-pink"
-                      : "bg-white/10 text-white border-2 border-white/40 hover:bg-white/20",
-                  ].join(" ")}
-                >
-                  {time}
+                    className={[
+                      "px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 transform hover:scale-105", // Base styles with hover scale animation
+                      selectedShowtime === time
+                        ? "bg-gradient-to-r from-acm-pink to-red-500 text-white border-2 border-acm-pink shadow-lg shadow-acm-pink/25" // Selected state: gradient background with pink glow shadow
+                        : "bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-acm-pink/50 backdrop-blur-sm", // Default state: semi-transparent with hover effects
+                    ].join(" ")}
+                  >
+                    {time}
                   </button>
-            ))}
+                ))}
+              </div>
             </div>
           </div>
             
-          {/* Movie Cast, Producer, Director */}
-          <div className="mb-6 space-y-3">
-            {/* Cast */}
-            <div className="text-white">
-              <span className="font-semibold">Cast: </span>
-              <span>{cast.join(', ')}</span>
+          {/* Movie Credits Section */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1 h-6 bg-gradient-to-b from-acm-pink to-red-500 rounded-full"></div>
+              <h3 className="text-white font-bold text-xl">Credits</h3>
             </div>
+            
+            <div className="grid grid-cols-1 gap-6">
+              {/* Directors */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                <h4 className="text-acm-pink font-semibold text-sm mb-2 uppercase tracking-wide">Directors</h4>
+                <p className="text-white/90 text-sm leading-relaxed">{director}</p>
+              </div>
               
-            {/* Producers */}
-            <div className="text-white">
-              <span className="font-semibold">Producers: </span>
-              <span>{producer}</span>
-            </div>
+              {/* Producers */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                <h4 className="text-acm-pink font-semibold text-sm mb-2 uppercase tracking-wide">Producers</h4>
+                <p className="text-white/90 text-sm leading-relaxed">{producer}</p>
+              </div>
 
-            {/* Directors */}
-            <div className="text-white">
-              <span className="font-semibold">Directors: </span>
-              <span>{director}</span>
+              {/* Cast */}
+              <div className="bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                <h4 className="text-acm-pink font-semibold text-sm mb-2 uppercase tracking-wide">Cast</h4>
+                <p className="text-white/90 text-sm leading-relaxed">{cast.join(', ')}</p>
+              </div>  
             </div>
-            </div>
-
-            {/* Book Tickets button */}
-          <div className="mt-auto flex justify-end">
-              {selectedShowtime ? (
-                <Link href={`/booking?title=${encodeURIComponent(movie.title ?? "")}&time=${encodeURIComponent(selectedShowtime ?? "")}&date=${encodeURIComponent(currentDate ?? "")}`}>
-                <button 
-                  title="Book Tickets" 
-                  type="button"
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 hover:from-red-600 hover:to-pink-600 transition-all rounded-2xl text-white font-semibold"
-                >
-                  <span>TICKETS</span>
-                  <RxDoubleArrowRight className="text-xl" />
-                    </button>
-                </Link>
-            ) : (
-              <button 
-                title="Book Tickets (Select a showtime)" 
-                disabled
-                className="flex items-center gap-2 px-6 py-3 bg-gray-600 rounded-2xl text-white/50 font-semibold cursor-not-allowed"
-              >
-                <span>TICKETS</span>
-                <RxDoubleArrowRight className="text-xl" />
-                </button>
-            )} 
           </div>
+
+          <SelectedMovieBookButton 
+            selectedShowtime={selectedShowtime ?? ''} 
+            movie={movie} 
+            currentDate={currentDate} 
+          />
         </div>
       </div>
-  </div>
+    </div>
+    </div>
   );
 }

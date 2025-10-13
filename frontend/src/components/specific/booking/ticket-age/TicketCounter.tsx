@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { IoAdd, IoRemove } from 'react-icons/io5';
+import styles from '../../../../app/(booking)/booking/ticket-age/ticket-age.module.css';
 
 interface props {
     index: number;
@@ -35,27 +36,29 @@ export default function TicketCounter({ index, ticketsByCategory, currentlySelec
 
     return (
         <div className="text-xl flex flex-row items-center text-white gap-3">
-            <button
-              onClick={decrement}
-              title="Decrease"
-              type="button"
-              className="flex items-center justify-center h-9 w-9 rounded-full border border-white/40 hover:border-acm-pink hover:text-acm-pink transition-colors"
-            >
-              <IoRemove />
-            </button>
+                <button
+                  onClick={decrement}
+                  title="Decrease"
+                  type="button"
+                  className={styles.btnCounter}
+                  disabled={ticketCount <= 0}
+                >
+                  <IoRemove />
+                </button>
 
-            <div className="min-w-9 flex items-center justify-center h-9 px-3 rounded-md bg-white/10 border border-white/20">
-              <span className="tabular-nums">{ticketCount}</span>
-            </div>
+                <div className={styles.counterDisplay}>
+                  <span>{ticketCount}</span>
+                </div>
 
-            <button
-              onClick={increment}
-              title="Increase"
-              type="button"
-              className="flex items-center justify-center h-9 w-9 rounded-full border border-white/40 hover:border-acm-pink hover:text-acm-pink transition-colors"
-            >
-              <IoAdd />
-            </button>
+                <button
+                  onClick={increment}
+                  title="Increase"
+                  type="button"
+                  className={styles.btnCounter}
+                  disabled={currentlySelected >= maxTickets}
+                >
+                  <IoAdd />
+                </button>
         </div>
     );
 }

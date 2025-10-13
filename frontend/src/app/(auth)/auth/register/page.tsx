@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import NavBar from '@/components/common/navBar/NavBar';
 import { useRegistration } from '@/contexts/RegistrationContext';
 import { validateEmail, validatePassword } from '@/services/auth';
+import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
+import AuthInput from '@/components/common/auth/AuthInput';
+import AuthButton from '@/components/common/auth/AuthButton';
 
 export default function RegisterPage() {
   const { data, updateData, isStepValid } = useRegistration();
@@ -47,85 +49,54 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
-      <NavBar />
-      
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
-        <div className="w-full max-w-md">
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-xl">
-            <div className="text-center mb-6">
-              <h1 className="text-3xl font-bold text-white">Create an Account</h1>
-              <p className="text-white/70 text-sm mt-1">Step 1 of 3</p>
-            </div>
+    <AuthFormContainer title="Create an Account" subtitle="Step 1 of 3">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <AuthInput
+          id="email"
+          label="Email Address*"
+          type="email"
+          value={data.email}
+          onChange={(e) => updateData({ email: e.target.value })}
+          placeholder="you@example.com"
+          error={errors.email}
+          required
+        />
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="email" className="block text-white text-sm mb-2">
-                Email Address*
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={data.email}
-                onChange={(e) => updateData({ email: e.target.value })}
-                placeholder="you@example.com"
-                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.email ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
-                required
-              />
-              {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
-            </div>
+        <AuthInput
+          id="password"
+          label="Password*"
+          type="password"
+          value={data.password}
+          onChange={(e) => updateData({ password: e.target.value })}
+          placeholder="••••••••"
+          error={errors.password}
+          required
+        />
 
-            <div>
-              <label htmlFor="password" className="block text-white text-sm mb-2">
-                Password*
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={data.password}
-                onChange={(e) => updateData({ password: e.target.value })}
-                placeholder="••••••••"
-                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.password ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
-                required
-              />
-              {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
-            </div>
+        <AuthInput
+          id="confirmPassword"
+          label="Confirm Password*"
+          type="password"
+          value={data.confirmPassword}
+          onChange={(e) => updateData({ confirmPassword: e.target.value })}
+          placeholder="••••••••"
+          error={errors.confirmPassword}
+          required
+        />
 
-            <div>
-              <label htmlFor="confirmPassword" className="block text-white text-sm mb-2">
-                Confirm Password*
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={data.confirmPassword}
-                onChange={(e) => updateData({ confirmPassword: e.target.value })}
-                placeholder="••••••••"
-                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.confirmPassword ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
-                required
-              />
-              {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>}
-            </div>
+        <AuthButton type="submit" variant="primary">
+          Continue
+        </AuthButton>
+      </form>
 
-            <button
-              type="submit"
-              className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
-            >
-              Continue
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-white/70 text-sm">
-              Already have an account?{' '}
-              <Link href="/auth/login" className="text-acm-pink hover:text-acm-pink/80 transition-colors">
-                Sign in
-              </Link>
-            </p>
-          </div>
-          </div>
-        </div>
+      <div className="mt-6 text-center">
+        <p className="text-white/70 text-sm">
+          Already have an account?{' '}
+          <Link href="/auth/login" className="text-acm-pink hover:text-acm-orange transition-colors">
+            Sign in
+          </Link>
+        </p>
       </div>
-    </div>
+    </AuthFormContainer>
   );
 }
