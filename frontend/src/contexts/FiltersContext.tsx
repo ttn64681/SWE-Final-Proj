@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useMemo, ReactNode } from 'react';
 
 // Shared filter state that both NavBar and Movies page can access
 // This allows both filter buttons to control the same popup and maintain state
@@ -34,13 +34,19 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     year: ''
   });
 
+  // CACHES: Context value object { selectedGenres, setSelectedGenres, selectedDate, setSelectedDate } - persists across FiltersProvider re-renders
+  // CHANGES: When selectedGenres or selectedDate change (user clicks filters) - BUT will recreate if FiltersProvider component unmounts/remounts
+  // WITHOUT useMemo: New object every FiltersProvider re-render → all filter consumers re-render (NavBar, Movies page, FiltersPopUp)
+  // WHY MATTERS: Prevents cascading re-renders across entire filter component tree
+  const contextValue = useMemo(() => ({
+    selectedGenres,
+    setSelectedGenres,
+    selectedDate,
+    setSelectedDate
+  }), [selectedGenres, selectedDate]);
+
   return (
-    <FiltersContext.Provider value={{
-      selectedGenres,
-      setSelectedGenres,
-      selectedDate,
-      setSelectedDate
-    }}>
+    <FiltersContext.Provider value={contextValue}>
       {children}
     </FiltersContext.Provider>
   );

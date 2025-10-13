@@ -11,6 +11,8 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "@types/jquery": "^3.5.33",
     "@types/jqueryui": "^1.12.24",
     "flowbite": "^3.1.2",

@@ -10,6 +10,7 @@
 
 # Neon PostgreSQL Database Configuration
 $DB_URL = 'jdbc:postgresql://<your-neon-host>:<your-neon-port>/<your-db-name>?sslmode=require'
+$PG_URL = 'postgresql://host:port/dbname'
 $DB_USERNAME = 'user'
 $DB_PASSWORD = 'pass'
 
@@ -24,6 +25,7 @@ Write-Host "Detected Windows PowerShell. Setting environment variables..."
 
 # Set environment variables for current session
 $env:DATABASE_URL = $DB_URL
+$env:PG_DATABASE_URL = $PG_URL
 $env:DATABASE_USERNAME = $DB_USERNAME
 $env:DATABASE_PASSWORD = $DB_PASSWORD
 $env:JWT_SECRET = $JWT_SECRET
@@ -32,6 +34,7 @@ $env:JWT_REFRESH_TOKEN_EXPIRATION = $JWT_REFRESH_TOKEN_EXPIRATION
 
 # Display the set variables
 Write-Host "DATABASE_URL is: $DB_URL"
+Write-Host "PG_DATABASE_URL is: $PG_URL"
 Write-Host "DATABASE_USERNAME is: $DB_USERNAME" 
 Write-Host "DATABASE_PASSWORD is: $DB_PASSWORD"
 Write-Host "JWT_SECRET is: $JWT_SECRET"
