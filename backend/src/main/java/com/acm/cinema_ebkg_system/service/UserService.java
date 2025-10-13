@@ -1,15 +1,19 @@
 package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.model.PaymentInfo;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
+import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Encrypt function
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.List;
+import java.time.LocalDate;
 
 /**
  * User Service - Business logic layer for user operations
@@ -172,6 +176,36 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    // ========== PAYMENT INFO MANAGEMENT ==========
+
+    public User addPaymentInfo(Long id, PaymentRequest dtoPayment) {
+        User user = getUserById(id);
+        PaymentInfo paymentInfo = new PaymentInfo();
+        Long cardNumber = dtoPayment.getCard_number();
+        String billingAddress = dtoPayment.getBilling_address();
+        LocalDate expirationDate = dtoPayment.getExpiration_date();
+
+        paymentInfo.setCard_number(cardNumber);
+        paymentInfo.setBilling_address(billingAddress);
+        paymentInfo.setExpiration_date(expirationDate);
+        paymentInfo.setUser(user);
+
+        if (user.getPaymentInfos().size() < 3) user.getPaymentInfos().add(paymentInfo);
+        
+        return userRepository.save(user);
+    }
+
+    // ========== INCOMPLETE - TO BE IMPLEMENTED ==========
+    // public User updatePaymentInfo(Long id, UserInfo dtoUser, PaymentRequest dtoPayment) {
+    //     User user = getUserById(dtoPayment.getUser_id());
+    //     PaymentInfo paymentInfo = new PaymentInfo();
+    //     Integer cardNumber = dtoPayment.getCard_number();
+    //     String billingAddress = dtoPayment.getBilling_address();
+        
+
+    //     return null;
+    // }
 
     // ========== ADMIN ONLY OPERATIONS ==========
 
