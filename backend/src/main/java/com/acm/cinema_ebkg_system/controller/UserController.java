@@ -73,4 +73,9 @@ public class UserController {
     public User deletePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId) {
         return userService.deletePaymentInfo(userId, paymentId);        
     }
+    // Reset a user's password
+    /* @PutMapping("/{userId}")
+    public String updatePassword(@PathVariable Long userId, @RequestBody String newPassword) {
+        return userService.resetPassword(userId, newPassword);
+    }*/
 }
