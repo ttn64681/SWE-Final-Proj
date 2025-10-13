@@ -6,6 +6,7 @@ import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,5 +67,10 @@ public class UserController {
     @PutMapping("/{userId}/payment/{paymentId}")
     public User updatePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId, @RequestBody PaymentRequest dtoPayment) {
         return userService.updatePaymentInfo(userId, paymentId, dtoPayment);
+    }
+
+    @DeleteMapping("/{userId}/payment/{paymentId}")
+    public User deletePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId) {
+        return userService.deletePaymentInfo(userId, paymentId);        
     }
 }
