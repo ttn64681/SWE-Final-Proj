@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Afacad, Red_Rose, Pacifico } from 'next/font/google';
 import { FiltersProvider } from '@/contexts/FiltersContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import QueryProvider from '@/components/providers/QueryProvider';
 
 export const metadata: Metadata = {
   title: 'ACM Actual Cinema Movies',
@@ -38,9 +40,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`} suppressHydrationWarning={true}>
-        <FiltersProvider>
-          {children}
-        </FiltersProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <FiltersProvider>
+              {children}
+            </FiltersProvider>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

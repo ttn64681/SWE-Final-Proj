@@ -1,14 +1,27 @@
 package com.acm.cinema_ebkg_system.dto.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data                    // Lombok: auto-generates getters, setters, toString, equals, hashCode
-@NoArgsConstructor      // Lombok: generates default constructor
-@AllArgsConstructor     // Lombok: generates constructor with all fields
 public class LoginRequest {
     private String email;
     private String password;
     private boolean rememberMe;
+
+    // Default constructor
+    public LoginRequest() {}
+
+    // Constructor with all fields
+    public LoginRequest(String email, String password, boolean rememberMe) {
+        this.email = email;
+        this.password = password;
+        this.rememberMe = rememberMe;
+    }
+
+    // Getters
+    public String getEmail() { return email; }
+    public String getPassword() { return password; }
+    public boolean isRememberMe() { return rememberMe; }
+
+    // Setters
+    public void setEmail(String email) { this.email = email; }
+    public void setPassword(String password) { this.password = password; }
+    public void setRememberMe(boolean rememberMe) { this.rememberMe = rememberMe; }
 }
