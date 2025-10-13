@@ -78,69 +78,46 @@ CREATE TABLE users (
 
 **Manual backup:**
 ```bash
-export DATABASE_URL="your-neon-connection-string"
-./scripts/backup_postgres.sh
+source set_env.sh  # Sets both DATABASE_URL and PG_DATABASE_URL
+./db_backup/backup_postgres.sh
 ```
 
 **Restore from backup:**
 ```bash
-./scripts/restore_postgres.sh backups/backup_2024-10-07_143022.dump "your-restore-url"
+# Restore to same database (uses PG_DATABASE_URL automatically)
+./db_backup/restore_postgres.sh db_backup/backups/backup_2024-10-07_143022.dump
+
+# Restore to different database
+./db_backup/restore_postgres.sh db_backup/backups/backup_2024-10-07_143022.dump "postgresql://user:pass@host:5432/different_db"
 ```
 
 **Automatic daily backups:**
 ```bash
-./scripts/setup_daily_backup.sh
+source set_env.sh
+./db_backup/setup_daily_backup.sh
 ```
 
-## Development
-
-### Project Structure
-
-```
-├── frontend/          # Next.js application
-├── backend/           # Spring Boot application
-├── scripts/           # Database backup scripts
-└── README.md         # This file
+**Manual cleanup:**
+```bash
+./db_backup/cleanup_backups.sh [backup_folder] [days_to_keep]
 ```
 
-### Environment Variables
+Open [http://localhost:8080](http://localhost:8080) with your browser to see the result (optional).
 
-Set these in your environment or `.env` file:
 
-- `DATABASE_URL`: Neon PostgreSQL connection string
-- `NEXT_PUBLIC_API_URL`: Backend API URL (default: http://localhost:8080)
-- `JWT_SECRET`: Secret key for JWT tokens
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### API Endpoints
+## Learn More
 
-- `GET /api/movies/now-playing` - Current movies
-- `GET /api/movies/upcoming` - Upcoming movies
-- `GET /api/movies/search-now-playing` - Search current movies
-- `GET /api/movies/{id}` - Movie details
+To learn more about Next.js, take a look at the following resources:
 
-## Deployment
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### Frontend (Vercel)
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-1. Connect your GitHub repository to Vercel
-2. Set environment variable: `NEXT_PUBLIC_API_URL=https://your-backend-url.com`
-3. Deploy
+## Deploy on Vercel
 
-### Backend
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Deploy to your preferred platform (Railway, Render, AWS, etc.) with:
-- Java 17 runtime
-- PostgreSQL database
-- Environment variables configured
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

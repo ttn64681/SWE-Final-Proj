@@ -4,9 +4,10 @@ import WhiteSeparator from '@/components/common/WhiteSeparator';
 
 interface GenresSectionProps {
   genres: string[];
+  isLoading?: boolean;
 }
 
-export default function GenresSection({ genres }: GenresSectionProps) {
+export default function GenresSection({ genres, isLoading = false }: GenresSectionProps) {
   return (
     <>
       <div className="text-4xl font-extrabold font-red-rose text-white mb-2 px-20">
@@ -14,9 +15,13 @@ export default function GenresSection({ genres }: GenresSectionProps) {
       </div>
       <div className='relative'>
         <div
-          className="flex flex-row overflow-x-scroll scrollbar-hide py-4 gap-x-4 px-20"
+          className="flex flex-row overflow-x-scroll scrollbar-hide py-4 gap-x-4 px-24"
         >
-          {genres.length > 0 ? (
+          {isLoading ? (
+            <div className="text-white/60 text-lg px-4 py-8">
+              Loading genres...
+            </div>
+          ) : genres.length > 0 ? (
             genres.map((genreName, index) => (
               <Genre
                 key={`${genreName}-${index}`}
@@ -25,7 +30,7 @@ export default function GenresSection({ genres }: GenresSectionProps) {
             ))
           ) : (
             <div className="text-white/60 text-lg px-4 py-8">
-              Loading genres...
+              No genres available
             </div>
           )}
         </div>
