@@ -2,6 +2,8 @@ package com.acm.cinema_ebkg_system.repository;
 
 import com.acm.cinema_ebkg_system.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -30,7 +32,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     
     /**
-     * Find a user by their email address
+     * Find a user by their email address (case-insensitive)
      * 
      * This method is used during login to locate the user account.
      * Returns Optional<User> to handle cases where email doesn't exist.
@@ -38,10 +40,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email User's email address
      * @return Optional<User> User if found, empty Optional if not found
      */
-    Optional<User> findByEmail(String email);
+    @Query("SELECT u FROM User u WHERE LOWER(u.email) = LOWER(:email)")
+    Optional<User> findByEmail(@Param("email") String email);
     
     /**
-     * Check if a user exists with the given email address
+     * Check if a user exists with the given email address (case-insensitive)
      * 
      * This method is used during registration to prevent duplicate accounts.
      * Returns boolean for quick existence check without loading the full entity.
@@ -49,5 +52,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email Email address to check
      * @return boolean true if user exists, false otherwise
      */
-    boolean existsByEmail(String email);
+    @Query("SELECT COUNT(u) > 0 FROM User u WHERE LOWER(u.email) = LOWER(:email)")
+    boolean existsByEmail(@Param("email") String email);
+    
+    /**
+     * Find a user by their verification token
+     * 
+     * This method is used during email verification to locate the user account.
+     * Returns Optional<User> to handle cases where token doesn't exist or is invalid.
+     * 
+     * @param verificationToken Email verification token
+     * @return Optional<User> User if found, empty Optional if not found
+     */
+    Optional<User> findByVerificationToken(String verificationToken);
 }
