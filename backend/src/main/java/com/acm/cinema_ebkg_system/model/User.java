@@ -1,10 +1,18 @@
 package com.acm.cinema_ebkg_system.model;
 
+
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "users")
@@ -45,6 +53,10 @@ public class User {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PaymentInfo> paymentInfos = new ArrayList<>();
 
     // Custom constructor for registration (kept for business logic)
     public User(String email, String password, String firstName, String lastName) {
