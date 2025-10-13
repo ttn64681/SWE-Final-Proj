@@ -12,14 +12,6 @@ import jakarta.persistence.Table;            // maps to a specific table name
 import java.time.LocalDateTime;             
 import java.time.LocalTime;                
 
-// Lombok = auto-generate boilerplate (getters/setters/constructors)
-import lombok.Getter;                      
-import lombok.NoArgsConstructor;           
-import lombok.Setter;                     
-
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "show_times")
 public class ShowTime {
@@ -38,6 +30,23 @@ public class ShowTime {
 
     @Column(name = "created_at")
     private LocalDateTime created_at;
+
+    // Default constructor
+    public ShowTime() {}
+
+    // Getters
+    public Long getShow_time_id() { return show_time_id; }
+    public Long getShow_date_id() { return show_date_id; }
+    public LocalTime getStart_time() { return start_time; }
+    public LocalTime getEnd_time() { return end_time; }
+    public LocalDateTime getCreated_at() { return created_at; }
+
+    // Setters
+    public void setShow_time_id(Long show_time_id) { this.show_time_id = show_time_id; }
+    public void setShow_date_id(Long show_date_id) { this.show_date_id = show_date_id; }
+    public void setStart_time(LocalTime start_time) { this.start_time = start_time; }
+    public void setEnd_time(LocalTime end_time) { this.end_time = end_time; }
+    public void setCreated_at(LocalDateTime created_at) { this.created_at = created_at; }
 }
 
 
