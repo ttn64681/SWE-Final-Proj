@@ -1,0 +1,14 @@
+Cleaning up backup files...
+Directory: db_backup/backups
+Keeping files newer than 30 days
+Found        2 backup files
+
+Cleanup complete!
+Files deleted: 0
+Files remaining:        2
+
+Cleaning up old log files...
+Old log files removed
+
+Current disk usage for backup directory:
+ 56K	db_backup/backups

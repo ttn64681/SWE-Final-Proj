@@ -1,0 +1,95 @@
+/* Ticket counter button styles */
+.btnCounter {
+  background: linear-gradient(135deg, #FF478B 0%, #FF5C33 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(255, 71, 139, 0.3);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btnCounter:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(255, 71, 139, 0.5);
+}
+
+.btnCounter:active {
+  transform: scale(0.95);
+}
+
+/* Counter display styles */
+.counterDisplay {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 71, 139, 0.3);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  min-width: 4rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.counterDisplay:hover {
+  border-color: rgba(255, 71, 139, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Checkout button styles */
+.checkoutButton {
+  background: linear-gradient(135deg, #FF478B 0%, #FF5C33 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px 0 rgba(255, 71, 139, 0.3);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-width: 12rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkoutButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 71, 139, 0.4);
+}
+
+.checkoutButtonDisabled {
+  background: transparent;
+  color: white;
+  border: 2px solid #FF478B;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: not-allowed;
+  position: relative;
+  overflow: hidden;
+  min-width: 12rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+}
