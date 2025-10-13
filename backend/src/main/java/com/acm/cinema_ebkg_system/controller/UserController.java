@@ -1,8 +1,10 @@
 package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.model.PaymentInfo;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
+import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,5 +50,16 @@ public class UserController {
     @PutMapping("/{userId}")
     public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.updatePersonalInfo(userId, user);
+    }
+
+    @GetMapping("/{userId}/payment")
+    public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+        return user.getPaymentInfos();
+    }
+
+    @PostMapping("/{userId}/payment")
+    public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) {
+        return userService.addPaymentInfo(userId, dtoPayment);
     }
 }
