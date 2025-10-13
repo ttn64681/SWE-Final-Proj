@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.time.LocalDateTime;
@@ -157,6 +158,54 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    /**
+     * Retrieve all users from the database
+     * 
+     * This method returns a list of all users in the system.
+     * Typically used for administrative purposes.
+     * 
+     * @return List<User> List of all users
+     */
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    /**
+     * Update user's personal information
+     * 
+     * This method updates a user's personal information based on the provided UserInfo DTO.
+     * 
+     * @param userId User ID to update
+     * @param userInfo UserInfo DTO containing updated information
+     * @return User Updated user object
+     * @throws RuntimeException if user not found
+     */
+    public User updatePersonalInfo(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
+        User user = getUserById(userId);
+        
+        // Update fields if provided
+        if (userInfo.getFirstName() != null) {
+            user.setFirstName(userInfo.getFirstName());
+        }
+        if (userInfo.getLastName() != null) {
+            user.setLastName(userInfo.getLastName());
+        }
+        if (userInfo.getPhoneNumber() != null) {
+            user.setPhoneNumber(userInfo.getPhoneNumber());
+        }
+        if (userInfo.getAddress() != null) {
+            user.setAddress(userInfo.getAddress());
+        }
+        if (userInfo.getState() != null) {
+            user.setState(userInfo.getState());
+        }
+        if (userInfo.getCountry() != null) {
+            user.setCountry(userInfo.getCountry());
+        }
+        
+        return userRepository.save(user);
     }
 
     // ========== EMAIL VERIFICATION ==========
