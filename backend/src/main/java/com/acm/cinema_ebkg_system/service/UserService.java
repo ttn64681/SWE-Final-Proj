@@ -238,16 +238,26 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ========== INCOMPLETE - TO BE IMPLEMENTED ==========
-    // public User updatePaymentInfo(Long id, UserInfo dtoUser, PaymentRequest dtoPayment) {
-    //     User user = getUserById(dtoPayment.getUser_id());
-    //     PaymentInfo paymentInfo = new PaymentInfo();
-    //     Integer cardNumber = dtoPayment.getCard_number();
-    //     String billingAddress = dtoPayment.getBilling_address();
+    public User deletePaymentInfo(Long userId, Long paymentInfoId) {
+        User user = getUserById(userId);
+        List<PaymentInfo> userPaymentInfos = user.getPaymentInfos();        
         
+        // Checks to see if passed in payment info ID matches the user's payment info ID
+        int counter = 0;    
+        for (PaymentInfo currentPaymentInfo : userPaymentInfos) {
 
-    //     return null;
-    // }
+            // Removed payment info if match found
+            if (currentPaymentInfo.getPayment_info_id() == paymentInfoId) {
+                
+                List<PaymentInfo> newPaymentInfos = user.getPaymentInfos();
+                newPaymentInfos.remove(counter);
+                user.setPaymentInfos(newPaymentInfos);
+            }
+            counter++;
+        }
+
+        return userRepository.save(user);
+    }
 
     // ========== ADMIN ONLY OPERATIONS ==========
 
