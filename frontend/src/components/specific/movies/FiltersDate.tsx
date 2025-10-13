@@ -74,7 +74,7 @@ export default function FiltersDate({text, value, onChange} : FiltersDateProps) 
                     Year
                 </option>
                 {Array.from({ length: 6 }, (_, i) => (
-                <option key={i} value={2020 + i}>{2020 + i}</option>
+                <option key={i} value={2021 + i}>{2021 + i}</option>
                 ))}
             </select>
             </div>

@@ -1,17 +1,18 @@
+'use client';
+
 import React, { useRef, useEffect, useState } from 'react';
 import Promotion from './SmallPromo';
-import WhiteSeparator from '@/components/common/WhiteSeparator';
 
 interface PromotionData {
   discount: string;
   promo: string;
 }
 
-interface PromotionsSectionProps {
+interface SmallPromoSectionProps {
   promotions: PromotionData[];
 }
 
-export default function PromotionsSection({ promotions }: PromotionsSectionProps) {
+export default function SmallPromoSection({ promotions }: SmallPromoSectionProps) {
   // Scroll state
   const scrollRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);

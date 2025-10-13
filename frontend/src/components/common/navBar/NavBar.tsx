@@ -8,6 +8,7 @@ import FiltersPopUp from '@/components/specific/movies/FiltersPopUp';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFilters } from '@/contexts/FiltersContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function NavBar() {
   // Track if the filters popup is open/closed
@@ -17,6 +18,8 @@ export default function NavBar() {
   const router = useRouter();
   // Get the currently selected filters from shared context
   const { selectedGenres, selectedDate } = useFilters();
+  // Get authentication state
+  const { isAuthenticated, user } = useAuth();
 
   // When user clicks search button or presses Enter, build URL with all search parameters
   const handleSearch = () => {
@@ -118,15 +121,21 @@ export default function NavBar() {
             <div className="hidden lg:block h-6 w-px bg-gray-400"></div>
 
             {/* Authentication Actions */}
-            <Link
-              href="/auth/register"
-              className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1 sm:px-4 rounded-md transition-all duration-200 font-medium text-sm sm:text-base"
-            >
-              Join
-            </Link>
+            {!isAuthenticated ? (
+              <Link
+                href="/auth/register"
+                className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1 sm:px-4 rounded-md transition-all duration-200 font-medium text-sm sm:text-base"
+              >
+                Join
+              </Link>
+            ) : (
+              <div className="text-white text-sm sm:text-base font-medium">
+                Hi, {user?.firstName || 'User'}
+              </div>
+            )}
 
-            {/* User Menu Dropdown */}
-            <UserMenu />
+            {/* User Menu Dropdown - Only show when authenticated */}
+            {isAuthenticated && <UserMenu />}
           </div>
         </div>
       </div>
