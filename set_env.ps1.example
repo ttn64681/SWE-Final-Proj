@@ -21,6 +21,12 @@ $JWT_ACCESS_TOKEN_EXPIRATION = '1800000'
 # JWT Refresh Expiration: 14 days
 $JWT_REFRESH_TOKEN_EXPIRATION = '1209600000'
 
+# Email Configuration (Gmail SMTP)
+$MAIL_HOST = 'smtp.gmail.com'
+$MAIL_PORT = '587'
+$MAIL_USERNAME = 'your-email@gmail.com'
+$MAIL_PASSWORD = 'your-app-password'
+
 Write-Host "Detected Windows PowerShell. Setting environment variables..."
 
 # Set environment variables for current session
@@ -31,15 +37,23 @@ $env:DATABASE_PASSWORD = $DB_PASSWORD
 $env:JWT_SECRET = $JWT_SECRET
 $env:JWT_ACCESS_TOKEN_EXPIRATION = $JWT_ACCESS_TOKEN_EXPIRATION
 $env:JWT_REFRESH_TOKEN_EXPIRATION = $JWT_REFRESH_TOKEN_EXPIRATION
+$env:MAIL_HOST = $MAIL_HOST
+$env:MAIL_PORT = $MAIL_PORT
+$env:MAIL_USERNAME = $MAIL_USERNAME
+$env:MAIL_PASSWORD = $MAIL_PASSWORD
 
 # Display the set variables
-Write-Host "DATABASE_URL is: $DB_URL"
-Write-Host "PG_DATABASE_URL is: $PG_URL"
-Write-Host "DATABASE_USERNAME is: $DB_USERNAME" 
-Write-Host "DATABASE_PASSWORD is: $DB_PASSWORD"
-Write-Host "JWT_SECRET is: $JWT_SECRET"
-Write-Host "JWT_ACCESS_TOKEN_EXPIRATION is: $JWT_ACCESS_TOKEN_EXPIRATION"
-Write-Host "JWT_REFRESH_TOKEN_EXPIRATION is: $JWT_REFRESH_TOKEN_EXPIRATION"
+Write-Host "DATABASE_URL is: $env:DATABASE_URL"
+Write-Host "PG_DATABASE_URL is: $env:PG_DATABASE_URL"
+Write-Host "DATABASE_USERNAME is: $env:DATABASE_USERNAME" 
+Write-Host "DATABASE_PASSWORD is: $env:DATABASE_PASSWORD"
+Write-Host "JWT_SECRET is: $env:JWT_SECRET"
+Write-Host "JWT_ACCESS_TOKEN_EXPIRATION is: $env:JWT_ACCESS_TOKEN_EXPIRATION"
+Write-Host "JWT_REFRESH_TOKEN_EXPIRATION is: $env:JWT_REFRESH_TOKEN_EXPIRATION"
+Write-Host "MAIL_HOST is: $env:MAIL_HOST"
+Write-Host "MAIL_PORT is: $env:MAIL_PORT"
+Write-Host "MAIL_USERNAME is: $env:MAIL_USERNAME"
+Write-Host "MAIL_PASSWORD is: $env:MAIL_PASSWORD"
 
 Write-Host "`nEnvironment variables have been set for the current PowerShell session."
 Write-Host "Note: These variables will only persist for this PowerShell session."

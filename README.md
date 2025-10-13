@@ -1,75 +1,142 @@
-# ACM Cinema Booking System
+# ACM Cinema E-Booking System
 
-A full-stack cinema booking application built with Next.js frontend and Spring Boot backend.
+A full-stack cinema booking application built with Next.js frontend and Spring Boot backend. Users can browse movies, select seats, and purchase tickets online.
 
-## Links
-- **Vercel Deployment**:
-- **Jira**:
-- **Figma**:
+> **Disclaimer**: This is a student project for educational purposes only. The application does not process real payments and is not intended for commercial use. All booking functionality is simulated for demonstration purposes.
+
+## Project Links
+
+- **Frontend Deployment**: [Vercel](https://vercel.com) _(Coming Soon)_
+- **Backend API**: [TBD] _(Coming Soon)_
+- **Project Management**: [Jira](https://atlassian.com) _(Coming Soon)_
+- **Design System**: [Figma](https://figma.com) _(Coming Soon)_
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
-- **Backend**: Spring Boot, Java 17, PostgreSQL
-- **Database**: Neon PostgreSQL (cloud)
-- **Deployment**: Vercel (frontend), TBD (backend)
+### Frontend
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Data Fetching**: React Query (TanStack Query)
+- **Authentication**: JWT with HTTP-only cookies
+
+### Backend
+
+- **Framework**: Spring Boot 3.x
+- **Language**: Java 17
+- **Database**: PostgreSQL (Neon Cloud)
+- **Authentication**: Spring Security with JWT
+- **Database Migration**: Flyway
+- **Email**: SMTP (Gmail)
+
+### DevOps & Tools
+
+- **Frontend Deployment**: Vercel
+- **Backend Deployment**: TBD
+- **Database**: Neon PostgreSQL
+- **Version Control**: Git
+- **Package Management**: npm (frontend), Maven (backend)
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- Java 17+
-- PostgreSQL client tools (for backups)
+- Node.js 18+ (for frontend)
+- Java 17+ (for backend)
+- Git (for version control)
+- PostgreSQL client tools (for database backups)
 
-### Installation
+### Installation & Setup
 
-1. **Clone and install dependencies:**
+1. **Clone the repository:**
+
    ```bash
    git clone <repository-url>
-   cd SWE-Final-Proj
+   cd swe-proj-acm
+   ```
+
+2. **Install frontend dependencies:**
+
+   ```bash
    npm install
    ```
 
-2. **Set up environment:**
+3. **Set up environment variables:**
+
    ```bash
-   # From root directory -
    # macOS/Linux:
    source set_env.sh
-   # Windows:
+
+   # Windows PowerShell:
    .\set_env.ps1
-
    ```
 
-3. **Run the application:**
+4. **Start the application:**
+
    ```bash
-   # Frontend (Terminal 1)
+   # Terminal 1 - Frontend (http://localhost:3000)
    npm run dev
-   
-   # Backend (Terminal 2)
+
+   # Terminal 2 - Backend (http://localhost:8080)
    cd backend
-   # macOS/Linux:
-   ./mvnw spring-boot:run
-   # Windows:
-   mvnw spring-boot:run
+   ./mvnw spring-boot:run  # macOS/Linux
+   # mvnw spring-boot:run  # Windows
    ```
 
-4. **Access the application:**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8080
+### Application URLs
+
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:8080](http://localhost:8080)
+- **API Documentation**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) _(Coming Soon)_
+
+## Features
+
+### Movie Management
+
+- Browse current and upcoming movies
+- Filter movies by genre, date, and title
+- View detailed movie information with trailers
+- Check showtime and seat availability
+
+### Booking System
+
+- Interactive seat selection with real-time availability
+- Multi-step booking process
+- Secure payment integration _(Coming Soon)_
+- Email confirmations
+
+### User Management
+
+- User registration and authentication
+- Profile management
+- Order history
+- Admin dashboard for movie and user management
+
+### Security Features
+
+- JWT-based authentication
+- Password encryption (BCrypt)
+- CORS configuration
+- Input validation and sanitization
 
 ## Database Management
 
-### Flyway Migrations
+### Schema Migrations (Flyway)
 
-Schema changes are managed with Flyway migrations in `backend/src/main/resources/db/migration/`.
+Database schema changes are managed with Flyway migrations in `backend/src/main/resources/db/migration/`.
 
 **Create a new migration:**
+
 ```bash
 # Example: V2__add_users_table.sql
 CREATE TABLE users (
-  id BIGSERIAL PRIMARY KEY,
+  user_id BIGSERIAL PRIMARY KEY,
   email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ```
@@ -77,14 +144,16 @@ CREATE TABLE users (
 ### Database Backups
 
 **Manual backup:**
+
 ```bash
-source set_env.sh  # Sets both DATABASE_URL and PG_DATABASE_URL
+source set_env.sh  # Sets environment variables
 ./db_backup/backup_postgres.sh
 ```
 
 **Restore from backup:**
+
 ```bash
-# Restore to same database (uses PG_DATABASE_URL automatically)
+# Restore to same database
 ./db_backup/restore_postgres.sh db_backup/backups/backup_2024-10-07_143022.dump
 
 # Restore to different database
@@ -92,32 +161,75 @@ source set_env.sh  # Sets both DATABASE_URL and PG_DATABASE_URL
 ```
 
 **Automatic daily backups:**
+
 ```bash
 source set_env.sh
 ./db_backup/setup_daily_backup.sh
 ```
 
-**Manual cleanup:**
+**Cleanup old backups:**
+
 ```bash
 ./db_backup/cleanup_backups.sh [backup_folder] [days_to_keep]
 ```
 
-Open [http://localhost:8080](http://localhost:8080) with your browser to see the result (optional).
+## Development
 
+### Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Frontend:**
 
-## Learn More
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
 
-To learn more about Next.js, take a look at the following resources:
+**Backend:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+./mvnw spring-boot:run           # Start development server
+./mvnw clean package            # Build JAR file
+./mvnw test                     # Run tests
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Environment Variables
 
-## Deploy on Vercel
+The application requires several environment variables. Copy `set_env.example` to `set_env.sh` (Unix) or `set_env.ps1` (Windows) and fill in your values:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `DATABASE_URL` - JDBC connection string for Java backend
+- `PG_DATABASE_URL` - PostgreSQL connection string for CLI tools
+- `DATABASE_USERNAME` - Database username
+- `DATABASE_PASSWORD` - Database password
+- `JWT_SECRET` - Secret key for JWT token signing
+- `MAIL_*` - Email configuration for notifications
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Documentation
+
+- **[Developer Guide](./DEVELOPMENT_GUIDE.md)** - Comprehensive technical documentation
+- **[API Reference](./DEVELOPMENT_GUIDE.md#api-reference)** - Endpoint documentation
+- **[Component Guide](./DEVELOPMENT_GUIDE.md#frontend-components)** - Frontend component usage
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Team
+
+- **Frontend Development**: [Thai Nguyen, Kayla McGuinn, Sidhant Dash, Hilton DeVille]
+- **Backend Development**: [Thai Nguyen, Vishal Apparajav, Hilton DeVille, Sidhant Dash]
+- **Database Design**: [Hilton DeVille, Vishal Apparajav, Thai Nguyen]
+- **DevOps**: [Thai Nguyen]
+
+---
+
+Built by the ACM Cinema Team
