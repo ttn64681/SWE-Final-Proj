@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NavBar from '@/components/common/navBar/NavBar';
-import { authAPI, validateEmail } from '@/services/auth';
+import { useAuth } from '@/contexts/AuthContext';
+import { validateEmail } from '@/services/auth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,22 +29,10 @@ export default function LoginPage() {
         return;
       }
 
-      // Call login API
-      const response = await authAPI.login({ email, password, rememberMe });
+      // Call AuthContext login function
+      const response = await login(email, password, rememberMe);
 
       if (response.success) {
-        // Store token if remember me is checked
-        if (rememberMe && response.token) {
-          localStorage.setItem('authToken', response.token);
-        } else if (response.token) {
-          sessionStorage.setItem('authToken', response.token);
-        }
-
-        // Store user data
-        if (response.user) {
-          localStorage.setItem('user', JSON.stringify(response.user));
-        }
-
         // Redirect to home page
         router.push('/');
       } else {
