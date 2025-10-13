@@ -8,17 +8,17 @@ interface GenreProps {
 // Static image mapping for genres (will be changed)
 const getGenreImage = (genre: string): string => {
     const genreImages: { [key: string]: string } = {
-        'Action': '/poster godzilla.jpg',
-        'Adventure': '/poster godzilla.jpg',
-        'Comedy': '/cinema people.jpg',
-        'Crime': '/poster oldboy.jpg',
-        'Family': '/cinema people.jpg',
-        'Fantasy': '/poster godzilla.jpg',
-        'Horror': '/poster oldboy.jpg',
-        'Mystery': '/poster oldboy.jpg',
-        'Romance': '/cinema people.jpg',
-        'Sci-Fi': '/poster godzilla.jpg',
-        'Thriller': '/poster oldboy.jpg',
+        'Action': '/poster_godzilla.jpg',
+        'Adventure': '/poster_godzilla.jpg',
+        'Comedy': '/cinema_seats.jpg',
+        'Crime': '/poster_oldboy.jpg',
+        'Family': '/cinema_seats.jpg',
+        'Fantasy': '/poster_godzilla.jpg',
+        'Horror': '/poster_oldboy.jpg',
+        'Mystery': '/poster_oldboy.jpg',
+        'Romance': '/cinema_seats.jpg',
+        'Sci-Fi': '/poster_godzilla.jpg',
+        'Thriller': '/poster_oldboy.jpg',
     };
     
     return genreImages[genre] || '/TheBatmanPoster.jpg';
@@ -40,6 +40,7 @@ export default function Genre({text, imageUrl} : GenreProps) {
                     fill
                     className="object-cover"
                     priority
+                    sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black group-hover:bg-black/60" />
                 <div className="absolute inset-0 flex items-center justify-center z-10 group-hover:scale-102 transition-all">

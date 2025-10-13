@@ -18,7 +18,7 @@ export default function FiltersGenreButton({ genre, selected, onChange }: Filter
       />
       <label
         htmlFor={genre}
-        className="inline-flex px-4 py-2 border-2 border-acm-pink rounded-full cursor-pointer select-none transition duration-200 text-acm-pink peer-checked:bg-acm-pink peer-checked:text-black  font-bold"
+        className="inline-flex px-4 py-2 border-2 border-acm-pink rounded-full cursor-pointer select-none transition duration-100 text-acm-pink peer-checked:bg-acm-pink peer-checked:text-black font-bold"
       >
         {genre}
       </label>

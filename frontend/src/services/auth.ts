@@ -12,8 +12,13 @@ export interface RegisterRequest {
   lastName: string;
   phoneNumber: string;
   address?: string;
-  state: string;
-  country: string;
+  state?: string;
+  country?: string;
+  // Optional payment method fields (CVV excluded for security)
+  cardType?: string;
+  cardNumber?: string;
+  expirationDate?: string;
+  billingCity?: string;
 }
 
 export interface AuthResponse {

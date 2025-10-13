@@ -3,6 +3,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Seat-related CSS variables */
+  --seat-gray: #b6b6b6;
+  --seat-selected: #FE478A;
+  --seat-occupied: #3E3B3B;
+  --seat-shadow: 0 0 20px;
 }
 
 @theme {
@@ -30,6 +36,7 @@
   }
 }
 
+/* Used in MovieCardsGrid.tsx */
 .acm-gradient {
   background: linear-gradient(to right, #FF478B, #FF5C33);
   -webkit-background-clip: text;
@@ -37,6 +44,103 @@
   background-clip: text;
   color: transparent;
 }
+
+/* Enhanced button styles for better UX */
+
+/* Primary button - Active state: seats page "Continue with X seats" (when seats selected), ticket-age page "CHECKOUT" (when tickets match seats), hero promo "Claim Offer" */
+.btn-primary {
+  background: linear-gradient(135deg, #FF478B 0%, #FF5C33 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px 0 rgba(255, 71, 139, 0.3);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-width: 12rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px 0 rgba(255, 71, 139, 0.4);
+  background: linear-gradient(135deg, #FF5C33 0%, #FF478B 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 14px 0 rgba(255, 71, 139, 0.3);
+}
+
+.btn-primary:disabled {
+  background: #6B7280;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-primary:disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background: #6B7280;
+}
+
+/* Secondary button - Disabled state: seats page "Continue with X seats" (when no seats selected), ticket-age page "CHECKOUT" (when not enough tickets) */
+.btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid #FF478B;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-width: 12rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background: #FF478B;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px 0 rgba(255, 71, 139, 0.3);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary:disabled {
+  border-color: #6B7280;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary:disabled:hover {
+  background: transparent;
+  border-color: #6B7280;
+  color: #9CA3AF;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Note: Counter button styles moved to ticket-age.module.css for better organization */
 
 body {
   background: var(--background);

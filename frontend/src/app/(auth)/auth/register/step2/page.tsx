@@ -46,12 +46,13 @@ export default function RegisterStep2Page() {
     <div className="min-h-screen bg-black">
       <NavBar />
       
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 pt-16">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Create an Account</h1>
-            <p className="text-gray-400">Step 2 of 3</p>
-          </div>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-8 shadow-xl">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-white">Create an Account</h1>
+              <p className="text-white/70 text-sm mt-1">Step 2 of 3</p>
+            </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -64,7 +65,7 @@ export default function RegisterStep2Page() {
                 value={data.firstName}
                 onChange={(e) => updateData({ firstName: e.target.value })}
                 placeholder="Input text"
-                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.firstName ? 'border-2 border-red-500' : ''}`}
+                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.firstName ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
                 required
               />
               {errors.firstName && <p className="text-red-400 text-sm mt-1">{errors.firstName}</p>}
@@ -80,7 +81,7 @@ export default function RegisterStep2Page() {
                 value={data.lastName}
                 onChange={(e) => updateData({ lastName: e.target.value })}
                 placeholder="Input text"
-                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.lastName ? 'border-2 border-red-500' : ''}`}
+                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.lastName ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
                 required
               />
               {errors.lastName && <p className="text-red-400 text-sm mt-1">{errors.lastName}</p>}
@@ -96,28 +97,29 @@ export default function RegisterStep2Page() {
                 value={data.phoneNumber}
                 onChange={(e) => updateData({ phoneNumber: e.target.value })}
                 placeholder="Input text"
-                className={`w-full px-4 py-3 bg-white text-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 placeholder-gray-500 ${errors.phoneNumber ? 'border-2 border-red-500' : ''}`}
+                className={`w-full px-4 py-3 rounded-md bg-white/10 border ${errors.phoneNumber ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
                 required
               />
               {errors.phoneNumber && <p className="text-red-400 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
 
-            <div className="flex space-x-4">
-              <button
-                type="button"
-                onClick={handleGoBack}
-                className="flex-1 bg-transparent border border-gray-600 text-white py-3 rounded-full font-semibold hover:bg-gray-800 transition-all"
-              >
-                Go Back
-              </button>
+            <div className="flex flex-col space-y-3 pt-4">
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 text-white py-3 rounded-full font-semibold hover:from-red-600 hover:to-pink-600 transition-all"
+                className="w-full bg-gradient-to-r from-acm-pink to-acm-orange text-white py-3 px-6 rounded-lg font-semibold hover:brightness-110 transition-all duration-200 shadow-lg hover:shadow-acm-pink/25"
               >
                 Continue
               </button>
+              <button
+                type="button"
+                onClick={handleGoBack}
+                className="w-full bg-transparent border border-white/20 text-white/80 py-3 px-6 rounded-lg font-medium hover:bg-white/5 hover:text-white transition-all duration-200"
+              >
+                Go Back
+              </button>
             </div>
           </form>
+          </div>
         </div>
       </div>
     </div>
