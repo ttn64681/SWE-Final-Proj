@@ -2,14 +2,13 @@ package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
-import com.acm.cinema_ebkg_system.dto.user.UserInfo;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Encrypt function
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.List;
+import java.util.UUID;
+import java.time.LocalDateTime;
 
 /**
  * User Service - Business logic layer for user operations
@@ -38,7 +37,10 @@ public class UserService {
     // ========== DEPENDENCY INJECTION ==========
     
     @Autowired
-    private UserRepository userRepository;  // Data access layer for user operations
+    private UserRepository userRepository;
+    
+    @Autowired
+    private EmailService emailService;  // Data access layer for user operations
 
     // ========== SECURITY COMPONENTS ==========
     
@@ -70,16 +72,20 @@ public class UserService {
      * @throws RuntimeException if email already exists
      */
     public User registerUser(User user) {
-        // Step 1: Check if user already exists (prevent duplicate accounts)
+        // Step 1: Normalize email to lowercase for consistency
+        String normalizedEmail = user.getEmail().toLowerCase().trim();
+        user.setEmail(normalizedEmail);
+        
+        // Step 2: Check if user already exists (prevent duplicate accounts)
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User with email " + user.getEmail() + " already exists");
         }
 
-        // Step 2: Hash the plain text password using BCrypt (includes salt)
+        // Step 3: Hash the plain text password using BCrypt (includes salt)
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
 
-        // Step 3: Save the user to database (timestamps set automatically via @PrePersist)
+        // Step 4: Save the user to database (timestamps set automatically via @PrePersist)
         return userRepository.save(user);
     }
 
@@ -104,17 +110,20 @@ public class UserService {
      * @throws RuntimeException if user not found or password invalid
      */
     public User authenticateUser(String email, String password) {
-        // Step 1: Find user by email address
-        Optional<User> userOptional = userRepository.findByEmail(email);
+        // Step 1: Normalize email to lowercase for consistency
+        String normalizedEmail = email.toLowerCase().trim();
         
-        // Step 2: Verify user exists
+        // Step 2: Find user by email address
+        Optional<User> userOptional = userRepository.findByEmail(normalizedEmail);
+        
+        // Step 3: Verify user exists
         if (userOptional.isEmpty()) {
             throw new RuntimeException("User not found");
         }
 
         User user = userOptional.get();
         
-        // Step 3: Compare provided password with stored BCrypt hash
+        // Step 4: Compare provided password with stored BCrypt hash
         // BCrypt.matches() is timing attack resistant
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
@@ -133,7 +142,8 @@ public class UserService {
      * @throws RuntimeException if user not found
      */
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+        String normalizedEmail = email.toLowerCase().trim();
+        return userRepository.findByEmail(normalizedEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -149,37 +159,78 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // ========== USER DATA UPDATE ==========
+    // ========== EMAIL VERIFICATION ==========
+    
+    /**
+     * Generate verification token and send verification email
+     * 
+     * @param user User to generate token for
+     * @return String Generated verification token
+     */
+    public String generateVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expirationTime = LocalDateTime.now().plusHours(24);
+        user.setVerificationToken(token);
+        user.setVerificationTokenExpiresAt(expirationTime);
+        user.setActive(false);
+        User savedUser = userRepository.save(user);
+        
+        // DEBUG: Log token info
+        System.out.println("=== VERIFICATION TOKEN GENERATED ===");
+        System.out.println("User Email: " + savedUser.getEmail());
+        System.out.println("Token Generated: " + token);
+        System.out.println("Token in DB: " + savedUser.getVerificationToken());
+        System.out.println("Expires At: " + savedUser.getVerificationTokenExpiresAt());
+        System.out.println("====================================");
+        
+        emailService.sendVerificationEmail(user.getEmail(), token);
+        return token;
+    }
 
-    public User updatePersonalInfo(Long id, UserInfo dtoUser) {
-        User user = getUserById(id);
-        String firstName = dtoUser.getFirstName();
-        String lastName = dtoUser.getLastName();
-        String address = dtoUser.getAddress();
-        String country = dtoUser.getCountry();
-        String state = dtoUser.getState();
-        String phoneNumber = dtoUser.getPhoneNumber();
-
-        if (firstName != null) { user.setFirstName(dtoUser.getFirstName()); }
-        if (lastName != null) { user.setLastName(dtoUser.getLastName()); }
-        if (address != null) { user.setAddress(dtoUser.getAddress()); }
-        if (country != null) { user.setCountry(dtoUser.getCountry()); }
-        if (state != null) { user.setState(dtoUser.getState()); }
-        if (phoneNumber != null) { user.setPhoneNumber(dtoUser.getPhoneNumber()); }
-
-    /*  user.setAddress(address);
-        user.setPhoneNumber(phoneNumber); */
-
+    /**
+     * Verify email using token
+     * 
+     * @param token Verification token
+     * @return User Verified user
+     */
+    public User verifyEmail(String token) {
+        // DEBUG: Log verification attempt
+        System.out.println("=== VERIFICATION ATTEMPT ===");
+        System.out.println("Token Received: " + token);
+        System.out.println("Token Length: " + token.length());
+        
+        Optional<User> userOptional = userRepository.findByVerificationToken(token);
+        if (userOptional.isEmpty()) {
+            System.out.println("Result: TOKEN NOT FOUND IN DATABASE");
+            System.out.println("===========================");
+            throw new RuntimeException("Invalid verification token. This link may have already been used. If you already verified your email, please try logging in.");
+        }
+        
+        User user = userOptional.get();
+        System.out.println("Result: TOKEN FOUND for user: " + user.getEmail());
+        System.out.println("===========================");
+        
+        if (user.getVerificationTokenExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Verification token has expired. Please request a new verification email.");
+        }
+        
+        user.setActive(true);
+        user.setVerificationToken(null);
+        user.setVerificationTokenExpiresAt(null);
         return userRepository.save(user);
     }
 
-    // ========== ADMIN ONLY OPERATIONS ==========
-
     /**
-     * Retrieve all users in the system (for admin use)
-     * * @return List<User> List of all users
+     * Resend verification email
+     * 
+     * @param email User's email address
+     * @return String New verification token
      */
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public String resendVerificationEmail(String email) {
+        User user = getUserByEmail(email);
+        if (user.isActive()) {
+            throw new RuntimeException("User is already verified");
+        }
+        return generateVerificationToken(user);
     }
 }

@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Afacad, Red_Rose, Pacifico } from 'next/font/google';
 import { FiltersProvider } from '@/contexts/FiltersContext';
-import { AuthProvider } from '@/contexts/AuthContext';
-import QueryProvider from '@/contexts/QueryProvider';
 
 export const metadata: Metadata = {
   title: 'ACM Actual Cinema Movies',
@@ -31,6 +29,7 @@ const pacifico = Pacifico({
   subsets: ['latin'],
 });
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,14 +37,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`}>
-        <QueryProvider>
-          <AuthProvider>
-            <FiltersProvider>
-              {children}
-            </FiltersProvider>
-          </AuthProvider>
-        </QueryProvider>
+      <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`} suppressHydrationWarning={true}>
+        <FiltersProvider>
+          {children}
+        </FiltersProvider>
       </body>
     </html>
   );
