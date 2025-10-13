@@ -62,4 +62,9 @@ public class UserController {
     public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) {
         return userService.addPaymentInfo(userId, dtoPayment);
     }
+
+    @PutMapping("/{userId}/payment/{paymentId}")
+    public User updatePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId, @RequestBody PaymentRequest dtoPayment) {
+        return userService.updatePaymentInfo(userId, paymentId, dtoPayment);
+    }
 }
