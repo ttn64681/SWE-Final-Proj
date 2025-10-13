@@ -556,6 +556,14 @@ fi
 # 3. (command1; command2)  →  run both commands, output both results
 # 4. | crontab -  →  pipe combined output to crontab (install new crontab)
 # Result: preserves existing jobs and adds new one
+
+# * * * * * command
+# │ │ │ │ │
+# │ │ │ │ └─── Day of week (0-7, 0 and 7 = Sunday)
+# │ │ │ └───── Month (1-12)
+# │ │ └─────── Day of month (1-31)
+# │ └───────── Hour (0-23)
+# └─────────── Minute (0-59)
 ```
 
 ## Installation Guide
