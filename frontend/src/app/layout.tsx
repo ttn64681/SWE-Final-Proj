@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`}>
+      <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`} suppressHydrationWarning={true}>
         <FiltersProvider>
           {children}
         </FiltersProvider>
