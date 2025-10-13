@@ -246,18 +246,20 @@ public class UserService {
         List<PaymentInfo> userPaymentInfos = user.getPaymentInfos();        
         
         // Checks to see if passed in payment info ID matches the user's payment info ID
-        int counter = 0;    
+        int counter = 0;
+        int index = -1;
         for (PaymentInfo currentPaymentInfo : userPaymentInfos) {
 
             // Removed payment info if match found
             if (currentPaymentInfo.getPayment_info_id() == paymentInfoId) {
-                
-                List<PaymentInfo> newPaymentInfos = user.getPaymentInfos();
-                newPaymentInfos.remove(counter);
-                user.setPaymentInfos(newPaymentInfos);
+                index = counter;
             }
             counter++;
         }
+
+        List<PaymentInfo> newPaymentInfos = user.getPaymentInfos();
+        newPaymentInfos.remove(index);
+        user.setPaymentInfos(newPaymentInfos);
 
         return userRepository.save(user);
     }
