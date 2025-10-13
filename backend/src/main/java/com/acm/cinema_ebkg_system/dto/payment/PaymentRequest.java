@@ -13,5 +13,5 @@ public class PaymentRequest {
     
     private Long card_number;
     private String billing_address;
-    private LocalDate expiration_date;    
+    private LocalDate expiration_date;
 }

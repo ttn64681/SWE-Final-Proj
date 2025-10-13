@@ -196,6 +196,48 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User updatePaymentInfo(Long userId, Long paymentInfoId, PaymentRequest dtoPayment) {
+
+        // Gets user and their associated payment information (0-3)
+        User user = getUserById(userId);
+        List<PaymentInfo> userPaymentInfos = user.getPaymentInfos();
+        PaymentInfo updatedPaymentInfo = null;
+        
+        // Checks to see if passed in payment info ID matches the user's payment info ID
+        int counter = 0;
+        int index = -1;
+        for (PaymentInfo currentPaymentInfo : userPaymentInfos) {
+
+            // If found a match, sets the currentPaymentInfo to a new "updatedPaymentInfo" object
+            if (currentPaymentInfo.getPayment_info_id() == paymentInfoId) {
+                updatedPaymentInfo = currentPaymentInfo;
+                index = counter;
+            }
+            counter++;
+        }
+
+        // Checks to see if the payment info ID was found
+        if (updatedPaymentInfo != null) {
+
+            // "updatedPaymentInfo" object is updated to whatever is passed in through dtoPayment
+            Long cardNumber = dtoPayment.getCard_number();
+            String billingAddress = dtoPayment.getBilling_address();
+            LocalDate expirationDate = dtoPayment.getExpiration_date();
+            
+            if (cardNumber != null) updatedPaymentInfo.setCard_number(cardNumber);
+            if (billingAddress != null) updatedPaymentInfo.setBilling_address(billingAddress);
+            if (expirationDate != null) updatedPaymentInfo.setExpiration_date(expirationDate);
+            
+            // Replace the "currentPaymentInfo" with "updatedPaymentInfo"
+            List<PaymentInfo> updatedPaymentInfos = user.getPaymentInfos();
+            updatedPaymentInfos.remove(index);
+            updatedPaymentInfos.add(index, updatedPaymentInfo);
+            user.setPaymentInfos(updatedPaymentInfos);
+        }
+
+        return userRepository.save(user);
+    }
+
     // ========== INCOMPLETE - TO BE IMPLEMENTED ==========
     // public User updatePaymentInfo(Long id, UserInfo dtoUser, PaymentRequest dtoPayment) {
     //     User user = getUserById(dtoPayment.getUser_id());
