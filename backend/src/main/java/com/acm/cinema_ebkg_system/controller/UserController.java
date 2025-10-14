@@ -1,8 +1,10 @@
 package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.model.PaymentInfo;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
+import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,25 +21,27 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     
+    // Dependency injection of UserService for business logic
     private final UserService userService;
 
+    // Constructor injection - Spring automatically provides UserService instance
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    // Return list of users (for admin use)
+    // GET /api/users/ - Return list of all users (for admin use)
     @GetMapping("/")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // Return user by ID
+    // GET /api/users/{userId} - Return user by ID
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
 
-    // Return user's name by ID
+    // GET /api/users/{userId}/name - Return user's full name by ID
     @GetMapping("/{userId}/name")
     public String getUserName(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
@@ -54,5 +58,18 @@ public class UserController {
     @PutMapping("/{userId}/password")
     public User updatePassword(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.resetPassword(userId, user);
+    }
+    
+    // GET /api/users/{userId}/payment - Get user's payment information
+    @GetMapping("/{userId}/payment")
+    public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+        return user.getPaymentInfos();
+    }
+
+    // POST /api/users/{userId}/payment - Add new payment info for user
+    @PostMapping("/{userId}/payment")
+    public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) {
+        return userService.addPaymentInfo(userId, dtoPayment);
     }
 }
