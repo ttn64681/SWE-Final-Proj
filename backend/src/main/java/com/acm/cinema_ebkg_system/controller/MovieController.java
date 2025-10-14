@@ -20,9 +20,11 @@ import java.util.List;
 @RequestMapping("/api/movies")
 public class MovieController {
 
+    // Dependency injection of services for business logic
     private final MovieService movieService;
     private final ShowTimeService showTimeService;
 
+    // Constructor injection - Spring automatically provides service instances
     public MovieController(MovieService movieService, ShowTimeService showTimeService) {
         this.movieService = movieService;
         this.showTimeService = showTimeService;
