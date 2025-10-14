@@ -270,8 +270,8 @@ public class UserService {
      * @throws RuntimeException if user not found
      */
 
-    public User resetPassword(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
-        User user = getUserById(userId);
+    public User resetForgottenPassword(String email, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
+        User user = getUserByEmail(email);
 
         // Get the new password from the DTO
         String newPassword = userInfo.getPassword();
@@ -304,15 +304,27 @@ public class UserService {
      * @throws RuntimeException if user not found
      */
 
-    public Boolean confirmPassword(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
-        User user = getUserById(userId);
+    public User changePassword(String email, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
+        User user = getUserByEmail(email);
 
-        // Get the password the user entered (using the DTO)
-        String inputPassword = userInfo.getPassword();
+        // Get the new password from the DTO
+        String newPassword = userInfo.getPassword();
 
-        // Get the correct password from the database
-        String correctPassword = user.getPassword();
+        // Hash the plain text password using BCrypt
+        String hashedPassword = passwordEncoder.encode(newPassword);
 
+        // Update the password
+        user.setPassword(hashedPassword);
+
+        System.out.println("New password: " + newPassword);
+        System.out.println("New hashed password: " + hashedPassword);
+
+        // Save the user to database
+        User savedUser = userRepository.save(user);
+
+        System.out.println("Saved hashed password: " + savedUser.getPassword());
+        System.out.println("Passwords match: " + passwordEncoder.matches(newPassword, savedUser.getPassword()));
+        return savedUser;
     }
 
     // ========== EMAIL VERIFICATION ==========
