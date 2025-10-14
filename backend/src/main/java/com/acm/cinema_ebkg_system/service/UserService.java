@@ -170,12 +170,12 @@ public class UserService {
         String state = dtoUser.getState();
         String phoneNumber = dtoUser.getPhoneNumber();
 
-        if (firstName != null) { user.setFirstName(dtoUser.getFirstName()); }
-        if (lastName != null) { user.setLastName(dtoUser.getLastName()); }
-        if (address != null) { user.setAddress(dtoUser.getAddress()); }
-        if (country != null) { user.setCountry(dtoUser.getCountry()); }
-        if (state != null) { user.setState(dtoUser.getState()); }
-        if (phoneNumber != null) { user.setPhoneNumber(dtoUser.getPhoneNumber()); }
+        if (firstName != null) { user.setFirstName(firstName); }
+        if (lastName != null) { user.setLastName(lastName); }
+        if (address != null) { user.setAddress(address); }
+        if (country != null) { user.setCountry(country); }
+        if (state != null) { user.setState(state); }
+        if (phoneNumber != null) { user.setPhoneNumber(phoneNumber); }
 
         return userRepository.save(user);
     }
@@ -183,19 +183,29 @@ public class UserService {
     // ========== PAYMENT INFO MANAGEMENT ==========
 
     public User addPaymentInfo(Long id, PaymentRequest dtoPayment) {
+        // Get user from database using UserRepository
         User user = getUserById(id);
+        
+        // Create new PaymentInfo object (the model)
         PaymentInfo paymentInfo = new PaymentInfo();
+        
+        // Extract payment data from DTO
         Long cardNumber = dtoPayment.getCard_number();
         String billingAddress = dtoPayment.getBilling_address();
         LocalDate expirationDate = dtoPayment.getExpiration_date();
 
+        // Set payment fields using setters
         paymentInfo.setCard_number(cardNumber);
         paymentInfo.setBilling_address(billingAddress);
         paymentInfo.setExpiration_date(expirationDate);
-        paymentInfo.setUser(user);
+        paymentInfo.setUser(user); // Set the JPA relationship
 
-        if (user.getPaymentInfos().size() < 3) user.getPaymentInfos().add(paymentInfo);
+        // Add to user's payment list (JPA relationship)
+        if (user.getPaymentInfos().size() < 3) {
+            user.getPaymentInfos().add(paymentInfo);
+        }
         
+        // Save user - JPA automatically saves PaymentInfo too! (cascade = CascadeType.ALL)
         return userRepository.save(user);
     }
 
