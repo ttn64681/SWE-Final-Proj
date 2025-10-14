@@ -293,6 +293,28 @@ public class UserService {
         return savedUser;
     }
 
+    /**
+     * Update user's password
+     * 
+     * This method updates a user's password when they request to reset it.
+     * 
+     * @param userId User ID to update
+     * @param userInfo UserInfo DTO containing updated information
+     * @return User Updated user object
+     * @throws RuntimeException if user not found
+     */
+
+    public Boolean confirmPassword(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
+        User user = getUserById(userId);
+
+        // Get the password the user entered (using the DTO)
+        String inputPassword = userInfo.getPassword();
+
+        // Get the correct password from the database
+        String correctPassword = user.getPassword();
+
+    }
+
     // ========== EMAIL VERIFICATION ==========
     
     /**
