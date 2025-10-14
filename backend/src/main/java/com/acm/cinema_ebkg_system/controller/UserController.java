@@ -55,28 +55,6 @@ public class UserController {
         return userService.updatePersonalInfo(userId, user);
     }
 
-    // GET /api/users/{userId}/payment - Get user's payment information
-    @GetMapping("/{userId}/payment")
-    public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
-        return user.getPaymentInfos();
-    }
-
-    // POST /api/users/{userId}/payment - Add new payment info for user
-    @PostMapping("/{userId}/payment")
-    public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) {
-        return userService.addPaymentInfo(userId, dtoPayment);
-    }
-
-    @PutMapping("/{userId}/payment/{paymentId}")
-    public User updatePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId, @RequestBody PaymentRequest dtoPayment) {
-        return userService.updatePaymentInfo(userId, paymentId, dtoPayment);
-    }
-
-    @DeleteMapping("/{userId}/payment/{paymentId}")
-    public User deletePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId) {
-        return userService.deletePaymentInfo(userId, paymentId);        
-    }
     // Reset a user's password
     /* @PutMapping("/{userId}")
     public String updatePassword(@PathVariable Long userId, @RequestBody String newPassword) {
