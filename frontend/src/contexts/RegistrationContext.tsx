@@ -7,17 +7,17 @@ export interface RegistrationData {
   email: string;
   password: string;
   confirmPassword: string;
-  
+
   // Step 2
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  
+
   // // Step 3
   // address: string;
   // state: string;
   // country: string;
-  
+
   // Step 3 - Payment Method (Optional)
   cardType?: string;
   cardNumber?: string;
@@ -26,6 +26,7 @@ export interface RegistrationData {
   billingStreet?: string;
   billingCity?: string;
   billingState?: string;
+  billingZip?: string;
 }
 
 interface RegistrationContextType {
@@ -54,6 +55,7 @@ const initialData: RegistrationData = {
   billingStreet: '',
   billingCity: '',
   billingState: '',
+  billingZip: '',
 };
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
@@ -74,7 +76,7 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
   const [data, setData] = useState<RegistrationData>(initialData);
 
   const updateData = (stepData: Partial<RegistrationData>) => {
-    setData(prev => ({ ...prev, ...stepData }));
+    setData((prev) => ({ ...prev, ...stepData }));
   };
 
   const clearData = () => {
@@ -92,11 +94,7 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
           data.password.length >= 8
         );
       case 2:
-        return !!(
-          data.firstName &&
-          data.lastName &&
-          data.phoneNumber
-        );
+        return !!(data.firstName && data.lastName && data.phoneNumber);
       case 3:
         // return !!(
         //   data.state &&

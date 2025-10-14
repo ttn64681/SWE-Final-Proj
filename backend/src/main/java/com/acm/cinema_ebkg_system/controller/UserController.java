@@ -22,43 +22,47 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     
+    // Dependency injection of UserService for business logic
     private final UserService userService;
 
+    // Constructor injection - Spring automatically provides UserService instance
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    // Return list of users (for admin use)
+    // GET /api/users/ - Return list of all users (for admin use)
     @GetMapping("/")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // Return user by ID
+    // GET /api/users/{userId} - Return user by ID
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
 
-    // Return user's name by ID
+    // GET /api/users/{userId}/name - Return user's full name by ID
     @GetMapping("/{userId}/name")
     public String getUserPassword(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         return user.getFirstName() + " " + user.getLastName();
     }
 
-    // Update a user's personal information
+    // PUT /api/users/{userId} - Update a user's personal information
     @PutMapping("/{userId}")
     public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.updatePersonalInfo(userId, user);
     }
 
+    // GET /api/users/{userId}/payment - Get user's payment information
     @GetMapping("/{userId}/payment")
     public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         return user.getPaymentInfos();
     }
 
+    // POST /api/users/{userId}/payment - Add new payment info for user
     @PostMapping("/{userId}/payment")
     public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) {
         return userService.addPaymentInfo(userId, dtoPayment);
