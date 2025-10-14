@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors; // For converting List<Movie> to List<MovieSummary>
 
-@Service
+@Service // Spring service bean for business logic layer
 public class MovieService {
 
+    // Dependency injection of MovieRepository for database operations
     private final MovieRepository movieRepository;
 
+    // Constructor injection - Spring automatically provides MovieRepository instance
     public MovieService(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
@@ -45,6 +47,7 @@ public class MovieService {
      * Example JSON: [ { "movie_id": 2, "title": "Superman", ... }, ... ]
      */
     public List<Movie> getNowPlayingOrdered() {
+        // Use repository custom query to get NOW_PLAYING movies ordered by show date
         return movieRepository.findNowPlayingOrderedByNextShowDate();
     }
 
@@ -54,6 +57,7 @@ public class MovieService {
      * Example JSON: [ { "movie_id": 12, "title": "Materialists", ... }, ... ]
      */
     public List<Movie> getUpcomingOrdered() {
+        // Use repository custom query to get UPCOMING movies ordered by show date
         return movieRepository.findUpcomingOrderedByFirstShowDate();
     }
 
@@ -63,8 +67,10 @@ public class MovieService {
      * Example JSON: [ { "movie_id": 5, "status": "NOW_PLAYING", ... }, ... ]
      */
     public List<Movie> searchNowPlayingOrdered(String title, String genres, Integer month, Integer day, Integer year) {
+        // Convert blank strings to null for proper SQL handling
         String t = (title != null && !title.isBlank()) ? title : null;
         String g = (genres != null && !genres.isBlank()) ? genres : null;
+        // Use repository custom query with filters
         return movieRepository.searchNowPlayingOrdered(t, g, month, day, year);
     }
 
@@ -74,8 +80,10 @@ public class MovieService {
      * Example JSON: [ { "movie_id": 9, "status": "UPCOMING", ... }, ... ]
      */
     public List<Movie> searchUpcomingOrdered(String title, String genres, Integer month, Integer day, Integer year) {
+        // Convert blank strings to null for proper SQL handling
         String t = (title != null && !title.isBlank()) ? title : null; // title -> null if null/blank
         String g = (genres != null && !genres.isBlank()) ? genres : null; // genres -> null if null/blank
+        // Use repository custom query with filters
         return movieRepository.searchUpcomingOrdered(t, g, month, day, year); 
     }
 
@@ -85,6 +93,7 @@ public class MovieService {
      * Example JSON: ["Action", "Comedy", "Drama", "Horror", "Sci-Fi"]
      */
     public List<String> getAvailableGenres() {
+        // Use repository custom query to get distinct genres from all movies
         return movieRepository.findAllDistinctGenres();
     }
 
@@ -92,6 +101,7 @@ public class MovieService {
      * Simple test method - just get all movies without complex queries.
      */
     public List<Movie> getAllMoviesSimple() {
+        // Use repository built-in method to get all movies from database
         return movieRepository.findAll();
     }
 
