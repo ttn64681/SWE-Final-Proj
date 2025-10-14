@@ -172,6 +172,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    // ========== USER DATA UPDATE ==========
+
     /**
      * Update user's personal information
      * 
@@ -206,6 +208,40 @@ public class UserService {
         }
         
         return userRepository.save(user);
+    }
+
+    /**
+     * Update user's password
+     * 
+     * This method updates a user's password when they request to reset it.
+     * 
+     * @param userId User ID to update
+     * @param userInfo UserInfo DTO containing updated information
+     * @return User Updated user object
+     * @throws RuntimeException if user not found
+     */
+
+    public User resetPassword(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
+        User user = getUserById(userId);
+
+        // Get the new password from the DTO
+        String newPassword = userInfo.getPassword();
+
+        // Hash the plain text password using BCrypt
+        String hashedPassword = passwordEncoder.encode(newPassword);
+
+        // Update the password
+        user.setPassword(hashedPassword);
+
+        System.out.println("New password: " + newPassword);
+        System.out.println("New hashed password: " + hashedPassword);
+
+        // Save the user to database
+        User savedUser = userRepository.save(user);
+
+        System.out.println("Saved hashed password: " + savedUser.getPassword());
+        System.out.println("Passwords match: " + passwordEncoder.matches(newPassword, savedUser.getPassword()));
+        return savedUser;
     }
 
     // ========== EMAIL VERIFICATION ==========

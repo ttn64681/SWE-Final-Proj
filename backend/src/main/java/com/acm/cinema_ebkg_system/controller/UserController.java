@@ -39,20 +39,20 @@ public class UserController {
 
     // Return user's name by ID
     @GetMapping("/{userId}/name")
-    public String getUserPassword(@PathVariable Long userId) {
+    public String getUserName(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         return user.getFirstName() + " " + user.getLastName();
     }
 
     // Update a user's personal information
-    @PutMapping("/{userId}")
+    @PutMapping("/{userId}/info")
     public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.updatePersonalInfo(userId, user);
     }
 
     // Reset a user's password
-    /* @PutMapping("/{userId}")
-    public String updatePassword(@PathVariable Long userId, @RequestBody String newPassword) {
-        return userService.resetPassword(userId, newPassword);
-    }*/
+    @PutMapping("/{userId}/password")
+    public User updatePassword(@PathVariable Long userId, @RequestBody UserInfo user) {
+        return userService.resetPassword(userId, user);
+    }
 }
