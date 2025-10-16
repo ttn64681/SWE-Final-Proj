@@ -260,9 +260,9 @@ public class UserService {
     }
 
     /**
-     * Update user's password
+     * Reset a user's password
      * 
-     * This method updates a user's password when they request to reset it.
+     * This method resets a user's password when they have forgotten it and need it to log in.
      * 
      * @param userId User ID to update
      * @param userInfo UserInfo DTO containing updated information
@@ -270,11 +270,12 @@ public class UserService {
      * @throws RuntimeException if user not found
      */
 
-    public User resetForgottenPassword(String email, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
-        User user = getUserByEmail(email);
+    public User resetForgottenPassword(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
+        // Identify the registered user
+        User user = getUserById(userId);
 
         // Get the new password from the DTO
-        String newPassword = userInfo.getPassword();
+        String newPassword = userInfo.getNewPassword();
 
         // Hash the plain text password using BCrypt
         String hashedPassword = passwordEncoder.encode(newPassword);
@@ -296,7 +297,7 @@ public class UserService {
     /**
      * Update user's password
      * 
-     * This method updates a user's password when they request to reset it.
+     * This method changes a user's password when they request to reset it.
      * 
      * @param userId User ID to update
      * @param userInfo UserInfo DTO containing updated information
@@ -304,27 +305,38 @@ public class UserService {
      * @throws RuntimeException if user not found
      */
 
-    public User changePassword(String email, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
-        User user = getUserByEmail(email);
+    public User changePassword(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
+        // Identify the logged-in user
+        User user = getUserById(userId);
 
-        // Get the new password from the DTO
-        String newPassword = userInfo.getPassword();
+        // Get the current password and new password input from the DTO
+        String currentPassword = userInfo.getCurrentPassword();
+        String newPassword = userInfo.getNewPassword();
 
-        // Hash the plain text password using BCrypt
-        String hashedPassword = passwordEncoder.encode(newPassword);
+        // Validate that the current password is correct
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            System.out.println("Incorrect password!");
+            throw new RuntimeException("Incorrect password!");
 
-        // Update the password
-        user.setPassword(hashedPassword);
+        // If correct, encrypt the new password and save it in the database
+        } else {
 
-        System.out.println("New password: " + newPassword);
-        System.out.println("New hashed password: " + hashedPassword);
+            // Hash the new password using BCrypt
+            String hashedPassword = passwordEncoder.encode(newPassword);
 
-        // Save the user to database
-        User savedUser = userRepository.save(user);
+            // Update the password
+            user.setPassword(hashedPassword);
 
-        System.out.println("Saved hashed password: " + savedUser.getPassword());
-        System.out.println("Passwords match: " + passwordEncoder.matches(newPassword, savedUser.getPassword()));
-        return savedUser;
+            System.out.println("New password: " + newPassword);
+            System.out.println("New hashed password: " + hashedPassword);
+
+            // Save the user to database
+            User savedUser = userRepository.save(user);
+
+            System.out.println("Saved hashed password: " + savedUser.getPassword());
+            System.out.println("Passwords match: " + passwordEncoder.matches(newPassword, savedUser.getPassword()));
+            return savedUser;
+        }
     }
 
     // ========== EMAIL VERIFICATION ==========

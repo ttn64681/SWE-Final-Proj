@@ -48,16 +48,22 @@ public class UserController {
         return user.getFirstName() + " " + user.getLastName();
     }
 
-    // Update a user's personal information
+    // PUT /api/users/{userId}/info - Update a user's personal information
     @PutMapping("/{userId}/info")
     public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.updatePersonalInfo(userId, user);
     }
 
-    // Reset a user's password
-    @PutMapping("/{userId}/password")
-    public User updatePassword(@PathVariable Long userId, @RequestBody UserInfo user) {
-        return userService.resetPassword(userId, user);
+    // PUT /api/users/{userId}/forgot-password - Reset a user's forgotten password (Login)
+    @PutMapping("/{userId}/forgot-password")
+    public User resetPassword(@PathVariable Long userId, @RequestBody UserInfo user) {
+        return userService.resetForgottenPassword(userId, user);
+    }
+
+    // PUT /api/users/{userId}/change-password - Change a user's password (Edit Profile)
+    @PutMapping("/{userId}/change-password")
+    public User changePassword(@PathVariable Long userId, @RequestBody UserInfo user) {
+        return userService.changePassword(userId, user);
     }
     
     // GET /api/users/{userId}/payment - Get user's payment information
