@@ -10,8 +10,12 @@ interface Movie {
   title: string; 
   date: string;
   time: string;
+  _meta?: {
+    showtimes?: Array<{date: string, time: string, ampm: string}>;
+  };
 }
 
+// hardcoded movies for now 
 const moviesList: Movie[] = [
   { id: 1, title: 'Oldboy', date: '12/15/2025', time: '7:30PM' },
   { id: 2, title: 'Him', date: '12/20/2025', time: '8:00PM' },
@@ -29,41 +33,43 @@ const moviesList: Movie[] = [
 export default function AdminMoviesPage() {
   const [movies, setMovies] = useState(moviesList);
 
-  // Load movies from sessionStorage on component mount
+  // load saved movies on mount
   useEffect(() => {
     const savedMovies = sessionStorage.getItem('movies');
     if (savedMovies) {
-      const parsedMovies = JSON.parse(savedMovies);
-      // Merge with initial movies list, avoiding duplicates
-      const allMovies = [...moviesList];
-      parsedMovies.forEach((savedMovie: Movie) => {
-        // Only add if not already in the initial list
-        if (!moviesList.some(movie => movie.id === savedMovie.id)) {
-          allMovies.push(savedMovie);
-        }
-      });
-      setMovies(allMovies);
+      try {
+        const parsedMovies = JSON.parse(savedMovies);
+        const allMovies = [...moviesList];
+        parsedMovies.forEach((savedMovie: Movie) => {
+          if (!moviesList.some(movie => movie.id === savedMovie.id)) {
+            allMovies.push(savedMovie);
+          }
+        });
+        setMovies(allMovies);
+      } catch (error) {
+        console.log('error parsing movies:', error);
+      }
     }
   }, []);
 
-  // Remove movie from list
+  // delete a movie
   const remove = (movieId: number) => {
     const updatedMovies = movies.filter(movie => movie.id !== movieId);
     setMovies(updatedMovies);
-    // Only save non-initial movies to sessionStorage
     const nonInitialMovies = updatedMovies.filter(movie => 
       !moviesList.some(initialMovie => initialMovie.id === movie.id)
     );
     sessionStorage.setItem('movies', JSON.stringify(nonInitialMovies));
   };
+
   return (
     <div className="text-white" style={{ backgroundColor: '#1C1C1C', minHeight: '100vh' }}>
       <NavBar />
-      <div className="h-30 " />
+      <div className="h-30" />
 
       {/* Tabs */}
       <div className="flex items-center justify-center gap-10 text-[30px] font-red-rose mt-2 mb-18">
-        <Link href="/admin/movies" className="relative " style={{ color: '#FF478B', fontWeight: 'bold' }}>
+        <Link href="/admin/movies" className="relative" style={{ color: '#FF478B', fontWeight: 'bold' }}>
           Movies & Showtimes
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
         </Link>
@@ -79,37 +85,45 @@ export default function AdminMoviesPage() {
             borderColor: '#FF478B',
             backgroundColor: '#242424',
             scrollbarWidth: 'thin',
-            scrollbarColor: '#9CA3AF #E5E7EB' }}>
+            scrollbarColor: '#9CA3AF #E5E7EB' 
+          }}>
           <ul>
-            {movies.map((movie, index) => {
-              // Check if this is a duplicate movie title (same title as previous entry)
-              const isDuplicateTitle = index > 0 && movies[index - 1].title === movie.title;
+            {movies.flatMap((movie, movieIndex) => {
+              // get showtimes or use default
+              const showtimes = movie._meta?.showtimes || [{ date: movie.date, time: movie.time, ampm: movie.time.includes('AM') ? 'AM' : 'PM' }];
               
-              return (
-                <li key={movie.id} className="flex items-center py-3 sm:py-4">
-                  <div className="flex-1 text-gray-200 font-afacad px-25">
-                    {isDuplicateTitle ? '' : movie.title}
-                  </div>
-                  <div className="absolute left-1/2 transform -translate-x-1/2 text-gray-300 hidden sm:block font-afacad">
-                    {movie.date} {movie.time}
-                  </div>
-                  <div className="flex items-center gap-3 text-gray-300 px-25 ml-auto">
-                    {!isDuplicateTitle && (
-                      <>
-                        <button title="Edit movie" className="hover:text-white transition-colors">
-                          <PiPencilSimple className="text-xl" />
-                        </button>
-                        <button 
-                          title="Remove" 
-                          className="hover:text-white transition-colors"
-                          onClick={() => remove(movie.id)} >
-                          <PiX className="text-xl" />
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </li>
-              );
+              return showtimes.map((showtime, showtimeIndex) => {
+                const isFirst = showtimeIndex === 0;
+                
+                return (
+                  <li key={`${movie.id}-${showtimeIndex}`} className="flex items-center py-3 sm:py-4">
+                    <div className="flex-1 text-gray-200 font-afacad px-25 min-h-[1.5rem]">
+                      {isFirst ? movie.title : ''}
+                    </div>
+                    <div className="absolute left-1/2 transform -translate-x-1/2 text-gray-300 hidden sm:block font-afacad" style={{ textAlign: 'center' }}>
+                      {showtime.date} {showtime.time} {showtime.ampm}
+                    </div>
+                    <div className="flex items-center gap-3 text-gray-300 px-25 ml-auto min-w-[4rem]">
+                      {isFirst && (
+                        <>
+                          <Link href={`/admin/movies/add?edit=${movie.id}`}>
+                            <button title="Edit movie" className="hover:text-white transition-colors">
+                              <PiPencilSimple className="text-xl" />
+                            </button>
+                          </Link>
+                          <button 
+                            title="Remove" 
+                            className="hover:text-white transition-colors"
+                            onClick={() => remove(movie.id)}
+                            style={{ background: 'none', border: 'none' }}>
+                            <PiX className="text-xl" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </li>
+                );
+              });
             })}
           </ul>
         </div>
@@ -128,5 +142,3 @@ export default function AdminMoviesPage() {
     </div>
   );
 }
-
-
