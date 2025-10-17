@@ -9,6 +9,7 @@ import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Encrypt function
+
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -155,6 +156,11 @@ public class UserService {
 
     // ========== USER DATA UPDATE ==========
 
+    /**
+     * Update a user's personal info (used in editing profile or during account creation)
+     * Uses a DTO to update only the params the user requests to change
+     * @return User with updated information
+     */
     public User updatePersonalInfo(Long id, UserInfo dtoUser) {
         User user = getUserById(id);
         String firstName = dtoUser.getFirstName();
@@ -171,51 +177,25 @@ public class UserService {
         if (state != null) { user.setState(state); }
         if (phoneNumber != null) { user.setPhoneNumber(phoneNumber); }
 
-    /*  user.setAddress(address);
-        user.setPhoneNumber(phoneNumber); */
-
         return userRepository.save(user);
     }
 
-    // ========== PAYMENT INFO MANAGEMENT ==========
 
-    public User addPaymentInfo(Long id, PaymentRequest dtoPayment) {
-        // Get user from database using UserRepository
+    /**
+     * Reset a user's password when they request to
+     * @return User with updated password
+     */
+    
+     /* 
+     public String resetPassword(Long id, String newPassword) {
         User user = getUserById(id);
         
-        // Create new PaymentInfo object (the model)
-        PaymentInfo paymentInfo = new PaymentInfo();
+        String oldPassword = user.getPassword();
+
+        userRepository.save(user);
+        return newPassword;
         
-        // Extract payment data from DTO
-        Long cardNumber = dtoPayment.getCard_number();
-        String billingAddress = dtoPayment.getBilling_address();
-        LocalDate expirationDate = dtoPayment.getExpiration_date();
-
-        // Set payment fields using setters
-        paymentInfo.setCard_number(cardNumber);
-        paymentInfo.setBilling_address(billingAddress);
-        paymentInfo.setExpiration_date(expirationDate);
-        paymentInfo.setUser(user); // Set the JPA relationship
-
-        // Add to user's payment list (JPA relationship)
-        if (user.getPaymentInfos().size() < 3) {
-            user.getPaymentInfos().add(paymentInfo);
-        }
-        
-        // Save user - JPA automatically saves PaymentInfo too! (cascade = CascadeType.ALL)
-        return userRepository.save(user);
-    }
-
-    // ========== INCOMPLETE - TO BE IMPLEMENTED ==========
-    // public User updatePaymentInfo(Long id, UserInfo dtoUser, PaymentRequest dtoPayment) {
-    //     User user = getUserById(dtoPayment.getUser_id());
-    //     PaymentInfo paymentInfo = new PaymentInfo();
-    //     Integer cardNumber = dtoPayment.getCard_number();
-    //     String billingAddress = dtoPayment.getBilling_address();
-        
-
-    //     return null;
-    // }
+     } */
 
     // ========== ADMIN ONLY OPERATIONS ==========
 

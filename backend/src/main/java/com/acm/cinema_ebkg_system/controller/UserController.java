@@ -6,6 +6,7 @@ import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,16 +55,9 @@ public class UserController {
         return userService.updatePersonalInfo(userId, user);
     }
 
-    // GET /api/users/{userId}/payment - Get user's payment information
-    @GetMapping("/{userId}/payment")
-    public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
-        return user.getPaymentInfos();
-    }
-
-    // POST /api/users/{userId}/payment - Add new payment info for user
-    @PostMapping("/{userId}/payment")
-    public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) {
-        return userService.addPaymentInfo(userId, dtoPayment);
-    }
+    // Reset a user's password
+    /* @PutMapping("/{userId}")
+    public String updatePassword(@PathVariable Long userId, @RequestBody String newPassword) {
+        return userService.resetPassword(userId, newPassword);
+    }*/
 }
