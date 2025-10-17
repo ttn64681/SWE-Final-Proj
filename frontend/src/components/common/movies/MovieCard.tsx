@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import SelectedMovie from './SelectedMovie';
+import SelectedMovie from './selectedMovie/SelectedMovie';
 import TrailerEmbed from './TrailerEmbed';
 import { BackendMovie } from '@/types/movie';
 import { IoPlay } from 'react-icons/io5';
