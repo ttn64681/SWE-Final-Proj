@@ -44,20 +44,39 @@ public class UserController {
 
     // GET /api/users/{userId}/name - Return user's full name by ID
     @GetMapping("/{userId}/name")
-    public String getUserPassword(@PathVariable Long userId) {
+    public String getUserName(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         return user.getFirstName() + " " + user.getLastName();
     }
 
-    // PUT /api/users/{userId} - Update a user's personal information
-    @PutMapping("/{userId}")
+    // PUT /api/users/{userId}/info - Update a user's personal information
+    @PutMapping("/{userId}/info")
     public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.updatePersonalInfo(userId, user);
     }
 
-    // Reset a user's password
-    /* @PutMapping("/{userId}")
-    public String updatePassword(@PathVariable Long userId, @RequestBody String newPassword) {
-        return userService.resetPassword(userId, newPassword);
-    }*/
+    // PUT /api/users/{userId}/forgot-password - Reset a user's forgotten password (Login)
+    @PutMapping("/{userId}/forgot-password")
+    public User resetPassword(@PathVariable Long userId, @RequestBody UserInfo user) {
+        return userService.resetForgottenPassword(userId, user);
+    }
+
+    // PUT /api/users/{userId}/change-password - Change a user's password (Edit Profile)
+    @PutMapping("/{userId}/change-password")
+    public User changePassword(@PathVariable Long userId, @RequestBody UserInfo user) {
+        return userService.changePassword(userId, user);
+    }
+    
+    // GET /api/users/{userId}/payment - Get user's payment information
+    @GetMapping("/{userId}/payment")
+    public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+        return user.getPaymentInfos();
+    }
+
+    // POST /api/users/{userId}/payment - Add new payment info for user
+    @PostMapping("/{userId}/payment")
+    public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) {
+        return userService.addPaymentInfo(userId, dtoPayment);
+    }
 }
