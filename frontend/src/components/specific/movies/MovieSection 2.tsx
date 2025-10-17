@@ -14,7 +14,10 @@ export default function MovieSection({ title, movies, isLoading }: MovieSectionP
       <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">{title}</h2>
       <WhiteSeparator />
       {isLoading ? (
-        <div className="text-white/60 text-lg px-4 py-8">Loading {title.toLowerCase()} movies...</div>
+        <div className="flex items-center justify-center gap-3 text-white/60 text-lg px-4 py-8">
+          <div className="w-5 h-5 border-2 border-white/30 border-t-acm-pink rounded-full animate-spin"></div>
+          <span>Loading {title.toLowerCase()} movies...</span>
+        </div>
       ) : (
         <MovieCardsGrid movies={movies} />
       )}
