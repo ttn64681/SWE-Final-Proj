@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/common/navBar/NavBar';
-import CinemaLayout from '@/components/specific/booking/CinemaLayout';
+import CinemaLayout from '@/components/specific/booking/seats/CinemaLayout';
 import PromoBanner from '@/components/common/promos/PromoBanner';
 import { useSeats } from '@/hooks/useSeats';
 import styles from './seats.module.css';
