@@ -8,18 +8,30 @@ import { authAPI } from '@/services/auth';
 
 export default function RegisterStep3Page() {
   const { data, updateData, clearData } = useRegistration();
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
     setSubmitError('');
     setIsLoading(true);
 
     try {
-      // Step 3 validation is now optional - payment method can be empty
-      // No required fields validation needed
+      // // Validate required fields
+      // if (!data.state.trim()) {
+      //   setErrors(prev => ({ ...prev, state: 'State is required' }));
+      // }
+      // if (!data.country.trim()) {
+      //   setErrors(prev => ({ ...prev, country: 'Country is required' }));
+      // }
+
+      if (Object.keys(errors).length > 0) {
+        setIsLoading(false);
+        return;
+      }
 
       // Prepare registration data
       const registrationData = {
@@ -38,19 +50,11 @@ export default function RegisterStep3Page() {
       const response = await authAPI.register(registrationData);
 
       if (response.success) {
-        // Store token and user data
-        if (response.token) {
-          localStorage.setItem('authToken', response.token);
-        }
-        if (response.user) {
-          localStorage.setItem('user', JSON.stringify(response.user));
-        }
-
         // Clear registration data
         clearData();
 
-        // Redirect to home page
-        router.push('/auth/login');
+        // Redirect to email verification page with registration flag
+        router.push('/auth/verify-email?from=registration');
       } else {
         setSubmitError(response.message);
       }
@@ -69,13 +73,12 @@ export default function RegisterStep3Page() {
   return (
     <div className="min-h-screen bg-black">
       <NavBar />
-      <div className="flex items-start justify-center min-h-[calc(100vh-80px)] px-4 pt-20 pb-8">
-        <div className="w-full max-w-lg">
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-xl">
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-white">Create an Account</h1>
-              <p className="text-white/70 text-sm mt-1">Step 3 of 3 - Payment Method (Optional)</p>
-            </div>
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">Create an Account</h1>
+            <p className="text-gray-400">Step 3 of 3</p>
+          </div>
 
             {submitError && (
               <div className="mb-4 p-3 bg-red-900/50 border border-red-500 rounded-md">
@@ -250,6 +253,5 @@ export default function RegisterStep3Page() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

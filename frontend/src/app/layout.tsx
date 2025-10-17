@@ -3,6 +3,7 @@ import './globals.css';
 import { Afacad, Red_Rose, Pacifico } from 'next/font/google';
 import { FiltersProvider } from '@/contexts/FiltersContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ProfileProvider } from '@/contexts/ProfileContext';
 import QueryProvider from '@/contexts/QueryProvider';
 
 export const metadata: Metadata = {
@@ -41,9 +42,11 @@ export default function RootLayout({
       <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`}>
         <QueryProvider>
           <AuthProvider>
-            <FiltersProvider>
-              {children}
-            </FiltersProvider>
+            <ProfileProvider>
+              <FiltersProvider>
+                {children}
+              </FiltersProvider>
+            </ProfileProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
