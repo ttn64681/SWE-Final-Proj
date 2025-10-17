@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { IoClose } from "react-icons/io5";
 import { IoChevronDown } from "react-icons/io5";
-import SelectedMovieBookButton from './selectedMovie/SelectedMovieBookButton.tsx.jsx';
+import SelectedMovieBookButton from './SelectedMovieBookButton';
 
 import { BackendMovie } from '@/types/movie';
 import { buildUrl, endpoints } from '@/config/api';
