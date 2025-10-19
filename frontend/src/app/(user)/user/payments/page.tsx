@@ -213,7 +213,7 @@ export default function PaymentsPage() {
       {/* Add Payment Method Modal */}
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4 ">
+          <div className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}>
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-white font-afacad">Add Payment Method</h2>
             </div>
