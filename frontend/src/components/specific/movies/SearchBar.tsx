@@ -58,7 +58,7 @@ export default function SearchBar({ placeholder = "Search movies..." }: SearchBa
       />
       <button
         onClick={handleSearch}
-        className="p-3 bg-acm-pink hover:bg-acm-pink/80 text-white rounded-md transition-colors duration-200"
+        className="p-3 bg-acm-pink hover:bg-acm-pink/80 text-white rounded-md transition-colors duration-200 drop-shadow-lg"
         title="Search movies"
       >
         <FaSearch className="text-xl" />

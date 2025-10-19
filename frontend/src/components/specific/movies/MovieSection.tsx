@@ -1,5 +1,6 @@
 import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
 import WhiteSeparator from "@/components/common/WhiteSeparator";
+import Spinner from "@/components/common/Spinner";
 import { BackendMovie } from "@/types/movie";
 
 interface MovieSectionProps {
@@ -14,7 +15,9 @@ export default function MovieSection({ title, movies, isLoading }: MovieSectionP
       <h2 className="text-4xl font-extrabold font-red-rose text-acm-pink mb-4">{title}</h2>
       <WhiteSeparator />
       {isLoading ? (
-        <div className="text-white/60 text-lg px-4 py-8">Loading {title.toLowerCase()} movies...</div>
+        <div className="px-4 py-8">
+          <Spinner size="md" color="gray" text={`Loading ${title.toLowerCase()} movies...`} />
+        </div>
       ) : (
         <MovieCardsGrid movies={movies} />
       )}

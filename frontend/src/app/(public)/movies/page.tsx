@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import NavBar from '@/components/common/navBar/NavBar';
 import MoviesSearchSection from '@/components/specific/movies/MoviesSearchSection';
 import MovieSection from '@/components/specific/movies/MovieSection';
-import FiltersPopUp from "@/components/specific/movies/FiltersPopUp";
+import Spinner from '@/components/common/Spinner';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
 import { useSearchLogic } from '@/hooks/useSearchLogic';
 
@@ -30,10 +30,7 @@ function MoviesPageContent() {
     <div>
       <NavBar />
       
-      <FiltersPopUp 
-        isClosed={isFilterClosed}
-        setIsClosed={setIsFilterClosed}
-      />
+      {/* Filters Popup - Now rendered globally via Context Portal */}
       
       <MoviesSearchSection 
         searchQuery={searchQuery}
@@ -62,7 +59,7 @@ export default function MoviesPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <Spinner size="lg" color="pink" text="Loading movies..." />
       </div>
     }>
       <MoviesPageContent />
