@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { BackendMovie } from '@/types/movie';
+import Spinner from '@/components/common/Spinner';
 
 interface SelectedMovieInfoProps {
   movie: BackendMovie;
@@ -15,12 +16,12 @@ export default function SelectedMovieInfo({ movie }: SelectedMovieInfoProps) {
       <div className="w-full h-full relative">
         {/* Loading Spinner */}
         {imageLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-800 rounded-l-3xl z-10">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 border-4 border-white/30 border-t-acm-pink rounded-full animate-spin"></div>
-              <span className="text-white/70 text-sm">Loading poster...</span>
-            </div>
-          </div>
+          <Spinner 
+            size="xl" 
+            color="pink" 
+            text="Loading poster..." 
+            overlay={true}
+          />
         )}
         
         <Image 

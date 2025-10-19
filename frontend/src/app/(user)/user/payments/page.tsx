@@ -223,9 +223,10 @@ export default function PaymentsPage() {
               <div>
                 <label className="block text-white text-sm mb-2 font-afacad">Card Type</label>
                 <select
+                  title="Select Card Type"
                   value={newCardData.cardType}
                   onChange={(e) => setNewCardData({...newCardData, cardType: e.target.value})}
-                  className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent cursor-pointer"
                   required
                 >
                   <option value="">Select Card Type</option>

@@ -205,7 +205,7 @@ export default function AdminAddMoviePage() {
               <select
                 value={movieType}
                 onChange={(e) => setMovieType(e.target.value)}
-                className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none"
+                className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
               >
                 <option value="New Movie">New Movie</option>
                 <option value="Upcoming Movie">Upcoming Movie</option>
@@ -227,7 +227,7 @@ export default function AdminAddMoviePage() {
               <select
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
-                className="w-full pl-4 pr-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none"
+                className="w-full pl-4 pr-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
               >
                 <option value="">-Select-</option>
                 <option value="Action">Action</option>
@@ -365,7 +365,7 @@ export default function AdminAddMoviePage() {
                     <select
                       value={s.ampm}
                       onChange={(e) => updateShowtime(idx, "ampm", e.target.value)}
-                      className="w-16 px-2 py-2 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none"
+                      className="w-16 px-2 py-2 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
                     >
                       <option value="AM">AM</option>
                       <option value="PM">PM</option>
@@ -403,7 +403,7 @@ export default function AdminAddMoviePage() {
               <select
                 value={rating}
                 onChange={(e) => setRating(e.target.value)}
-                className="w-full pl-4 pr-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none"
+                className="w-full pl-4 pr-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
               >
                 <option value="">-Select-</option>
                 <option value="G">G</option>
