@@ -44,9 +44,12 @@ export default function RegisterPage() {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-<<<<<<< HEAD
+    // Set errors and only proceed if no errors
+    // Using newErrors instead of checking old errors state prevents async issues
+    setErrors(newErrors);
+    
     // If there are validation errors, don't proceed
-    if (Object.keys(errors).length > 0) {
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -69,14 +72,7 @@ export default function RegisterPage() {
     }
 
     // If no errors, proceed to next step
-    if (Object.keys(errors).length === 0 && isStepValid(1)) {
-=======
-    // Set errors and only proceed if no errors
-    // Using newErrors instead of checking old errors state prevents async issues
-    setErrors(newErrors);
-    
     if (Object.keys(newErrors).length === 0 && isStepValid(1)) {
->>>>>>> origin/master
       router.push('/auth/register/step2');
     }
   };
