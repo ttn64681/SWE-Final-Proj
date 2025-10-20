@@ -25,11 +25,16 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   token?: string;
+  refreshToken?: string;
   user?: {
     id: number;
     email: string;
     firstName: string;
     lastName: string;
+    phoneNumber?: string;
+    address?: string;
+    state?: string;
+    country?: string;
   };
 }
 
@@ -44,6 +49,9 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/a
 export const authAPI = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
+      console.log('🔐 authAPI.login - Making request to:', `${API_BASE_URL}/auth/login`);
+      console.log('🔐 authAPI.login - Credentials:', { ...credentials, password: '[HIDDEN]' });
+      
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -52,10 +60,12 @@ export const authAPI = {
         body: JSON.stringify(credentials),
       });
 
+      console.log('🔐 authAPI.login - Response status:', response.status);
       const data = await response.json();
+      console.log('🔐 authAPI.login - Response data:', data);
       return data;
     } catch (error) {
-      console.error('Login API error:', error);
+      console.error('❌ authAPI.login - Login API error:', error);
       return {
         success: false,
         message: 'Network error. Please try again.'
@@ -86,19 +96,33 @@ export const authAPI = {
 
   async refreshToken(): Promise<AuthResponse> {
     try {
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
+      console.log('🔄 authAPI.refreshToken - refreshToken found:', refreshToken ? 'exists' : 'null');
+      console.log('🔄 authAPI.refreshToken - localStorage refreshToken:', localStorage.getItem('refreshToken') ? 'exists' : 'null');
+      console.log('🔄 authAPI.refreshToken - sessionStorage refreshToken:', sessionStorage.getItem('refreshToken') ? 'exists' : 'null');
+      
+      if (!refreshToken) {
+        console.log('❌ authAPI.refreshToken - No refresh token found');
+        return {
+          success: false,
+          message: 'No refresh token found'
+        };
+      }
+      
+      console.log('🔄 authAPI.refreshToken - Making request to:', `${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`);
+      const response = await fetch(`${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
 
+      console.log('🔄 authAPI.refreshToken - Response status:', response.status);
       const data = await response.json();
+      console.log('🔄 authAPI.refreshToken - Response data:', data);
       return data;
     } catch (error) {
-      console.error('Token refresh error:', error);
+      console.error('❌ authAPI.refreshToken - Token refresh error:', error);
       return {
         success: false,
         message: 'Token refresh failed'
@@ -122,6 +146,27 @@ export const authAPI = {
       return {
         success: false,
         message: 'Logout failed'
+      };
+    }
+  },
+
+  async checkEmail(email: string): Promise<AuthResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/check-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `email=${encodeURIComponent(email)}`,
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Email check error:', error);
+      return {
+        success: false,
+        message: 'Network error. Please try again.'
       };
     }
   }

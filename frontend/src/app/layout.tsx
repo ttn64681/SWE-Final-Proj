@@ -3,6 +3,7 @@ import './globals.css';
 import { Afacad, Red_Rose, Pacifico } from 'next/font/google';
 import { FiltersProvider } from '@/contexts/FiltersContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ToastProvider } from '@/contexts/ToastContext';
 import QueryProvider from '@/components/providers/QueryProvider';
 
 export const metadata: Metadata = {
@@ -43,7 +44,9 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>
             <FiltersProvider>
-              {children}
+              <ToastProvider>
+                {children}
+              </ToastProvider>
             </FiltersProvider>
           </AuthProvider>
         </QueryProvider>

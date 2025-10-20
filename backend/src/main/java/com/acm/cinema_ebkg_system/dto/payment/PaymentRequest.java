@@ -2,16 +2,29 @@ package com.acm.cinema_ebkg_system.dto.payment;
 
 import java.time.LocalDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class PaymentRequest {
     
     private Long card_number;
     private String billing_address;
-    private LocalDate expiration_date;    
+    private LocalDate expiration_date;
+
+    // Default constructor
+    public PaymentRequest() {}
+
+    // Constructor with all fields
+    public PaymentRequest(Long card_number, String billing_address, LocalDate expiration_date) {
+        this.card_number = card_number;
+        this.billing_address = billing_address;
+        this.expiration_date = expiration_date;
+    }
+
+    // Getters and Setters
+    public Long getCard_number() { return card_number; }
+    public void setCard_number(Long card_number) { this.card_number = card_number; }
+    
+    public String getBilling_address() { return billing_address; }
+    public void setBilling_address(String billing_address) { this.billing_address = billing_address; }
+    
+    public LocalDate getExpiration_date() { return expiration_date; }
+    public void setExpiration_date(LocalDate expiration_date) { this.expiration_date = expiration_date; }
 }
