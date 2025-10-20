@@ -18,7 +18,7 @@ export default function SelectedMovieBookButton({ selectedShowtime, movie, curre
                     <button 
                     title="Book Tickets" 
                     type="button"
-                    className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-acm-pink to-red-500 hover:from-red-600 hover:to-pink-600 transition-all duration-300 rounded-2xl text-white font-bold text-lg transform hover:scale-105 shadow-lg shadow-acm-pink/25"
+                    className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-acm-pink to-red-500 hover:from-red-600 hover:to-pink-600 transition-all duration-300 rounded-2xl text-white font-bold text-lg transform hover:scale-105 shadow-lg shadow-acm-pink/25 drop-shadow-lg"
                     >
                     <span>BOOK TICKETS</span>
                     <RxDoubleArrowRight className="text-xl" />

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { IoChevronDown } from "react-icons/io5";
 import { BackendMovie } from '@/types/movie';
 import { buildUrl, endpoints } from '@/config/api';
+import Spinner from '@/components/common/Spinner';
 
 interface SelectedMovieShowtimesProps {
   movie: BackendMovie;
@@ -63,6 +64,26 @@ export default function SelectedMovieShowtimes({
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes (shorter for times)
   });
 
+  const handleShowDateSelect = (date: string) => {
+    // Toggle date selection: if already selected, deselect; otherwise select
+    if (currentDate === date) {
+      onDateChange(''); // Deselect by passing empty string
+    } else {
+      onDateChange(date); // Select the date
+    }
+    setOpenDateDropdown(false);
+    onShowtimeSelect('');
+  }
+
+  const handleShowtimeSelect = (time: string) => {
+    // Toggle selection: if already selected, deselect; otherwise select
+    if (selectedShowtime === time) {
+      onShowtimeSelect(''); // Deselect by passing empty string
+    } else {
+      onShowtimeSelect(time); // Select the time
+    }
+  }
+
   // Reset selected showtime when times change
   useEffect(() => {
     onShowtimeSelect('');
@@ -86,7 +107,7 @@ export default function SelectedMovieShowtimes({
           <IoChevronDown className="ml-auto mr-4 text-white/60 hover:text-acm-pink transition-colors" />
           
           {openDateDropdown && (
-          <div className="absolute top-12 left-0 w-40 max-h-56 overflow-auto overscroll-contain rounded-lg shadow-xl bg-black/95 backdrop-blur-md border border-white/20 z-50">
+          <div className="absolute top-12 left-0 w-40 max-h-56 overflow-auto overscroll-contain rounded-lg shadow-xl bg-black/95 backdrop-blur-md border border-white/20 z-[60]">
               <ul className="py-1">
               {datesLoading && (
                 <li className="block px-4 py-3 text-white/60 text-sm transition-all duration-200">Loading dates...</li>
@@ -103,11 +124,9 @@ export default function SelectedMovieShowtimes({
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDateChange(date);
-                      setOpenDateDropdown(false);
-                      onShowtimeSelect('');
+                      handleShowDateSelect(date);
                       }}
-                    className="block px-4 py-3 text-white text-sm transition-all duration-200 hover:bg-white/10 hover:text-acm-pink w-full text-left"
+                    className="block px-4 py-3 text-white text-sm transition-all duration-200 hover:bg-white/10 hover:text-acm-pink w-full text-left cursor-pointer"
                     >
                       {date}
                     </button>
@@ -123,10 +142,7 @@ export default function SelectedMovieShowtimes({
         <label className="block text-white/80 text-sm font-medium mb-3">Available Times</label>
         <div className="flex gap-3 flex-wrap">
           {timesLoading && (
-            <div className="flex items-center gap-2 text-white/70">
-              <div className="w-4 h-4 border-2 border-white/30 border-t-acm-pink rounded-full animate-spin"></div>
-              <span>Loading times...</span>
-            </div>
+            <Spinner size="sm" color="pink" text="Loading times..." />
           )}
           {timesError && (
             <div className="flex items-center gap-2 text-red-400">
@@ -139,11 +155,13 @@ export default function SelectedMovieShowtimes({
               title="Select Showtime"
               type="button"
               key={time} 
-              onClick={() => onShowtimeSelect(time)} 
+              onClick={() => {
+                handleShowtimeSelect(time);
+              }} 
               className={[
-                "px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 transform hover:scale-105", // Base styles with hover scale animation
+                "px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 transform hover:scale-105 cursor-pointer", // Base styles with hover scale animation and cursor pointer
                 selectedShowtime === time
-                  ? "bg-gradient-to-r from-acm-pink to-red-500 text-white border-2 border-acm-pink shadow-lg shadow-acm-pink/25" // Selected state: gradient background with pink glow shadow
+                  ? "bg-gradient-to-r from-acm-pink to-red-500 text-white border-2 border-acm-pink shadow-lg shadow-acm-pink/25 drop-shadow-lg" // Selected state: gradient background with pink glow shadow
                   : "bg-white/10 text-white border-2 border-white/20 hover:bg-white/20 hover:border-acm-pink/50 backdrop-blur-sm", // Default state: semi-transparent with hover effects
               ].join(" ")}
             >

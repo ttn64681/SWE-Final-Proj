@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class PaymentRequest {
     
+    private String cardholder_name;
     private Long card_number;
     private String billing_address;
     private LocalDate expiration_date;
@@ -19,6 +20,9 @@ public class PaymentRequest {
     }
 
     // Getters and Setters
+    public String getCardholder_name() { return cardholder_name; }
+    public void setCardholder_name(String cardholder_name) { this.cardholder_name = cardholder_name; }
+    
     public Long getCard_number() { return card_number; }
     public void setCard_number(Long card_number) { this.card_number = card_number; }
     

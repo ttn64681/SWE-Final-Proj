@@ -17,32 +17,34 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
+    // Create new errors object to avoid async state issues
+    const newErrors: {[key: string]: string} = {};
 
     // Validate email
     if (!data.email) {
-      setErrors(prev => ({ ...prev, email: 'Email is required' }));
+      newErrors.email = 'Email is required';
     } else if (!validateEmail(data.email)) {
-      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }));
+      newErrors.email = 'Please enter a valid email address';
     }
 
     // Validate password
     if (!data.password) {
-      setErrors(prev => ({ ...prev, password: 'Password is required' }));
+      newErrors.password = 'Password is required';
     } else {
       const passwordValidation = validatePassword(data.password);
       if (!passwordValidation.isValid) {
-        setErrors(prev => ({ ...prev, password: passwordValidation.message || 'Invalid password' }));
+        newErrors.password = passwordValidation.message || 'Invalid password';
       }
     }
 
     // Validate confirm password
     if (!data.confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: 'Please confirm your password' }));
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (data.password !== data.confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
+<<<<<<< HEAD
     // If there are validation errors, don't proceed
     if (Object.keys(errors).length > 0) {
       return;
@@ -68,12 +70,23 @@ export default function RegisterPage() {
 
     // If no errors, proceed to next step
     if (Object.keys(errors).length === 0 && isStepValid(1)) {
+=======
+    // Set errors and only proceed if no errors
+    // Using newErrors instead of checking old errors state prevents async issues
+    setErrors(newErrors);
+    
+    if (Object.keys(newErrors).length === 0 && isStepValid(1)) {
+>>>>>>> origin/master
       router.push('/auth/register/step2');
     }
   };
 
   return (
-    <AuthFormContainer title="Create an Account" subtitle="Step 1 of 3">
+    <AuthFormContainer
+      stepNumber={1}
+      stepTitle="Create an Account"
+      stepDescription="Step 1 of 3 - Get started with your account"
+    >
       <form onSubmit={handleSubmit} className="space-y-6">
         <AuthInput
           id="email"
@@ -114,10 +127,10 @@ export default function RegisterPage() {
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-white/70 text-sm">
+        <p className="text-white/60 text-sm">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-acm-pink hover:text-acm-orange transition-colors">
-            Sign in
+          <Link href="/auth/login" className="text-acm-pink hover:text-acm-orange transition-colors cursor-pointer">
+            &nbsp;Sign in
           </Link>
         </p>
       </div>
