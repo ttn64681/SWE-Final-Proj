@@ -11,6 +11,25 @@ interface Showtime {
   ampm: string;
 }
 
+interface Movie {
+  id: number;
+  title: string;
+  date: string;
+  time: string;
+  _meta?: {
+    movieType?: string;
+    genre?: string;
+    trailerUrl?: string;
+    synopsis?: string;
+    director?: string;
+    producer?: string;
+    cast?: string;
+    reviews?: string;
+    rating?: string;
+    showtimes?: Showtime[];
+  };
+}
+
 export default function AdminAddMoviePage() {
   const router = useRouter();
 
@@ -41,7 +60,7 @@ export default function AdminAddMoviePage() {
         if (existing) {
           try {
             const movies = JSON.parse(existing);
-            const movieToEdit = movies.find((m: any) => m.id === parseInt(editId));
+            const movieToEdit = movies.find((m: Movie) => m.id === parseInt(editId));
             
             if (movieToEdit) {
               setEditingId(parseInt(editId));
@@ -149,7 +168,7 @@ export default function AdminAddMoviePage() {
           rating,
           showtimes,
         },
-      } as any;
+      };
 
       let updated;
       if (editingId) {
@@ -203,6 +222,7 @@ export default function AdminAddMoviePage() {
             <label className="block text-sm mb-2 font-afacad text-white">Type</label>
             <div className="relative">
               <select
+                title="Type"
                 value={movieType}
                 onChange={(e) => setMovieType(e.target.value)}
                 className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
@@ -225,6 +245,7 @@ export default function AdminAddMoviePage() {
             <label className="block text-sm mb-2 font-afacad text-white">Genre</label>
             <div className="relative">
               <select
+                title="Genre"
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
                 className="w-full pl-4 pr-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
@@ -363,6 +384,7 @@ export default function AdminAddMoviePage() {
                   />
                   <div className="relative">
                     <select
+                      title="AM/PM"
                       value={s.ampm}
                       onChange={(e) => updateShowtime(idx, "ampm", e.target.value)}
                       className="w-16 px-2 py-2 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
@@ -401,6 +423,7 @@ export default function AdminAddMoviePage() {
             <label className="block text-sm mb-2 font-afacad text-white">Rating</label>
             <div className="relative">
               <select
+                title="Rating"
                 value={rating}
                 onChange={(e) => setRating(e.target.value)}
                 className="w-full pl-4 pr-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent appearance-none cursor-pointer"
@@ -444,7 +467,3 @@ export default function AdminAddMoviePage() {
     </div>
   );
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> e0d089723ff8cea0a9d1621e3d5702d77f077344

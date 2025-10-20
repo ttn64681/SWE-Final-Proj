@@ -88,7 +88,7 @@ export default function AdminMoviesPage() {
             scrollbarColor: '#9CA3AF #E5E7EB' 
           }}>
           <ul>
-            {movies.flatMap((movie, movieIndex) => {
+            {movies.flatMap((movie) => {
               // get showtimes or use default
               const showtimes = movie._meta?.showtimes || [{ date: movie.date, time: movie.time, ampm: movie.time.includes('AM') ? 'AM' : 'PM' }];
               
@@ -133,6 +133,8 @@ export default function AdminMoviesPage() {
       <div className="flex justify-center mt-8">
         <Link href="/admin/movies/add">
           <button 
+            type="button"
+            title="Add movie"
             className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold" 
             style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}>
             Add Movie

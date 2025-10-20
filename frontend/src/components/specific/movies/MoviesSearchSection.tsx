@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { IoFilterOutline } from "react-icons/io5";
+import { motion } from "framer-motion";
 
 interface MoviesSearchSectionProps {
   searchQuery: string;
@@ -33,10 +34,10 @@ export default function MoviesSearchSection({
         <button
           type="button"
           onClick={onSearch}
-          className="mr-3 p-2 cursor-pointer text-white rounded-md transition-colors duration-200"
+          className="mr-3 p-2 cursor-pointer text-white rounded-md transition-colors duration-100 hover:text-acm-pink hover:scale-105 hover:cursor-pointer"
           title="Search movies"
         >
-          <PiMagnifyingGlass className="text-white text-4xl" />
+          <PiMagnifyingGlass className="text-4xl" />
         </button>
         <div className="flex-1">
           <input

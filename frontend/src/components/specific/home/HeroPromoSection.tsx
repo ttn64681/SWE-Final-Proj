@@ -18,13 +18,11 @@ import { heroPromotions } from '@/constants/movieData';
 
 export default function HeroPromoSection() {
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
-  const [promos, setPromos] = useState(heroPromotions);
-  const [isLoading, setIsLoading] = useState(false);
+  const [promos] = useState(heroPromotions);
 
   // TODO: Uncomment when backend API is ready
   // useEffect(() => {
   //   const loadPromos = async () => {
-  //     setIsLoading(true);
   //     try {
   //       const data = await fetchPromos();
   //       setPromos(data);
@@ -32,25 +30,23 @@ export default function HeroPromoSection() {
   //       console.error('Failed to load promos:', error);
   //       // Fallback to mock data
   //       setPromos(mockPromos);
-  //     } finally {
-  //       setIsLoading(false);
   //     }
   //   };
   //   loadPromos();
   // }, []);
 
   const currentPromo = promos[currentPromoIndex];
-  const [direction, setDirection] = useState<1 | -1>(1);
+  const [direction, setDirection] = useState<1 | -1>(1); // 1 = forward, -1 = backward
 
   const goToPrevious = useCallback(() => {
-    setDirection(-1);
+    setDirection(-1); // set direction to backward
     setCurrentPromoIndex((prev) => 
       prev === 0 ? promos.length - 1 : prev - 1
     );
   }, [promos.length]);
 
   const goToNext = useCallback(() => {
-    setDirection(1);
+    setDirection(1); // set direction to forward
     setCurrentPromoIndex((prev) => 
       prev === promos.length - 1 ? 0 : prev + 1
     );
@@ -62,20 +58,6 @@ export default function HeroPromoSection() {
     return () => clearInterval(interval);
   }, [goToNext]);
 
-  if (isLoading) {
-    return (
-      <section className="relative -mt-40 z-20 px-4">
-        <div className="mx-auto flex flex-row w-[100%] max-w-5xl grid-cols-1 gap-10 rounded-xl p-5 md:grid-cols-2">
-          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg border-1 bg-gray-800 animate-pulse"></div>
-          <div className="flex flex-col w-[80vw] justify-center content-start gap-3 text-white">
-            <div className="h-8 bg-gray-700 rounded animate-pulse"></div>
-            <div className="h-4 bg-gray-700 rounded animate-pulse"></div>
-            <div className="h-6 bg-gray-700 rounded animate-pulse"></div>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   // Variants ensure correct left/right direction for both enter and exit
   const slideVariants = {
@@ -94,6 +76,8 @@ export default function HeroPromoSection() {
     <section className="relative -mt-40 z-20 px-4">
       {/* Left Arrow - Outside the main container */}
       <button
+        title="Previous promotion"
+        type="button"
         onClick={goToPrevious}
         className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full p-3 text-white hover:text-acm-pink duration-200 text-2xl hover:cursor-pointer border border-white/30 hover:border-acm-pink/50 z-30"
         aria-label="Previous promotion"
@@ -103,6 +87,8 @@ export default function HeroPromoSection() {
 
       {/* Right Arrow - Outside the main container */}
       <button
+        title="Next promotion"
+        type="button"
         onClick={goToNext}
         className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full p-3 text-white hover:text-acm-pink duration-200 text-2xl hover:cursor-pointer border border-white/30 hover:border-acm-pink/50 z-30"
         aria-label="Next promotion"
@@ -113,7 +99,7 @@ export default function HeroPromoSection() {
       {/* Main Content Container - Responsive with proper spacing */}
       <div className="mx-auto flex flex-col lg:flex-row w-full max-w-7xl gap-8 lg:gap-12 rounded-xl p-6 lg:p-8">
         {/* Image Section */}
-        <div className="relative aspect-[16/10] w-full lg:w-1/2 overflow-hidden">
+        <div className="relative aspect-[16/10] w-full lg:w-1/2">
           {/* Animated image + border wrapper (dots stay outside to avoid animating) */}
           <AnimatePresence initial={false} mode="wait" custom={direction}>
             <motion.div
@@ -124,7 +110,7 @@ export default function HeroPromoSection() {
               animate="center"
               exit="exit"
               transition={{ duration: 0.4, ease: 'easeOut' }}
-              className="absolute inset-0 rounded-lg border-1 overflow-hidden"
+              className="absolute inset-0 rounded-lg border border-white/20 hover:border-acm-pink/50 transition-colors duration-300 overflow-hidden"
             >
               <Image 
                 src={currentPromo.image} 
@@ -144,7 +130,7 @@ export default function HeroPromoSection() {
                 type="button"
                 key={index}
                 onClick={() => setCurrentPromoIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                className={`w-2 h-2 rounded-full transition-all duration-200 cursor-pointer ${
                   index === currentPromoIndex 
                     ? 'bg-acm-pink scale-125' 
                     : 'bg-white/50 hover:bg-white/70'

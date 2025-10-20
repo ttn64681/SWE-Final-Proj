@@ -57,6 +57,7 @@ export default function SearchBar({ placeholder = "Search movies..." }: SearchBa
         className="flex-1 p-3 pl-4 text-lg border duration-200 border-white/30 hover:border-white/60 focus:border-white outline-none rounded-md backdrop-blur-sm backdrop-brightness-125 bg-white/10 text-white placeholder-white/70"
       />
       <button
+        type="button"
         onClick={handleSearch}
         className="p-3 bg-acm-pink hover:bg-acm-pink/80 text-white rounded-md transition-colors duration-200 drop-shadow-lg"
         title="Search movies"
