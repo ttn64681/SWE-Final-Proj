@@ -5,6 +5,7 @@ import { FiltersProvider } from '@/contexts/FiltersContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ProfileProvider } from '@/contexts/ProfileContext';
 import QueryProvider from '@/contexts/QueryProvider';
+import BokehBackground from '@/components/common/BokehBackground';
 
 export const metadata: Metadata = {
   title: 'ACM Actual Cinema Movies',
@@ -44,7 +45,9 @@ export default function RootLayout({
           <AuthProvider>
             <ProfileProvider>
               <FiltersProvider>
-                {children}
+                <BokehBackground>
+                  {children}
+                </BokehBackground>
               </FiltersProvider>
             </ProfileProvider>
           </AuthProvider>

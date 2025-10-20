@@ -2,6 +2,19 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+export interface PaymentCard {
+  id: string;
+  cardType: string;
+  cardNumber: string;
+  expirationDate: string;
+  cvv: string;
+  billingStreet: string;
+  billingCity: string;
+  billingState: string;
+  billingZip: string;
+  isDefault: boolean;
+}
+
 export interface RegistrationData {
   // Step 1
   email: string;
@@ -19,15 +32,9 @@ export interface RegistrationData {
   zipCode?: string;
   country?: string;
 
-  // Step 3 - Payment Method (Optional)
-  cardType?: string;
-  cardNumber?: string;
-  expirationDate?: string;
-  cvv?: string;
-  billingStreet?: string;
-  billingCity?: string;
-  billingState?: string;
-  billingZip?: string;
+  // Step 3 - Payment Methods (Optional, up to 3 cards)
+  paymentCards: PaymentCard[];
+  defaultCardId?: string;
   
   // Step 3 - Preferences
   enrollForPromotions?: boolean;
@@ -54,14 +61,8 @@ const initialData: RegistrationData = {
   zipCode: '',
   country: 'US',
   // Payment fields
-  cardType: '',
-  cardNumber: '',
-  expirationDate: '',
-  cvv: '',
-  billingStreet: '',
-  billingCity: '',
-  billingState: '',
-  billingZip: '',
+  paymentCards: [],
+  defaultCardId: undefined,
   // Preferences
   enrollForPromotions: false,
 };

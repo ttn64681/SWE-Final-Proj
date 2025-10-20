@@ -41,7 +41,7 @@ export default function SmallPromoSection({ promotions }: SmallPromoSectionProps
         Promotions
       </div>
       <div className='relative px-20 py-4'>
-        <div className="relative flex flex-row overflow-x-scroll scrollbar-hide gap-x-4" ref={scrollRef}>
+        <div className="relative flex flex-row overflow-x-scroll scrollbar-hide gap-x-4 pb-4" ref={scrollRef}>
           {promotions.map((promotion, index) => (
             <Promotion
               key={index}

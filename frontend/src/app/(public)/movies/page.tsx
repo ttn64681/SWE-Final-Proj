@@ -5,6 +5,7 @@ import NavBar from '@/components/common/navBar/NavBar';
 import MoviesSearchSection from '@/components/specific/movies/MoviesSearchSection';
 import MovieSection from '@/components/specific/movies/MovieSection';
 import Spinner from '@/components/common/Spinner';
+import Footer from '@/components/common/Footer';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
 import { useSearchLogic } from '@/hooks/useSearchLogic';
 
@@ -13,7 +14,6 @@ function MoviesPageContent() {
   const {
     searchQuery,
     setSearchQuery,
-    isFilterClosed,
     setIsFilterClosed,
     handleSearch,
     handleKeyPress
@@ -51,6 +51,8 @@ function MoviesPageContent() {
         movies={upcomingMovies}
         isLoading={isLoadingUpcoming}
       />
+
+      <Footer />
     </div>
   );
 }
