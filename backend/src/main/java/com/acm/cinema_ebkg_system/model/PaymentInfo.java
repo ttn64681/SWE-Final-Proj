@@ -36,6 +36,10 @@ public class PaymentInfo {
     @Column(nullable = false)
     private LocalDate expiration_date;
 
+    @NotNull
+    @Column(nullable = false)
+    private String cardholder_name;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference

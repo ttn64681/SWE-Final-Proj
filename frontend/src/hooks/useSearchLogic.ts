@@ -4,12 +4,10 @@ import { useFilters } from '@/contexts/FiltersContext';
 
 export function useSearchLogic() {
   const router = useRouter();
-  const { selectedGenres, selectedDate } = useFilters();
+  const { selectedGenres, selectedDate, isFiltersOpen, setIsFiltersOpen } = useFilters();
   
   // Search input state
   const [searchQuery, setSearchQuery] = useState('');
-  // Track if the filters popup is open/closed
-  const [isFilterClosed, setIsFilterClosed] = useState(true);
 
   // Prevent duplicate searches
   const lastSearchRef = useRef<string>('');
@@ -61,11 +59,14 @@ export function useSearchLogic() {
     }
   };
 
+  // Return search logic with global filter state integration
+  // Note: isFilterClosed maps to global isFiltersOpen state
+  // This maintains compatibility with existing MoviesPageContent component
   return {
     searchQuery,
     setSearchQuery,
-    isFilterClosed,
-    setIsFilterClosed,
+    isFilterClosed: !isFiltersOpen,  // Maps global state to local naming
+    setIsFilterClosed: (closed: boolean) => setIsFiltersOpen(!closed),  // Updates global state
     handleSearch,
     handleKeyPress
   };
