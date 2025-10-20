@@ -61,6 +61,9 @@ public class PaymentInfo {
     public LocalDate getExpiration_date() { return expiration_date; }
     public void setExpiration_date(LocalDate expiration_date) { this.expiration_date = expiration_date; }
     
+    public String getCardholder_name() { return cardholder_name; }
+    public void setCardholder_name(String cardholder_name) { this.cardholder_name = cardholder_name; }
+    
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 }
