@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class PaymentRequest {
     
     private String cardholder_name;
-    private Long card_number;
+    private String card_number;
     private String billing_address;
     private LocalDate expiration_date;
 }
