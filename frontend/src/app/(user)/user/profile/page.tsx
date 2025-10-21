@@ -1,14 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Checkbox from "@/components/common/forms/Checkbox";
 import NavBar from "@/components/common/navBar/NavBar";
 import { useProfile } from "@/contexts/ProfileContext";
 import styles from "./profile.module.css";
 
+// Hook to retrieve user from backend
+import { useUser } from '@/hooks/useUser';
+
+
+// Decode the token for the current login session
+function decodeJWT(token: string) {
+  const [, payloadBase64] = token.split('.');
+  const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
+  
+  return JSON.parse(decodedPayload);
+}
+
+// Get the ID of the logged in user using the token
+function getUserID() {
+  const token = sessionStorage.getItem("token");
+  console.log(token);
+
+  if (token) {
+    const userData = decodeJWT(token);
+    console.log("Decoded User Data:", userData);
+    const userId = userData.userId;
+    console.log("User ID:", userId);
+    return userId;
+  } else {
+    // If the token is somehow not present, return 0 as a failsafe, which is an unused ID
+    return 0;
+  }
+}
+
+
 export default function ProfilePage() {
-  // User profile data
+  // Initialize user profile data
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -17,8 +47,22 @@ export default function ProfilePage() {
     phone: "",
   });
 
+  // Get the user profile data from the backend
+  const {user, loading, error} = useUser(getUserID());
 
-  
+  useEffect(() => {
+    console.log(user);
+    if (user) {
+      setUserData({
+        email: user.email,
+        password: "",
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phoneNumber,
+      });
+    }
+  }, [user]);
+
   // Promotions subscription state
   const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
   
@@ -135,8 +179,8 @@ export default function ProfilePage() {
               <input
                 type="password"
                 value={userData.password}
-                onChange={(e) => setUserData(prev => ({ ...prev, password: e.target.value }))}
-                className={styles.profileInput}
+                readOnly
+                className={styles.emailInput}
                 placeholder="Enter password"
               />
 

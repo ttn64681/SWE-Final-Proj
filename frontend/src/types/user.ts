@@ -1,0 +1,13 @@
+/**
+ * Shared User Types
+ * These interfaces match the backend data structure exactly
+ */
+
+// Backend user data interface (matches your Java backend)
+export interface BackendUser {
+  id: number,
+  email: string,
+  firstName: string,
+  lastName: string,
+  phoneNumber: string,
+}
