@@ -32,33 +32,40 @@ public class User {
     private Long id;
 
     // Email address - used as username for login, must be unique
-    @Column(nullable = false, unique = true)
+    @Column(name="email", nullable = false, unique = true)
     private String email;
 
     // Password - stored as BCrypt hash (never plain text)
-    @Column(nullable = false)
+    @Column(name="password", nullable = false)
     private String password;
 
     // Required personal information
-    @Column(nullable = false)
+    @Column(name="first_name", nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name="last_name", nullable = false)
     private String lastName;
 
     // Optional contact information
-    @Column
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     // Optional address information (collected during registration)
-    @Column
+    // REPLACE WITH COMMENTED CODE BELOW
+    @Column(name = "address")
     private String address;
+    //@Column(name = "address_id")
+    //private Long addressID;
 
-    @Column
+    // NEEDS TO BE MOVED TO ADDRESS CLASS
+    @Column(name = "state")
     private String state;
+    // !!!!!!!!!
 
-    @Column
+    // NEEDS TO BE MOVED TO ADDRESS CLASS
+    @Column(name = "country")
     private String country;
+    // !!!!!!!!!
 
     // Audit fields - automatically managed timestamps
     @Column(name = "created_at")
@@ -69,9 +76,12 @@ public class User {
 
     // ========== EMAIL VERIFICATION FIELDS ==========
     
+    // REPLACE WITH COMMENTED CODE BELOW
     @Column(name = "is_active")
     private boolean isActive = false;
-    
+    // @Column(name = "user_status", nullable = false)
+    // private String status;
+
     @Column(name = "verification_token")
     private String verificationToken;
     
@@ -85,6 +95,13 @@ public class User {
     
     @Column(name = "password_reset_token_expires_at")
     private LocalDateTime passwordResetTokenExpiresAt;
+
+    // ADD THESE
+    // @Column(name = "profile_image_link")
+    // private String profileImageLink;
+
+    // @Column(name = "enrolled_for_promotions")
+    // private Boolean enrolledForPromotions;
 
     // ========== CONSTRUCTORS ==========
     
@@ -107,11 +124,12 @@ public class User {
     private List<PaymentInfo> paymentInfos = new ArrayList<>();
 
     // Custom constructor for registration (kept for business logic)
-    public User(String email, String password, String firstName, String lastName) {
+public User(String email, String password, String firstName, String lastName) /* String status */ {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        // this.status = status;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -157,12 +175,17 @@ public class User {
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     
+    // REPLACE
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    // public Long getAddressID() { return addressID; }
+    // public void setAddressID(Long addressID) { this.addressID = addressID; }
     
+    // MOVE TO ADDRESS CLASS
     public String getState() { return state; }
     public void setState(String state) { this.state = state; }
     
+    // MOVE TO ADDRESS CLASS
     public String getCountry() { return country; }
     public void setCountry(String country) { this.country = country; }
     
@@ -172,8 +195,11 @@ public class User {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     
+    // REPLACE
     public boolean isActive() { return isActive; }
     public void setActive(boolean isActive) { this.isActive = isActive; }
+    // public String status() { return status; }
+    // public void setStatus(String status) { this.status = status; }
     
     public String getVerificationToken() { return verificationToken; }
     public void setVerificationToken(String verificationToken) { this.verificationToken = verificationToken; }
@@ -189,4 +215,11 @@ public class User {
     
     public List<PaymentInfo> getPaymentInfos() { return paymentInfos; }
     public void setPaymentInfos(List<PaymentInfo> paymentInfos) { this.paymentInfos = paymentInfos; }
+
+    // ADD THESE
+    // public String getProfileImageLink() { return profileImageLink; }
+    // public void setProfileImageLink(String profileImageLink) { this.profileImageLink = profileImageLink; }
+
+    // public Boolean getEnrolledForPromotions() { return enrolledForPromotions; }
+    // public void setEnrolledForPromotions(Boolean enrolledForPromotions) { this.enrolledForPromotions = enrolledForPromotions; }
 }
