@@ -29,6 +29,12 @@ import lombok.NoArgsConstructor;
  * directors, 
  * producers
  */
+
+ enum MovieType {
+    NOW_PLAYING,
+    UPCOMING
+}
+
 @Data
 @Entity
 @Table(name = "movies")

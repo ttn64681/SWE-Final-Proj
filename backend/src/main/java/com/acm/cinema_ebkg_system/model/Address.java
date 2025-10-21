@@ -33,6 +33,7 @@ public class Address {
     @Column(name="zip")
     private String zip;
 
+    // Type: Home or billing
     @Column(name="type")
     private String addressType;
 

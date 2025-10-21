@@ -20,6 +20,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+enum PaymentCardType {
+    MASTERCARD,
+    AMERICAN_EXPRESS,
+    VISA
+}
+
 @Getter
 @Setter
 @NoArgsConstructor

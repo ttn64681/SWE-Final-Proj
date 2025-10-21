@@ -29,6 +29,14 @@ import java.util.ArrayList;
  * @author ACM Cinema Team
  * @version 1.0
  */
+
+
+enum UserStatus {
+    ACTIVE,
+    INACTIVE,
+    SUSPENDED
+}
+
 @Data 
 @Entity
 @Table(name = "users")
@@ -57,11 +65,6 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    // Optional address information (collected during registration)
-    @OneToOne
-    @JoinColumn(name = "address_id")
-    private Long addressID;
-
     // Audit fields - automatically managed timestamps
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -88,13 +91,11 @@ public class User {
     @Column(name = "password_reset_token_expires_at")
     private LocalDateTime passwordResetTokenExpiresAt;
 
-    // ADD
-    // @Column(name = "profile_image_link")
-    // private String profileImageLink;
+    @Column(name = "profile_image_link")
+    private String profileImageLink;
 
-    // ADD
-    // @Column(name = "enrolled_for_promotions")
-    // private Boolean enrolledForPromotions;
+    @Column(name = "enrolled_for_promotions")
+    private Boolean enrolledForPromotions;
 
     // ========== CONSTRUCTORS ==========
     
