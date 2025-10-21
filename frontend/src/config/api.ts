@@ -47,11 +47,10 @@ export const apiConfig = {
     
     // 👤 USER ENDPOINTS
     users: {
-      login: '/api/users/login',
-      logout: '/api/users/logout',
-      register: '/api/users/register',
-      profile: '/api/users/update-profile',
-      history: '/api/users/history',
+
+      getUserById: (userId: number) => `/api/users/${userId}`,
+      updateUserInfo: (userId: number) => `/api/users/${userId}/info`,
+
     },
     
     // 🔐 AUTH ENDPOINTS
@@ -62,6 +61,9 @@ export const apiConfig = {
       refresh: '/api/auth/refresh',
       verifyEmail: '/api/auth/verify-email',
       resendVerification: '/api/auth/resend-verification',
+      forgotPassword: '/api/auth/forgot-password',
+      resetPassword: '/api/auth/reset-password',
+      checkEmail: '/api/auth/check-email',
     },
   },
   

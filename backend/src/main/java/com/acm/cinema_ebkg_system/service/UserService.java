@@ -3,15 +3,10 @@ package com.acm.cinema_ebkg_system.service;
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.model.PaymentInfo;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
-import com.acm.cinema_ebkg_system.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Encrypt function
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -178,7 +173,7 @@ public class UserService {
         PaymentInfo paymentInfo = new PaymentInfo();
         
         // Extract payment data from DTO
-        String cardNumber = dtoPayment.getCard_number();
+        Long cardNumber = dtoPayment.getCard_number();
         String billingAddress = dtoPayment.getBilling_address();
         LocalDate expirationDate = dtoPayment.getExpiration_date();
 
@@ -340,6 +335,89 @@ public class UserService {
         }
     }
 
+    // ========== PASSWORD RESET ==========
+    
+    /**
+     * Initiate password reset process for a user
+     * 
+     * Process Flow:
+     * 1. Find user by email address
+     * 2. Generate password reset token
+     * 3. Set token expiration (1 hour)
+     * 4. Send password reset email with reset link
+     * 
+     * @param email User's email address
+     * @throws RuntimeException if user not found
+     */
+    public void initiatePasswordReset(String email) {
+        // Find user by email
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        
+        // Generate password reset token
+        String resetToken = UUID.randomUUID().toString();
+        
+        // Set token and expiration (1 hour from now)
+        user.setPasswordResetToken(resetToken);
+        user.setPasswordResetTokenExpiresAt(LocalDateTime.now().plusHours(1));
+        
+        // Save user with reset token
+        userRepository.save(user);
+        
+        // Send password reset email
+        emailService.sendPasswordResetEmail(email, resetToken);
+        
+        System.out.println("Password reset token generated for user: " + email);
+    }
+
+    /**
+     * Reset password using reset token
+     * 
+     * Process Flow:
+     * 1. Find user by reset token
+     * 2. Validate token expiration
+     * 3. Hash new password
+     * 4. Update password and clear reset token
+     * 
+     * @param token Password reset token
+     * @param newPassword New password in plain text
+     * @throws RuntimeException if token is invalid or expired
+     */
+    public void resetPasswordWithToken(String token, String newPassword) {
+        // Find user by reset token
+        User user = userRepository.findByPasswordResetToken(token)
+            .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
+        
+        // Check if token has expired
+        if (user.getPasswordResetTokenExpiresAt() == null || 
+            user.getPasswordResetTokenExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Reset token has expired. Please request a new password reset.");
+        }
+        
+        // Hash the new password
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        
+        // Update password and clear reset token
+        user.setPassword(hashedPassword);
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiresAt(null);
+        
+        // Save user
+        userRepository.save(user);
+        
+        System.out.println("Password reset successfully for user: " + user.getEmail());
+    }
+
+    /**
+     * Check if email already exists in the system
+     * 
+     * @param email Email address to check
+     * @return boolean true if email exists, false otherwise
+     */
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     // ========== EMAIL VERIFICATION ==========
     
     /**
@@ -413,52 +491,5 @@ public class UserService {
             throw new RuntimeException("User is already verified");
         }
         return generateVerificationToken(user);
-    }
-
-    /**
-     * Initiate password reset process
-     * 
-     * @param email User's email address
-     */
-    public void initiatePasswordReset(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-        String resetToken = UUID.randomUUID().toString();
-        user.setPasswordResetToken(resetToken);
-        user.setPasswordResetTokenExpiresAt(LocalDateTime.now().plusHours(1));
-        userRepository.save(user);
-        emailService.sendPasswordResetEmail(email, resetToken);
-        System.out.println("Password reset token generated for user: " + email);
-    }
-
-    /**
-     * Reset password using token
-     * 
-     * @param token Reset token
-     * @param newPassword New password
-     */
-    public void resetPasswordWithToken(String token, String newPassword) {
-        User user = userRepository.findByPasswordResetToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
-        if (user.getPasswordResetTokenExpiresAt() == null || 
-            user.getPasswordResetTokenExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Reset token has expired. Please request a new password reset.");
-        }
-        String hashedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(hashedPassword);
-        user.setPasswordResetToken(null);
-        user.setPasswordResetTokenExpiresAt(null);
-        userRepository.save(user);
-        System.out.println("Password reset successfully for user: " + user.getEmail());
-    }
-
-    /**
-     * Check if email exists
-     * 
-     * @param email Email to check
-     * @return boolean True if email exists
-     */
-    public boolean emailExists(String email) {
-        return userRepository.existsByEmail(email);
     }
 }

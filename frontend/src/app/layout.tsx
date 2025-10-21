@@ -34,7 +34,6 @@ const pacifico = Pacifico({
   subsets: ['latin'],
 });
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`} suppressHydrationWarning={true}>
+      <body className={`${afacad.variable} ${redRose.variable} ${pacifico.variable} font-afacad bg-dark antialiased`}>
         <QueryProvider>
           <AuthProvider>
             <ProfileProvider>
