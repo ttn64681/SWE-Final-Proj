@@ -32,7 +32,7 @@ public class PaymentInfo {
 
     @NotNull
     @Column(nullable = false)
-    private Long card_number;
+    private String card_number;
 
     @NotBlank
     @Column(nullable = false)

@@ -6,9 +6,9 @@ import { useRouter } from 'next/navigation';
 import { useRegistration } from '@/contexts/RegistrationContext';
 import { useToast } from '@/contexts/ToastContext';
 import { validateEmail, validatePassword } from '@/services/auth';
-import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import AuthInput from '@/components/common/auth/AuthInput';
 import AuthButton from '@/components/common/auth/AuthButton';
+import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 
 export default function RegisterPage() {
   const { data, updateData, isStepValid } = useRegistration();

@@ -3,7 +3,6 @@ package com.acm.cinema_ebkg_system.controller;
 import com.acm.cinema_ebkg_system.dto.auth.AuthResponse;
 import com.acm.cinema_ebkg_system.dto.auth.LoginRequest;
 import com.acm.cinema_ebkg_system.dto.auth.RegisterRequest;
-import com.acm.cinema_ebkg_system.dto.auth.ResetPasswordRequest;
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
 import com.acm.cinema_ebkg_system.service.UserService;

@@ -45,4 +45,26 @@ public class PaymentController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    // GET /api/users/{userId}/payment - Get user's payment information
+    @GetMapping("/")
+    public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) throws Exception {
+        return paymentService.getUserPaymentInfo(userId);
+    }
+
+    // POST /api/users/{userId}/payment - Add new payment info for user
+    @PostMapping("/")
+    public User addPaymentInfo(@PathVariable Long userId, @RequestBody PaymentRequest dtoPayment) throws Exception {
+        return paymentService.addPaymentInfo(userId, dtoPayment);
+    }
+
+    @PutMapping("/{paymentId}")
+    public User updatePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId, @RequestBody PaymentRequest dtoPayment) throws Exception {
+        return paymentService.updatePaymentInfo(userId, paymentId, dtoPayment);
+    }
+
+    @DeleteMapping("/{paymentId}")
+    public User deletePaymentInfo(@PathVariable Long userId, @PathVariable Long paymentId) {
+        return paymentService.deletePaymentInfo(userId, paymentId);        
+    }
 }

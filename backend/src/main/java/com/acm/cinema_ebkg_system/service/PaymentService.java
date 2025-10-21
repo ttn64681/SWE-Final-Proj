@@ -10,6 +10,7 @@ import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
 import com.acm.cinema_ebkg_system.model.PaymentInfo;
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
+import com.acm.cinema_ebkg_system.util.PaymentEncryptionUtil;
 
 
 /**
@@ -37,15 +38,33 @@ public class PaymentService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public User addPaymentInfo(Long id, PaymentRequest dtoPayment) {
+    public List<PaymentInfo> getUserPaymentInfo(Long userId) throws Exception {
+        User user = getUserById(userId);
+        List<PaymentInfo> decryptedPayments = user.getPaymentInfos();
+
+        decryptedPayments.forEach(payment -> {
+            try {
+                String decryptedCard = PaymentEncryptionUtil.decryptCardNumber(payment.getCard_number());
+                payment.setCard_number(decryptedCard);
+            } catch (Exception e) {
+                throw new RuntimeException("Error decrypting card number", e);
+            }
+        });
+
+        return decryptedPayments;
+    }
+
+    public User addPaymentInfo(Long id, PaymentRequest dtoPayment) throws Exception {
         // Get user from database using UserRepository
         User user = getUserById(id);
         
         // Create new PaymentInfo object (the model)
         PaymentInfo paymentInfo = new PaymentInfo();
-        
+
+        String encryptedCardNumber = PaymentEncryptionUtil.encryptCardNumber(dtoPayment.getCard_number());
+
         // Extract payment data from DTO
-        Long cardNumber = dtoPayment.getCard_number();
+        String cardNumber = encryptedCardNumber;
         String billingAddress = dtoPayment.getBilling_address();
         LocalDate expirationDate = dtoPayment.getExpiration_date();
         String cardholderName = dtoPayment.getCardholder_name();
@@ -66,7 +85,7 @@ public class PaymentService {
         return userRepository.save(user);
     }
 
-    public User updatePaymentInfo(Long userId, Long paymentInfoId, PaymentRequest dtoPayment) {
+    public User updatePaymentInfo(Long userId, Long paymentInfoId, PaymentRequest dtoPayment) throws Exception {
 
         // Gets user and their associated payment information (0-3)
         User user = getUserById(userId);
@@ -89,8 +108,10 @@ public class PaymentService {
         // Checks to see if the payment info ID was found
         if (updatedPaymentInfo != null) {
 
+            String encryptedCardNumber = PaymentEncryptionUtil.encryptCardNumber(dtoPayment.getCard_number());
+
             // "updatedPaymentInfo" object is updated to whatever is passed in through dtoPayment
-            Long cardNumber = dtoPayment.getCard_number();
+            String cardNumber = encryptedCardNumber;
             String billingAddress = dtoPayment.getBilling_address();
             LocalDate expirationDate = dtoPayment.getExpiration_date();
             String cardholderName = dtoPayment.getCardholder_name();
