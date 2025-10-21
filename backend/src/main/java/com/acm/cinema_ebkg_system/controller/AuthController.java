@@ -3,6 +3,7 @@ package com.acm.cinema_ebkg_system.controller;
 import com.acm.cinema_ebkg_system.dto.auth.AuthResponse;
 import com.acm.cinema_ebkg_system.dto.auth.LoginRequest;
 import com.acm.cinema_ebkg_system.dto.auth.RegisterRequest;
+import com.acm.cinema_ebkg_system.dto.auth.ResetPasswordRequest;
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
 import com.acm.cinema_ebkg_system.service.UserService;
@@ -244,5 +245,64 @@ public class AuthController {
     public ResponseEntity<AuthResponse> logout() {
         AuthResponse response = new AuthResponse(true, "Logout successful");
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Forgot password endpoint
+     * 
+     * @param email User's email address
+     * @return ResponseEntity<AuthResponse> with success/error message
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<AuthResponse> forgotPassword(@RequestParam String email) {
+        try {
+            userService.initiatePasswordReset(email);
+            AuthResponse response = new AuthResponse(true, "Password reset email has been sent. Please check your inbox.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            AuthResponse response = new AuthResponse(false, e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
+     * Reset password endpoint
+     * 
+     * @param request ResetPasswordRequest with token and new password
+     * @return ResponseEntity<AuthResponse> with success/error message
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<AuthResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            userService.resetPasswordWithToken(request.getToken(), request.getNewPassword());
+            AuthResponse response = new AuthResponse(true, "Password has been reset successfully. You can now log in with your new password.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            AuthResponse response = new AuthResponse(false, e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    /**
+     * Check email availability endpoint
+     * 
+     * @param email Email to check
+     * @return ResponseEntity<AuthResponse> with availability status
+     */
+    @PostMapping("/check-email")
+    public ResponseEntity<AuthResponse> checkEmail(@RequestParam String email) {
+        try {
+            boolean emailExists = userService.emailExists(email);
+            if (emailExists) {
+                AuthResponse response = new AuthResponse(false, "Email is already taken. Please use a different email address.");
+                return ResponseEntity.badRequest().body(response);
+            } else {
+                AuthResponse response = new AuthResponse(true, "Email is available.");
+                return ResponseEntity.ok(response);
+            }
+        } catch (Exception e) {
+            AuthResponse response = new AuthResponse(false, "Error checking email availability.");
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

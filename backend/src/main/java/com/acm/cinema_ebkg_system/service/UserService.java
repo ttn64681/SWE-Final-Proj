@@ -3,6 +3,7 @@ package com.acm.cinema_ebkg_system.service;
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.model.PaymentInfo;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
+import com.acm.cinema_ebkg_system.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
@@ -412,5 +413,52 @@ public class UserService {
             throw new RuntimeException("User is already verified");
         }
         return generateVerificationToken(user);
+    }
+
+    /**
+     * Initiate password reset process
+     * 
+     * @param email User's email address
+     */
+    public void initiatePasswordReset(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        String resetToken = UUID.randomUUID().toString();
+        user.setPasswordResetToken(resetToken);
+        user.setPasswordResetTokenExpiresAt(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+        emailService.sendPasswordResetEmail(email, resetToken);
+        System.out.println("Password reset token generated for user: " + email);
+    }
+
+    /**
+     * Reset password using token
+     * 
+     * @param token Reset token
+     * @param newPassword New password
+     */
+    public void resetPasswordWithToken(String token, String newPassword) {
+        User user = userRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
+        if (user.getPasswordResetTokenExpiresAt() == null || 
+            user.getPasswordResetTokenExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Reset token has expired. Please request a new password reset.");
+        }
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(hashedPassword);
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiresAt(null);
+        userRepository.save(user);
+        System.out.println("Password reset successfully for user: " + user.getEmail());
+    }
+
+    /**
+     * Check if email exists
+     * 
+     * @param email Email to check
+     * @return boolean True if email exists
+     */
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
     }
 }
