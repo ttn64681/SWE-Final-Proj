@@ -43,20 +43,13 @@ export default function MenuItem({
     );
   }
 
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('🔘 MenuItem: Button clicked, calling onClick');
-    onClick?.();
-  };
-
   return (
     <button
       type='button'
       className={`w-full text-left text-white ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
+      onClick={onClick}
       title="Menu Item"
     >
       {children}

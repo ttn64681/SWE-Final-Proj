@@ -1,5 +1,4 @@
 import MovieCardsGrid from '@/components/common/movies/MovieCardsGrid';
-import Spinner from '@/components/common/Spinner';
 import { BackendMovie } from '@/types/movie';
 
 interface MovieTabsSectionProps {
@@ -7,10 +6,9 @@ interface MovieTabsSectionProps {
   sampleMovies: BackendMovie[];
   activeTab: "nowplaying" | "upcoming";
   setActiveTab: (tab: "nowplaying" | "upcoming") => void;
-  isLoading?: boolean;
 }
 
-export default function MovieTabsSection({ movies, sampleMovies, activeTab, setActiveTab, isLoading = false }: MovieTabsSectionProps) {
+export default function MovieTabsSection({ movies, sampleMovies, activeTab, setActiveTab }: MovieTabsSectionProps) {
 
   // TabButton component - setActiveTab function comes from parent
   // This function is stable thanks to useCallback in the parent component
@@ -37,15 +35,9 @@ export default function MovieTabsSection({ movies, sampleMovies, activeTab, setA
         <TabButton tab="upcoming" label="Upcoming" />
       </div>
       
-      {isLoading ? (
-        <div className="px-4 py-8">
-          <Spinner size="lg" color="pink" text={`Loading ${activeTab === 'nowplaying' ? 'now playing' : 'upcoming'} movies...`} />
-        </div>
-      ) : (
-        <MovieCardsGrid
-          movies={movies.length > 0 ? movies : sampleMovies}
-        />
-      )}
+      <MovieCardsGrid
+        movies={movies.length > 0 ? movies : sampleMovies}
+      />
     </div>
   );
 }

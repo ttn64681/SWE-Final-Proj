@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import NavBar from "@/components/common/navBar/NavBar";
 import TicketTable from "@/components/specific/booking/ticket-age/TicketTable";
 import PromoBanner from "@/components/common/promos/PromoBanner";
-import Spinner from "@/components/common/Spinner";
 
 function TicketAgePageContent() {
     const router = useRouter(); 
@@ -80,7 +79,7 @@ export default function TicketAgePage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <Spinner size="lg" color="pink" text="Loading tickets..." />
+        <div className="text-white text-xl">Loading...</div>
       </div>
     }>
       <TicketAgePageContent />

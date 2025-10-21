@@ -28,7 +28,7 @@ export default function PromoBanner({
             </div>
             <Link 
               href={buttonHref} 
-              className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-acm-pink text-white hover:brightness-110 whitespace-nowrap text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg drop-shadow-lg"
+              className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-acm-pink text-white hover:brightness-110 whitespace-nowrap text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg"
             >
               {buttonText}
             </Link>
