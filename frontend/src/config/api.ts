@@ -47,10 +47,11 @@ export const apiConfig = {
     
     // 👤 USER ENDPOINTS
     users: {
-
-      getUserById: (userId: number) => `/api/users/${userId}`,
-      updateUserInfo: (userId: number) => `/api/users/${userId}/info`,
-
+      login: '/api/users/login',
+      logout: '/api/users/logout',
+      register: '/api/users/register',
+      profile: '/api/users/update-profile',
+      history: '/api/users/history',
     },
     
     // 🔐 AUTH ENDPOINTS
