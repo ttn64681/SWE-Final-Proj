@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NavBar from '@/components/common/navBar/NavBar';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/contexts/ToastContext';
 import { validateEmail } from '@/services/auth';
 
 export default function LoginPage() {
@@ -16,7 +15,6 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   const { login } = useAuth();
-  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +33,7 @@ export default function LoginPage() {
       const response = await login(email, password, rememberMe);
 
       if (response.success) {
-        // Show toast notification and redirect immediately
-        showToast('Welcome! Login successful', 'success');
+        // Redirect to home page
         router.push('/');
       } else {
         setError(response.message);
@@ -77,7 +74,6 @@ export default function LoginPage() {
               </div>
             )}
 
-
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="email" className="block text-white text-sm mb-2">Email</label>
@@ -107,24 +103,16 @@ export default function LoginPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <input
-                    id="rememberMe"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-white/40 bg-white/10"
-                    disabled={isLoading}
-                  />
-                  <label htmlFor="rememberMe" className="text-sm text-white/80 select-none">Remember Me</label>
-                </div>
-                <Link 
-                  href="/auth/forgot-password" 
-                  className="text-sm text-acm-pink hover:text-acm-pink/80 transition-colors"
-                >
-                  Forgot Password?
-                </Link>
+              <div className="flex items-center gap-2">
+                <input
+                  id="rememberMe"
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded border-white/40 bg-white/10"
+                  disabled={isLoading}
+                />
+                <label htmlFor="rememberMe" className="text-sm text-white/80 select-none">Remember Me</label>
               </div>
 
               <button
