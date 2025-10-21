@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import NavBar from '@/components/common/navBar/NavBar';
 import api from '@/config/api';
 
 /**
@@ -119,38 +120,42 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="max-w-md w-full mx-4">
-        <div className="bg-white rounded-lg shadow-2xl p-8">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Email Verification
-            </h1>
-          </div>
+    <div className="min-h-screen bg-black">
+      <NavBar />
+      
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-xl">
+            {/* Header */}
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-bold text-white mb-2">
+                Email Verification
+              </h1>
+              <p className="text-white/70 text-sm mt-1">Verify your email address to continue</p>
+            </div>
 
           {/* Status Icon */}
           <div className="flex justify-center mb-6">
             {status === 'verifying' && (
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-acm-pink"></div>
             )}
             {status === 'success' && (
-              <div className="rounded-full h-16 w-16 bg-green-100 flex items-center justify-center">
-                <svg className="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="rounded-full h-16 w-16 bg-green-900/40 border border-green-500/60 flex items-center justify-center">
+                <svg className="h-10 w-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
             )}
             {status === 'registration-success' && (
-              <div className="rounded-full h-16 w-16 bg-blue-100 flex items-center justify-center">
-                <svg className="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="rounded-full h-16 w-16 bg-blue-900/40 border border-blue-500/60 flex items-center justify-center">
+                <svg className="h-10 w-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
             )}
             {status === 'error' && (
-              <div className="rounded-full h-16 w-16 bg-red-100 flex items-center justify-center">
-                <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="rounded-full h-16 w-16 bg-red-900/40 border border-red-500/60 flex items-center justify-center">
+                <svg className="h-10 w-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
@@ -159,17 +164,17 @@ export default function VerifyEmailPage() {
 
           {/* Message */}
           <div className={`text-center mb-6 p-4 rounded-lg ${
-            status === 'verifying' ? 'bg-blue-50 text-blue-800' :
-            status === 'success' ? 'bg-green-50 text-green-800' :
-            status === 'registration-success' ? 'bg-blue-50 text-blue-800' :
-            'bg-red-50 text-red-800'
+            status === 'verifying' ? 'bg-blue-900/40 border border-blue-500/60 text-blue-200' :
+            status === 'success' ? 'bg-green-900/40 border border-green-500/60 text-green-200' :
+            status === 'registration-success' ? 'bg-blue-900/40 border border-blue-500/60 text-blue-200' :
+            'bg-red-900/40 border border-red-500/60 text-red-200'
           }`}>
             <p className="text-lg font-medium">{message}</p>
             {status === 'success' && (
-              <p className="text-sm mt-2">Redirecting to home page...</p>
+              <p className="text-sm mt-2 text-white/70">Redirecting to home page...</p>
             )}
             {status === 'registration-success' && (
-              <p className="text-sm mt-2">Check your email inbox and spam folder for the verification link.</p>
+              <p className="text-sm mt-2 text-white/70">Check your email inbox and spam folder for the verification link.</p>
             )}
           </div>
 
@@ -177,17 +182,17 @@ export default function VerifyEmailPage() {
           {status === 'error' && (
             <div className="space-y-4">
               {/* Resend Email Form */}
-              <div className="border-t pt-4">
-                <h3 className="text-lg font-medium text-gray-900 mb-3 text-center">
+              <div className="border-t border-white/10 pt-4">
+                <h3 className="text-lg font-medium text-white mb-3 text-center">
                   Request New Verification Email
                 </h3>
                 
                 {/* Resend Status Message */}
                 {resendMessage && (
                   <div className={`mb-4 p-3 rounded-lg text-sm ${
-                    resendStatus === 'success' ? 'bg-green-50 text-green-800' :
-                    resendStatus === 'error' ? 'bg-red-50 text-red-800' :
-                    'bg-blue-50 text-blue-800'
+                    resendStatus === 'success' ? 'bg-green-900/40 border border-green-500/60 text-green-200' :
+                    resendStatus === 'error' ? 'bg-red-900/40 border border-red-500/60 text-red-200' :
+                    'bg-blue-900/40 border border-blue-500/60 text-blue-200'
                   }`}>
                     {resendMessage}
                   </div>
@@ -195,7 +200,7 @@ export default function VerifyEmailPage() {
 
                 <form onSubmit={handleResendEmail} className="space-y-3">
                   <div>
-                    <label htmlFor="resendEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="resendEmail" className="block text-sm font-medium text-white mb-1">
                       Email Address
                     </label>
                     <input
@@ -203,7 +208,7 @@ export default function VerifyEmailPage() {
                       id="resendEmail"
                       value={resendEmail}
                       onChange={(e) => setResendEmail(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
+                      className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
                       placeholder="Enter your email address"
                       required
                       disabled={resendStatus === 'loading'}
@@ -213,7 +218,7 @@ export default function VerifyEmailPage() {
                   <button
                     type="submit"
                     disabled={resendStatus === 'loading'}
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                    className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {resendStatus === 'loading' ? (
                       <span className="flex items-center justify-center">
@@ -234,13 +239,13 @@ export default function VerifyEmailPage() {
               <div className="space-y-2">
                 <button
                   onClick={() => router.push('/auth/login')}
-                  className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors font-medium"
+                  className="w-full bg-white/10 text-white py-2 px-4 rounded-md hover:bg-white/20 transition-colors font-medium border border-white/20"
                 >
                   Go to Login
                 </button>
                 <button
                   onClick={() => router.push('/auth/resend-verification')}
-                  className="w-full text-blue-600 hover:text-blue-500 text-sm font-medium"
+                  className="w-full text-acm-pink hover:text-acm-pink/80 text-sm font-medium"
                 >
                   Use dedicated resend page
                 </button>
@@ -251,7 +256,7 @@ export default function VerifyEmailPage() {
           {status === 'success' && (
             <button
               onClick={() => router.push('/')}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
             >
               Continue to Home
             </button>
@@ -261,13 +266,13 @@ export default function VerifyEmailPage() {
             <div className="space-y-3">
               <button
                 onClick={() => router.push('/auth/login')}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
               >
                 Go to Login
               </button>
               <button
                 onClick={() => router.push('/auth/resend-verification')}
-                className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                className="w-full bg-white/10 text-white py-3 rounded-lg hover:bg-white/20 transition-colors font-medium border border-white/20"
               >
                 Resend Verification Email
               </button>
@@ -277,15 +282,15 @@ export default function VerifyEmailPage() {
 
         {/* Help Text */}
         <div className="mt-6 text-center">
-          <p className="text-gray-400 text-sm">
+          <p className="text-white/60 text-sm">
             Need help?{' '}
-            <a href="/support" className="text-blue-400 hover:text-blue-300 underline">
+            <a href="/support" className="text-acm-pink hover:text-acm-pink/80 underline">
               Contact Support
             </a>
           </p>
         </div>
       </div>
     </div>
+    </div>
   );
 }
-
