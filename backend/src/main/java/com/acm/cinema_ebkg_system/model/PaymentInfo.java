@@ -15,12 +15,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "payment_info")
@@ -51,7 +49,7 @@ public class PaymentInfo {
     @JsonBackReference
     private User user;
 
-    // Temporary manual getters/setters until Lombok annotation processing works
+    // Manual getters/setters (Lombok annotation processing not working due to Java version compatibility)
     public Long getPayment_info_id() { return payment_info_id; }
     public void setPayment_info_id(Long payment_info_id) { this.payment_info_id = payment_info_id; }
     
