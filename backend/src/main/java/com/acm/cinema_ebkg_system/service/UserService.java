@@ -177,7 +177,7 @@ public class UserService {
         PaymentInfo paymentInfo = new PaymentInfo();
         
         // Extract payment data from DTO
-        Long cardNumber = dtoPayment.getCard_number();
+        String cardNumber = dtoPayment.getCard_number();
         String billingAddress = dtoPayment.getBilling_address();
         LocalDate expirationDate = dtoPayment.getExpiration_date();
 
