@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import NavBar from '@/components/common/navBar/NavBar';
 import api from '@/config/api';
@@ -11,7 +11,7 @@ import api from '@/config/api';
  * This page handles email verification when users click the link in their verification email.
  * It extracts the token from the URL and calls the backend verification endpoint.
  */
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'verifying' | 'success' | 'error' | 'registration-success'>('verifying');
@@ -292,5 +292,17 @@ export default function VerifyEmailPage() {
       </div>
     </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white text-lg">Loading...</div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

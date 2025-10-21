@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-export default function ProfilePage() {
-  return (
-    <div className="min-h-screen bg-black p-8">
-      <h1 className="text-2xl font-bold text-white mb-4">My Profile</h1>
-      <p className="text-white/70">Profile page coming soon...</p>
-=======
 "use client";
 
 import Link from "next/link";
@@ -24,14 +17,11 @@ export default function ProfilePage() {
     phone: "",
   });
 
-
-  
   // Promotions subscription state
   const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
   
   const { profilePic, setProfilePic, profilePicUrl, setProfilePicUrl } = useProfile();
 
-  // Handle profile picture upload - was a real pain to get working
   const onImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -210,7 +200,6 @@ export default function ProfilePage() {
           </section>
         </div>
       </div>
->>>>>>> f98bd145d2b7c048a948eab9318a73e2246f4a63
     </div>
   );
 }
