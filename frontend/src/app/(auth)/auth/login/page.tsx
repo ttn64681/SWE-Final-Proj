@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import Checkbox from '@/components/common/forms/Checkbox';
 import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/contexts/ToastContext';
 import { validateEmail } from '@/services/auth';
 
 export default function LoginPage() {
@@ -17,7 +16,6 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   const { login } = useAuth();
-  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,8 +34,7 @@ export default function LoginPage() {
       const response = await login(email, password, rememberMe);
 
       if (response.success) {
-        // Show toast notification and redirect immediately
-        showToast('Welcome! Login successful', 'success');
+        // Redirect to home page
         router.push('/');
       } else {
         setError(response.message);
@@ -97,21 +94,13 @@ export default function LoginPage() {
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <Checkbox
-            id="rememberMe"
-            label="Remember Me"
-            checked={rememberMe}
-            onChange={setRememberMe}
-            disabled={isLoading}
-          />
-          <Link 
-            href="/auth/forgot-password" 
-            className="text-sm text-acm-pink hover:text-acm-pink/80 transition-colors"
-          >
-            Forgot Password?
-          </Link>
-        </div>
+        <Checkbox
+          id="rememberMe"
+          label="Remember Me"
+          checked={rememberMe}
+          onChange={setRememberMe}
+          disabled={isLoading}
+        />
 
         <button
           type="submit"
