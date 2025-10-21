@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import UserIcon from './UserIcon';
 import MenuItem from './MenuItem';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/contexts/ToastContext';
 import { useRouter } from 'next/navigation';
 
 interface UserMenuProps {
@@ -13,7 +14,9 @@ interface UserMenuProps {
 export default function UserMenu({ onMenuToggle }: UserMenuProps) {
   // State for controlling dropdown visibility
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { user, logout } = useAuth();
+  const { showToast } = useToast();
   const router = useRouter();
 
   // useRef creates a reference to DOM elements that persists across re-renders
@@ -56,10 +59,40 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
   };
 
   const handleLogout = async () => {
-    await logout();
-    setShowUserMenu(false);
-    onMenuToggle?.(false);
-    router.push('/');
+    // Prevent multiple logout calls from this component
+    if (isLoggingOut) {
+      console.log('🚪 UserMenu: Logout already in progress, ignoring duplicate call');
+      return;
+    }
+    
+    console.log('🚪 UserMenu: Logout button clicked');
+    setIsLoggingOut(true);
+    
+    try {
+      await logout();
+      console.log('🚪 UserMenu: Logout completed, closing menu and navigating');
+      setShowUserMenu(false);
+      onMenuToggle?.(false);
+      
+      // Show success toast notification
+      showToast('Signed out successfully', 'success');
+      
+      // Add a small delay to ensure logout completes before navigation
+      setTimeout(() => {
+        router.push('/');
+      }, 100);
+    } catch (error) {
+      console.error('🚪 UserMenu: Logout error:', error);
+      // Even if logout fails, close menu and navigate
+      setShowUserMenu(false);
+      onMenuToggle?.(false);
+      router.push('/');
+    } finally {
+      // Reset the logout state after a delay
+      setTimeout(() => {
+        setIsLoggingOut(false);
+      }, 1000);
+    }
   };
 
   return (
@@ -92,8 +125,8 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
               Account Settings
             </MenuItem>
             <div className="border-t border-white/10 my-1"></div>
-            <MenuItem onClick={handleLogout}>
-              Sign Out
+            <MenuItem onClick={isLoggingOut ? undefined : handleLogout}>
+              {isLoggingOut ? 'Signing Out...' : 'Sign Out'}
             </MenuItem>
           </div>
         </div>
