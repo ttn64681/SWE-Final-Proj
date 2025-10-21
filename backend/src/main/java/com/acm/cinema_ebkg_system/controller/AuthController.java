@@ -5,7 +5,6 @@ import com.acm.cinema_ebkg_system.dto.auth.LoginRequest;
 import com.acm.cinema_ebkg_system.dto.auth.RegisterRequest;
 import com.acm.cinema_ebkg_system.dto.auth.ResetPasswordRequest;
 import com.acm.cinema_ebkg_system.model.User;
-import com.acm.cinema_ebkg_system.repository.UserRepository;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ public class AuthController {
     
     @Autowired
     private UserService userService;  // Service layer for user business logic
-
-    @Autowired
-    private UserRepository userRepository;  // Repository for direct database access
 
     @Autowired
     private JwtUtil jwtUtil;  // Utility for JWT token operations

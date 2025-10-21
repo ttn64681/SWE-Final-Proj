@@ -6,7 +6,6 @@ import com.acm.cinema_ebkg_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
-import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
