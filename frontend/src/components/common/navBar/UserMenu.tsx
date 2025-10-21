@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import UserIcon from './UserIcon';
 import MenuItem from './MenuItem';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/contexts/ToastContext';
 import { useRouter } from 'next/navigation';
 
 interface UserMenuProps {
@@ -14,6 +15,7 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
   // State for controlling dropdown visibility
   const [showUserMenu, setShowUserMenu] = useState(false);
   const { user, logout } = useAuth();
+  const { showToast } = useToast();
   const router = useRouter();
 
   // useRef creates a reference to DOM elements that persists across re-renders
@@ -57,6 +59,7 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
 
   const handleLogout = async () => {
     await logout();
+    showToast('Successfully signed out', 'success');
     setShowUserMenu(false);
     onMenuToggle?.(false);
     router.push('/');

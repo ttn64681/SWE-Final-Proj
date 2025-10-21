@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import NavBar from '@/components/common/navBar/NavBar';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/contexts/ToastContext';
 import { validateEmail } from '@/services/auth';
 
 export default function LoginPage() {
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   const { login } = useAuth();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,8 @@ export default function LoginPage() {
       const response = await login(email, password, rememberMe);
 
       if (response.success) {
-        // Redirect to home page
+        // Show success toast and redirect
+        showToast('Welcome! Login successful', 'success');
         router.push('/');
       } else {
         setError(response.message);

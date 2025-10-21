@@ -84,6 +84,12 @@ public class User {
     
     @Column(name = "verification_token_expires_at")
     private LocalDateTime verificationTokenExpiresAt;
+    
+    @Column(name = "password_reset_token")
+    private String passwordResetToken;
+    
+    @Column(name = "password_reset_token_expires_at")
+    private LocalDateTime passwordResetTokenExpiresAt;
 
     // ========== CONSTRUCTORS ==========
     
