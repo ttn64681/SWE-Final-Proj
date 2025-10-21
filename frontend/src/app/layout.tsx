@@ -3,7 +3,6 @@ import './globals.css';
 import { Afacad, Red_Rose, Pacifico } from 'next/font/google';
 import { FiltersProvider } from '@/contexts/FiltersContext';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { ToastProvider } from '@/contexts/ToastContext';
 import { ProfileProvider } from '@/contexts/ProfileContext';
 import QueryProvider from '@/contexts/QueryProvider';
 import BokehBackground from '@/components/common/BokehBackground';
@@ -46,11 +45,9 @@ export default function RootLayout({
           <AuthProvider>
             <ProfileProvider>
               <FiltersProvider>
-                <ToastProvider>
-                  <BokehBackground>
-                    {children}
-                  </BokehBackground>
-                </ToastProvider>
+                <BokehBackground>
+                  {children}
+                </BokehBackground>
               </FiltersProvider>
             </ProfileProvider>
           </AuthProvider>
