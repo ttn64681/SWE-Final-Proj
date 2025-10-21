@@ -36,6 +36,6 @@ export function useUser(userId: number) {
     };
     fetchUserInfo();
 }, [userId]);
-    // console.log(user);
+    console.log(user);
     return { user, loading, error };
 }
