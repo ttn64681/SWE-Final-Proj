@@ -58,21 +58,9 @@ public class User {
     private String phoneNumber;
 
     // Optional address information (collected during registration)
-    // REPLACE WITH COMMENTED CODE BELOW
-    @Column(name = "address")
-    private String address;
-    //@Column(name = "address_id")
-    //private Long addressID;
-
-    // NEEDS TO BE MOVED TO ADDRESS CLASS
-    @Column(name = "state")
-    private String state;
-    // !!!!!!!!!
-
-    // NEEDS TO BE MOVED TO ADDRESS CLASS
-    @Column(name = "country")
-    private String country;
-    // !!!!!!!!!
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private Long addressID;
 
     // Audit fields - automatically managed timestamps
     @Column(name = "created_at")
@@ -83,11 +71,8 @@ public class User {
 
     // ========== EMAIL VERIFICATION FIELDS ==========
     
-    // REPLACE WITH COMMENTED CODE BELOW
-    @Column(name = "is_active")
-    private boolean isActive = false;
-    // @Column(name = "user_status", nullable = false)
-    // private String status;
+    @Column(name = "status", nullable = false)
+    private UserStatus status;
 
     @Column(name = "verification_token")
     private String verificationToken;
@@ -103,10 +88,11 @@ public class User {
     @Column(name = "password_reset_token_expires_at")
     private LocalDateTime passwordResetTokenExpiresAt;
 
-    // ADD THESE
+    // ADD
     // @Column(name = "profile_image_link")
     // private String profileImageLink;
 
+    // ADD
     // @Column(name = "enrolled_for_promotions")
     // private Boolean enrolledForPromotions;
 
@@ -128,15 +114,15 @@ public class User {
      */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<PaymentInfo> paymentInfos = new ArrayList<>();
+    private List<PaymentCard> paymentInfos = new ArrayList<>();
 
     // Custom constructor for registration (kept for business logic)
-public User(String email, String password, String firstName, String lastName) /* String status */ {
+public User(String email, String password, String firstName, String lastName, UserStatus status) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        // this.status = status;
+        this.status = status;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }

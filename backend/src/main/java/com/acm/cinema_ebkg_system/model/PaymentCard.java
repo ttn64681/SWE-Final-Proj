@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,8 +24,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "payment_info")
-public class PaymentInfo {
+@Table(name = "payment_card")
+public class PaymentCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,18 +35,29 @@ public class PaymentInfo {
     @Column(nullable = false)
     private Long card_number;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String billing_address;
-
     @NotNull
     @Column(nullable = false)
     private LocalDate expiration_date;
+
+    @NotNull
+    @Column(nullable = false)
+    private String cardholderName;
+
+    @NotNull
+    @Column(nullable = false)
+    private Boolean defaultPayment;
+
+    @NotNull
+    @Column(nullable = false)
+    private PaymentCardType cardType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
 
-    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", nullable = false)
+    @JsonBackReference
+    private Address billingAddress;
 }

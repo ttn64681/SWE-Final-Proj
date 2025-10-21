@@ -18,20 +18,20 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "show_dates")
-public class ShowDate {
+@Table(name = "movie_shows")
+public class MovieShow {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long showDateId;
+    private Long movieShowID;
 
-    @Column(name = "show_date", nullable = false)
-    private LocalDate showDate;
+    @Column(name = "movie_id", nullable = false)
+    private Long movieID;
 
-    @Column(name = "created_at")
-    private LocalDateTime created_at;
+    @Column(name = "show_room_id", nullable = false)
+    private LocalDate showRoomID;
 
     // Default constructor
-    public ShowDate() {}
+    public MovieShow() {}
 }
 
 

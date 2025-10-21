@@ -76,7 +76,7 @@ public class ShowTimeService {
             return List.of();
         }
         return showTimeRepository
-            .findByShowDateIdAndTimeRange(sd.get().getShow_date_id(), startTime, endTime);
+            .findByShowDateIdAndTimeRange(sd.get().getShowDateId(), startTime, endTime);
     }
 }
 
