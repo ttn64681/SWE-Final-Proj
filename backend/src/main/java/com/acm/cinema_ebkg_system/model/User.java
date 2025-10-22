@@ -39,7 +39,7 @@ enum UserStatus {
 
 @Data 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
     // Primary key - auto-generated unique identifier
     @Id

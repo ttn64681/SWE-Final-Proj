@@ -1,17 +1,10 @@
 package com.acm.cinema_ebkg_system.model;
 
-
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import java.util.ArrayList;
+import lombok.Data;
 
 /**
  * Admin Entity - Represents an admin in the cinema booking system
@@ -29,7 +22,7 @@ import java.util.ArrayList;
  */
 @Data 
 @Entity
-@Table(name = "admins")
+@Table(name = "admin")
 public class Admin {
     // Primary key - auto-generated unique identifier
     @Id

@@ -1,7 +1,6 @@
 package com.acm.cinema_ebkg_system.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,7 @@ public class Address {
     // User ID - Foreign key
     @OneToOne
     @JoinColumn(name="user_id")
-    private Long userID;
+    private Long userId;
 
     @Column(name="street")
     private String street;

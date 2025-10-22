@@ -37,11 +37,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "movies")
+@Table(name = "movie")
 public class Movie {
     @Id // identifies below 'movie_id' as primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // generates unique val for primary key
-    private Long movie_id;
+    private Long id;
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
     private String title;
@@ -56,19 +56,19 @@ public class Movie {
     private String rating; // Must be 'G', 'PG', 'PG-13', 'R', or 'NC-17'
     @NotNull
     @Column(nullable = false)
-    private LocalDate release_date;
+    private LocalDate releaseDate;
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
     private String synopsis;
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String trailer_link;
+    private String trailerLink;
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String poster_link;
+    private String posterLink;
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String cast_names; // comma-separated names for simplicity
+    private String castNames; // comma-separated names for simplicity
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
     private String directors; // comma-separated names

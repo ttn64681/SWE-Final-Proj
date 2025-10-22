@@ -1,34 +1,27 @@
 package com.acm.cinema_ebkg_system.model;
 
-// JPA annotations to map this class to the show_dates table
-import jakarta.persistence.Column;           // maps a field to a specific column          
-import jakarta.persistence.Entity;           // marks this class as a DB entity
-import jakarta.persistence.GeneratedValue;   // auto-generate PK values
-import jakarta.persistence.GenerationType;   // strategy for PK generation
-import jakarta.persistence.Id;               // marks primary key field
-import jakarta.persistence.Table;            // maps to a specific table name
-
-// Java time types used by columns
-import java.time.LocalDate; // (YYYY-MM-DD)
-import java.time.LocalDateTime; // date + time (timestamp)
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "show_dates")
+@Table(name = "show_date")
 public class ShowDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long showDateId;
+    private Long id;
 
     @Column(name = "show_date", nullable = false)
     private LocalDate showDate;
 
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     // Default constructor
     public ShowDate() {}

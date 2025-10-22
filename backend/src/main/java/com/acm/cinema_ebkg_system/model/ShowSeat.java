@@ -1,20 +1,18 @@
 package com.acm.cinema_ebkg_system.model;
 
-// JPA annotations to map this class to the show_dates table
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
-
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "show_seats")
+@Table(name = "show_seat")
 public class ShowSeat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long showSeatID;
+    private Long id;
 
     // Default constructor
     public ShowSeat() {}

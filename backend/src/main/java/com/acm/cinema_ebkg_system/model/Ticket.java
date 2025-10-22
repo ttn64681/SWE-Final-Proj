@@ -1,30 +1,30 @@
 package com.acm.cinema_ebkg_system.model;
 
-import jakarta.persistence.*;         
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "tickets")
+@Table(name = "ticket")
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ticketID;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name="booking_id")
-    private Long bookingID;
+    private Long bookingId;
 
     @OneToMany
     @JoinColumn(name="movie_show_id")
-    private Long movieShowID;
+    private Long movieShowId;
 
     @OneToOne
     @JoinColumn(name="show_seat_id")
-    private Long showSeatID;
+    private Long showSeatId;
 
     @Column(name="type")
     private TicketType type;

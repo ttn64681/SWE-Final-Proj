@@ -1,23 +1,23 @@
 package com.acm.cinema_ebkg_system.model;
 
-import jakarta.persistence.*;         
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "ticket_types")
+@Table(name = "ticket_type")
 public class TicketType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ticketTypeID;
+    private Long id;
 
     @Column(name="type")
     private String type;
 
-     @Column(name="price")
+    @Column(name="price")
     private String price;
 
     // Default constructor
