@@ -1,6 +1,11 @@
 package com.acm.cinema_ebkg_system.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -17,8 +22,16 @@ public class ShowRoom {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "capacity", nullable = false)
+    @Column(name = "num_seats", nullable = false)
     private int capacity;
+
+    @OneToMany(mappedBy = "show_room", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<MovieShow> movieShows = new ArrayList<>();
+
+    @OneToMany(mappedBy = "show_room", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ShowSeat> seats = new ArrayList<>();
 
     // Default constructor
     public ShowRoom() {}

@@ -11,7 +11,8 @@ import lombok.Data;
 enum PaymentCardType {
     MASTERCARD,
     AMERICAN_EXPRESS,
-    VISA
+    VISA,
+    DISCOVER
 }
 
 @Data

@@ -1,7 +1,9 @@
 package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.User;
-import com.acm.cinema_ebkg_system.model.PaymentInfo;
+import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.model.UserStatus;
+import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -174,22 +176,22 @@ public class UserService {
         User user = getUserById(id);
         
         // Create new PaymentInfo object (the model)
-        PaymentInfo paymentInfo = new PaymentInfo();
+        PaymentCard paymentInfo = new PaymentCard();
         
         // Extract payment data from DTO
-        Long cardNumber = dtoPayment.getCard_number();
-        String billingAddress = dtoPayment.getBilling_address();
-        LocalDate expirationDate = dtoPayment.getExpiration_date();
+        Long cardNumber = dtoPayment.getCardNumber();
+        Address billingAddress = dtoPayment.getBillingAddress();
+        LocalDate expirationDate = dtoPayment.getExpirationDate();
 
         // Set payment fields using setters
-        paymentInfo.setCard_number(cardNumber);
-        paymentInfo.setBilling_address(billingAddress);
-        paymentInfo.setExpiration_date(expirationDate);
+        paymentInfo.setCardNumber(cardNumber);
+        //paymentInfo.setBillingAddress(billingAddress);
+        paymentInfo.setExpirationDate(expirationDate);
         paymentInfo.setUser(user); // Set the JPA relationship
 
         // Add to user's payment list (JPA relationship)
-        if (user.getPaymentInfos().size() < 3) {
-            user.getPaymentInfos().add(paymentInfo);
+        if (user.getPaymentCards().size() < 3) {
+            user.getPaymentCards().add(paymentInfo);
         }
         
         // Save user - JPA automatically saves PaymentInfo too! (cascade = CascadeType.ALL)
@@ -249,13 +251,6 @@ public class UserService {
         if (userInfo.getAddress() != null) {
             user.setAddress(userInfo.getAddress());
         }
-        if (userInfo.getState() != null) {
-            user.setState(userInfo.getState());
-        }
-        if (userInfo.getCountry() != null) {
-            user.setCountry(userInfo.getCountry());
-        }
-        
         return userRepository.save(user);
     }
 
@@ -352,7 +347,7 @@ public class UserService {
         LocalDateTime expirationTime = LocalDateTime.now().plusHours(24);
         user.setVerificationToken(token);
         user.setVerificationTokenExpiresAt(expirationTime);
-        user.setActive(false);
+        user.setStatus(UserStatus.INACTIVE);
         User savedUser = userRepository.save(user);
         
         // DEBUG: Log token info
@@ -394,7 +389,7 @@ public class UserService {
             throw new RuntimeException("Verification token has expired. Please request a new verification email.");
         }
         
-        user.setActive(true);
+        user.setStatus(UserStatus.ACTIVE);
         user.setVerificationToken(null);
         user.setVerificationTokenExpiresAt(null);
         return userRepository.save(user);
@@ -408,7 +403,7 @@ public class UserService {
      */
     public String resendVerificationEmail(String email) {
         User user = getUserByEmail(email);
-        if (user.isActive()) {
+        if (user.getStatus() == UserStatus.ACTIVE) {
             throw new RuntimeException("User is already verified");
         }
         return generateVerificationToken(user);

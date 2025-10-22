@@ -30,6 +30,11 @@ public class ShowTime {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @OneToOne
+    @JsonBackReference
+    @JoinColumn(name = "movie_show_id")
+    private MovieShow show;
+
     // Default constructor
     public ShowTime() {}
 }

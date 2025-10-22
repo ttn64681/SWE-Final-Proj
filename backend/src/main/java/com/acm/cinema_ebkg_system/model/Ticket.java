@@ -1,6 +1,8 @@
 package com.acm.cinema_ebkg_system.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -16,15 +18,17 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name="booking_id")
-    private Long bookingId;
+    @JsonBackReference
+    private Booking booking;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name="movie_show_id")
-    private Long movieShowId;
+    @JsonBackReference
+    private MovieShow show;
 
-    @OneToOne
-    @JoinColumn(name="show_seat_id")
-    private Long showSeatId;
+    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private ShowSeat seat;
 
     @Column(name="type")
     private TicketType type;

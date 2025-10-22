@@ -1,7 +1,7 @@
 package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.User;
-import com.acm.cinema_ebkg_system.model.PaymentInfo;
+import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
@@ -68,9 +68,9 @@ public class UserController {
     
     // GET /api/users/{userId}/payment - Get user's payment information
     @GetMapping("/{userId}/payment")
-    public List<PaymentInfo> getUserPaymentInfo(@PathVariable Long userId) {
+    public List<PaymentCard> getUserPaymentCard(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
-        return user.getPaymentInfos();
+        return user.getPaymentCards();
     }
 
     // POST /api/users/{userId}/payment - Add new payment info for user

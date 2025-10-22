@@ -1,6 +1,7 @@
 package com.acm.cinema_ebkg_system.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -16,23 +17,26 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Long userId;
+    @JsonBackReference
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "payment_id", nullable = false)
-    private Long paymentId;
+    @JsonBackReference
+    private PaymentCard paymentCard;
 
-    @OneToOne
-    @JoinColumn(name = "movie_show_id", nullable = false)
-    private Long movieShowId;
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private MovieShow movieShow;
 
-    @OneToOne
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Long movieId;
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Movie movie;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "promotion_id", nullable = false)
-    private Long promotionId;
+    @JsonBackReference
+    private Promotion promotion;
 
     // Default constructor
     public Booking() {}

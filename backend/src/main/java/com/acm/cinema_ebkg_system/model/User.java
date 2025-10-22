@@ -30,13 +30,6 @@ import java.util.ArrayList;
  * @version 1.0
  */
 
-
-enum UserStatus {
-    ACTIVE,
-    INACTIVE,
-    SUSPENDED
-}
-
 @Data 
 @Entity
 @Table(name = "user")
@@ -97,25 +90,22 @@ public class User {
     @Column(name = "enrolled_for_promotions")
     private Boolean enrolledForPromotions;
 
+    // ========== ADDRESS AND PAYMENT ==========
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PaymentCard> paymentCards = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Address address;
+
     // ========== CONSTRUCTORS ==========
     
     /**
      * Default constructor required by JPA
      */
     public User() {}
-
-    /**
-     * Constructor for creating a new user with basic required information
-     * Automatically sets creation and update timestamps
-     * 
-     * @param email User's email address (used for login)
-     * @param password User's password (will be hashed before saving)
-     * @param firstName User's first name
-     * @param lastName User's last name
-     */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<PaymentCard> paymentInfos = new ArrayList<>();
 
     // Custom constructor for registration (kept for business logic)
 public User(String email, String password, String firstName, String lastName, UserStatus status) {

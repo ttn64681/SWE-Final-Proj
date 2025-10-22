@@ -1,5 +1,6 @@
 package com.acm.cinema_ebkg_system.model;
 
+import com.acm.cinema_ebkg_system.model.Movie;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,22 +43,22 @@ public class MovieSummary {
      * Create MovieSummary from Movie entity. 
      * Movie entity will map to this DTO (Data Transfer Object).
      */
-    public static MovieSummary fromMovie(Movie movie) {
+    public static void fromMovie(Movie movie) {
         String truncatedSynopsis = movie.getSynopsis();
         if (truncatedSynopsis != null && truncatedSynopsis.length() > 150) {
             truncatedSynopsis = truncatedSynopsis.substring(0, 147) + "...";
         }
         
-        return new MovieSummary(
-            movie.getMovie_id(),
-            movie.getTitle(),
-            movie.getStatus(),
-            movie.getGenres(),
-            movie.getRating(),
-            movie.getRelease_date(),
-            truncatedSynopsis,
-            movie.getTrailer_link(),
-            movie.getPoster_link()
-        );
+    //     return new MovieSummary(
+    //         movie.getMovieId(),
+    //         movie.getTitle(),
+    //         movie.getStatus(),
+    //         movie.getGenres(),
+    //         movie.getRating(),
+    //         movie.getReleaseDate(),
+    //         truncatedSynopsis,
+    //         movie.getTrailer_link(),
+    //         movie.getPoster_link()
+    //     );
     }
 }

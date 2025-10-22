@@ -1,12 +1,13 @@
 package com.acm.cinema_ebkg_system.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -75,6 +76,10 @@ public class Movie {
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
     private String producers; // comma-separated names
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<MovieShow> movieShows = new ArrayList<>();
 
     // Default constructor
     public Movie() {}

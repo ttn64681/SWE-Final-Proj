@@ -37,6 +37,10 @@ public class Admin {
     @Column(name="password", nullable = false)
     private String password;
 
+    // Profile image link
+    @Column(name="profle_image_link", nullable = false)
+    private String profileImageLink;
+
     // ========== CONSTRUCTORS ==========
     
     /**

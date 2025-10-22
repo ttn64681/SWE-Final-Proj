@@ -4,6 +4,7 @@ import com.acm.cinema_ebkg_system.dto.auth.AuthResponse;
 import com.acm.cinema_ebkg_system.dto.auth.LoginRequest;
 import com.acm.cinema_ebkg_system.dto.auth.RegisterRequest;
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.model.UserStatus;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.util.JwtUtil;
@@ -72,9 +73,9 @@ public class AuthController {
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
             user.setPhoneNumber(request.getPhoneNumber());
-            user.setAddress(request.getAddress());
-            user.setState(request.getState());
-            user.setCountry(request.getCountry());
+            //user.setAddress(request.getAddress());
+            //user.setState(request.getState());
+            //user.setCountry(request.getCountry());
 
             // Step 2: Register user (validates email uniqueness, hashes password, saves to DB)
             User savedUser = userService.registerUser(user);
@@ -111,7 +112,7 @@ public class AuthController {
             User user = userService.authenticateUser(request.getEmail(), request.getPassword());
             
             // Step 2: Check if user is active (email verified)
-            if (!user.isActive()) {
+            if (user.getStatus() == UserStatus.INACTIVE) {
                 AuthResponse response = new AuthResponse(false, "Please verify your email before logging in. Check your inbox for the verification link.");
                 return ResponseEntity.status(403).body(response);
             }
@@ -127,9 +128,7 @@ public class AuthController {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),
-                user.getAddress(),
-                user.getState(),
-                user.getCountry()
+                user.getAddress()
             );
 
             // Step 5: Return success response with tokens and user data
@@ -199,9 +198,7 @@ public class AuthController {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),
-                user.getAddress(),
-                user.getState(),
-                user.getCountry()
+                user.getAddress()
             );
             
             // Step 4: Return success response with tokens

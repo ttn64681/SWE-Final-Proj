@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Data;
 
+enum AddressType {
+    HOME,
+    BILLING
+}
 @Data
 @Entity
 @Table(name = "address")
@@ -18,7 +22,8 @@ public class Address {
     // User ID - Foreign key
     @OneToOne
     @JoinColumn(name="user_id")
-    private Long userId;
+    @JsonBackReference
+    private User user;
 
     @Column(name="street")
     private String street;
@@ -33,11 +38,18 @@ public class Address {
     private String zip;
 
     // Type: Home or billing
-    @Column(name="type")
-    private String addressType;
+    @Column(name="type", nullable=false)
+    private AddressType addressType;
 
     // ========== CONSTRUCTORS ==========
 
     public Address() {}
 
+    // Custom constructor for updating address info
+    public Address(String street, String state, String country, String zip) {
+        this.street = street;
+        this.state = state;
+        this.country = country;
+        this.zip = zip;
+    }
 }

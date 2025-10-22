@@ -14,6 +14,11 @@ public class ShowSeat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "show_room_id")
+    private ShowRoom room;
+
     // Default constructor
     public ShowSeat() {}
 }
