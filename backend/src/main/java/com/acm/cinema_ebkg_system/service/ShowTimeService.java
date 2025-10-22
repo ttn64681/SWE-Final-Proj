@@ -12,12 +12,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service // Spring service bean for business logic layer
 public class ShowTimeService {
 
+    // Dependency injection of repositories for database operations
     private final ShowDateRepository showDateRepository;
     private final ShowTimeRepository showTimeRepository;
 
+    // Constructor injection - Spring automatically provides repository instances
     public ShowTimeService(ShowDateRepository showDateRepository, ShowTimeRepository showTimeRepository) {
         this.showDateRepository = showDateRepository;
         this.showTimeRepository = showTimeRepository;

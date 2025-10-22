@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { validateEmail } from '@/services/auth';
-import { useAuth } from '@/contexts/AuthContext';
+import Checkbox from '@/components/common/forms/Checkbox';
 import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
-import AuthInput from '@/components/common/auth/AuthInput';
-import AuthButton from '@/components/common/auth/AuthButton';
+import { useAuth } from '@/contexts/AuthContext';
+import { validateEmail } from '@/services/auth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -16,19 +15,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
-  const { login, isAuthenticated } = useAuth();
-
-  // Redirect if already authenticated - use useEffect to avoid setState in render
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/');
-    }
-  }, [isAuthenticated, router]);
-
-  // Show loading or nothing while redirecting
-  if (isAuthenticated) {
-    return null;
-  }
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,10 +30,7 @@ export default function LoginPage() {
         return;
       }
 
-      // // Call login API
-      // const response = await authAPI.login({ email, password, rememberMe });
-
-      // Call login through context
+      // Call AuthContext login function
       const response = await login(email, password, rememberMe);
 
       if (response.success) {
@@ -68,58 +52,69 @@ export default function LoginPage() {
       {error && (
         <div className="mb-4 p-3 bg-red-900/40 border border-red-500/60 rounded-md">
           <p className="text-red-200 text-sm">{error}</p>
+          {error.includes('verify your email') && (
+            <div className="mt-2">
+              <Link 
+                href="/auth/resend-verification" 
+                className="text-blue-300 hover:text-blue-200 text-sm underline"
+              >
+                Resend verification email
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <AuthInput
-          id="email"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          disabled={isLoading}
-          required
-        />
-
-        <AuthInput
-          id="password"
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Your password"
-          disabled={isLoading}
-          required
-        />
-
-        <div className="flex items-center gap-2">
+        <div>
+          <label htmlFor="email" className="block text-white text-sm mb-2">Email</label>
           <input
-            id="rememberMe"
-            type="checkbox"
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-4 w-4 rounded border-white/40 bg-white/10"
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
+            required
             disabled={isLoading}
           />
-          <label htmlFor="rememberMe" className="text-sm text-white/80 select-none">Remember Me</label>
         </div>
 
-        <AuthButton
+        <div>
+          <label htmlFor="password" className="block text-white text-sm mb-2">Password</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Your password"
+            className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
+            required
+            disabled={isLoading}
+          />
+        </div>
+
+        <Checkbox
+          id="rememberMe"
+          label="Remember Me"
+          checked={rememberMe}
+          onChange={setRememberMe}
+          disabled={isLoading}
+        />
+
+        <button
           type="submit"
           disabled={isLoading}
-          loading={isLoading}
-          variant="primary"
+          className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed drop-shadow-lg"
         >
-          Login
-        </AuthButton>
+          {isLoading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
 
       <div className="mt-6 text-center">
         <p className="text-white/70 text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/auth/register" className="text-acm-pink hover:text-acm-orange transition-colors">
+          <Link href="/auth/register" className="text-acm-pink hover:text-acm-pink/80 transition-colors">
             Sign up
           </Link>
         </p>

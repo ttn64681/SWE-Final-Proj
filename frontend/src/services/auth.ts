@@ -26,7 +26,7 @@ export interface AuthResponse {
   message: string;
   token?: string;
   user?: {
-    id: string;
+    id: number;
     email: string;
     firstName: string;
     lastName: string;
@@ -86,7 +86,7 @@ export const authAPI = {
 
   async refreshToken(): Promise<AuthResponse> {
     try {
-      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: {

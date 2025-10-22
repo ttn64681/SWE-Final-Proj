@@ -38,7 +38,9 @@ export default function FiltersDate({text, value, onChange} : FiltersDateProps) 
                 <ChevronDownIcon />
             </label> */}
             <select
-                className="appearance-none w-full p-2 border-3 border-acm-pink bg-black/20 rounded-lg outline-0 text-white/60 font-medium basis-1/3"
+                className={`appearance-none w-full p-2 border-2 bg-black/20 rounded-lg outline-0 font-medium basis-1/3 cursor-pointer transition-all duration-200 hover:text-white hover:border-white/80 ${
+                    value.month ? 'bg-acm-pink text-white border-acm-pink font-extrabold text-shadow-white' : 'border-white/40 text-white/60'
+                }`}
                 value={value.month}
                 aria-label="Month"
                 onChange={(e) => setPart("month", e.target.value)}
@@ -51,7 +53,9 @@ export default function FiltersDate({text, value, onChange} : FiltersDateProps) 
                 ))}
             </select>
             <select
-                className="appearance-none w-full p-2 border-3 border-acm-pink bg-black/20 rounded-lg outline-0 text-white/60 font-medium basis-1/6"
+                className={`appearance-none w-full p-2 border-2 bg-black/20 rounded-lg outline-0 font-medium basis-1/6 cursor-pointer transition-all duration-200 hover:text-white hover:border-white/80 ${
+                    value.day ? 'bg-acm-pink text-white border-acm-pink font-extrabold text-shadow-white' : 'border-white/40 text-white/60'
+                }`}
                 value={value.day}
                 aria-label="Day"
                 onChange={(e) => setPart("day", e.target.value)}
@@ -65,7 +69,9 @@ export default function FiltersDate({text, value, onChange} : FiltersDateProps) 
             </select>
             
             <select
-                className="appearance-none w-full p-2 border-3 border-acm-pink bg-black/20 rounded-lg outline-0 text-white/60 font-medium basis-1/4"
+                className={`appearance-none w-full p-2 border-2 bg-black/20 rounded-lg outline-0 font-medium basis-1/4 cursor-pointer transition-all duration-200 hover:text-white hover:border-white/80 ${
+                    value.year ? 'bg-acm-pink text-white border-acm-pink font-extrabold text-shadow-white' : 'border-white/40 text-white/60'
+                }`}
                 value={value.year}
                 aria-label="Year"
                 onChange={(e) => setPart("year", e.target.value)}

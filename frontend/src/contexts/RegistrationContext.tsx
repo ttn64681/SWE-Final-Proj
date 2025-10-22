@@ -7,17 +7,18 @@ export interface RegistrationData {
   email: string;
   password: string;
   confirmPassword: string;
-  
+
   // Step 2
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  
-  // // Step 3
-  // address: string;
-  // state: string;
-  // country: string;
-  
+  // Address fields (optional)
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
+
   // Step 3 - Payment Method (Optional)
   cardType?: string;
   cardNumber?: string;
@@ -26,6 +27,10 @@ export interface RegistrationData {
   billingStreet?: string;
   billingCity?: string;
   billingState?: string;
+  billingZip?: string;
+  
+  // Step 3 - Preferences
+  enrollForPromotions?: boolean;
 }
 
 interface RegistrationContextType {
@@ -42,11 +47,13 @@ const initialData: RegistrationData = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
-
-  // address: '',
-  // state: '',
-  // country: '',
-
+  // Address fields
+  address: '',
+  city: '',
+  state: '',
+  zipCode: '',
+  country: 'US',
+  // Payment fields
   cardType: '',
   cardNumber: '',
   expirationDate: '',
@@ -54,6 +61,9 @@ const initialData: RegistrationData = {
   billingStreet: '',
   billingCity: '',
   billingState: '',
+  billingZip: '',
+  // Preferences
+  enrollForPromotions: false,
 };
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
@@ -74,7 +84,7 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
   const [data, setData] = useState<RegistrationData>(initialData);
 
   const updateData = (stepData: Partial<RegistrationData>) => {
-    setData(prev => ({ ...prev, ...stepData }));
+    setData((prev) => ({ ...prev, ...stepData }));
   };
 
   const clearData = () => {
@@ -92,11 +102,7 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
           data.password.length >= 8
         );
       case 2:
-        return !!(
-          data.firstName &&
-          data.lastName &&
-          data.phoneNumber
-        );
+        return !!(data.firstName && data.lastName && data.phoneNumber);
       case 3:
         // return !!(
         //   data.state &&

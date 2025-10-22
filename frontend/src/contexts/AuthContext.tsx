@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import { authAPI, AuthResponse } from '@/services/auth';
 
 interface User {
-  id: string;
+  id: number;
   email: string;
   firstName: string;
   lastName: string;
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // WHY MATTERS: Prevents context recreation cascade
   const checkAuthStatus = useCallback(() => {
     setIsLoading(true);
-    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
     
     if (token) {
       // Try to refresh token to validate it
@@ -40,14 +40,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(response.user);
         } else {
           // Token is invalid, clear it
-          localStorage.removeItem('authToken');
-          sessionStorage.removeItem('authToken');
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('token');
           setUser(null);
         }
         setIsLoading(false);
       }).catch(() => {
-        localStorage.removeItem('authToken');
-        sessionStorage.removeItem('authToken');
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
         setUser(null);
         setIsLoading(false);
       });
@@ -72,9 +72,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Store JWT token client-side only (stateless - server doesn't store sessions)
       // Remember me = localStorage (persistent), otherwise = sessionStorage (session-only)
       if (rememberMe) {
-        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('token', response.token);
       } else {
-        sessionStorage.setItem('authToken', response.token);
+        sessionStorage.setItem('token', response.token);
       }
     }
     
@@ -93,8 +93,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       // Always clear local state and JWT tokens (client-side only)
       setUser(null);
-      localStorage.removeItem('authToken');
-      sessionStorage.removeItem('authToken');
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
     }
   }, []);
 

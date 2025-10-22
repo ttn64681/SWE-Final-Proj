@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import NavBar from "@/components/common/navBar/NavBar";
 import { useProfile } from "@/contexts/ProfileContext";
+import Checkbox from "@/components/common/forms/Checkbox";
 import styles from "./profile.module.css";
 
 export default function ProfilePage() {
@@ -78,6 +79,7 @@ export default function ProfilePage() {
           <aside className="flex flex-col items-center gap-6 -mt-2 md:-mt-20">
             <div className="relative group">
               <input
+                title="Upload Profile Picture"
                 type="file"
                 accept="image/*"
                 onChange={onImageUpload}
@@ -176,25 +178,20 @@ export default function ProfilePage() {
             </div>
 
             {/* Promotions checkbox */}
-            <div className="flex items-center gap-3 mt-8">
-              <input
-                type="checkbox"
+            <div className="mt-8">
+              <Checkbox
                 id="promotions"
+                label="Subscribe to promotions"
                 checked={subscribeToPromotions}
-                onChange={(e) => setSubscribeToPromotions(e.target.checked)}
-                className="w-5 h-5 rounded bg-[#242424] text-[#FF478B] focus:ring-[#FF478B] focus:ring-2"
-                style={{
-                  accentColor: "#FF478B"
-                }}
+                onChange={setSubscribeToPromotions}
               />
-              <label htmlFor="promotions" className="text-white font-afacad text-sm">
-                Subscribe to promotions
-              </label>
             </div>
 
             {/* Save button */}
             <div className="flex justify-center mt-10">
               <button
+                type="button"
+                title="Save Changes"
                 className="px-8 py-3 rounded-full font-afacad font-bold text-black"
                 style={{ 
                   background: "linear-gradient(to right, #FF478B, #FF5C33)",
