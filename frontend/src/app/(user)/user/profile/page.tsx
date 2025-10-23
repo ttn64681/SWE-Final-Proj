@@ -49,7 +49,7 @@ export default function ProfilePage() {
   });
 
   // Get the user profile data from the backend
-  const {user, loading, error} = useUser(getUserID());
+  const {user, loading, error, updateUser} = useUser(getUserID());
 
   useEffect(() => {
     console.log(user);
@@ -64,6 +64,21 @@ export default function ProfilePage() {
       });
     }
   }, [user]);
+
+  // Send updated user data to the backend
+  const saveProfileChanges = async () => {
+    const success = await updateUser( {
+      firstName: "Squidward",//userData.firstName,
+      lastName: "Tentacles", //userData.lastName,
+      phoneNumber: "404" //userData.phone
+    });
+
+    if (success) {
+      alert("Profile updated successfully.");
+    } else {
+      alert("Failed to update user profile. Check debug logs.");
+    }
+  }
 
   // Promotions subscription state
   const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
@@ -233,6 +248,7 @@ export default function ProfilePage() {
             {/* Save button */}
             <div className="flex justify-center mt-10">
               <button
+                onClick={saveProfileChanges}
                 className="px-8 py-3 rounded-full font-afacad font-bold text-black"
                 style={{ 
                   background: "linear-gradient(to right, #FF478B, #FF5C33)",
