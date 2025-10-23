@@ -63,7 +63,7 @@ export default function ProfilePage() {
         phone: user.phoneNumber,
       });
     }
-  }, [userData]);
+  }, [user]);
 
   // Send updated user data to the backend
   const saveProfileChanges = async () => {

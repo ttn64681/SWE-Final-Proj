@@ -26,8 +26,8 @@ import { BackendUser } from '../types/user';
 
 // Function to send updated user information to the backend (Corresponds to updateUser endpoint)
     async function updateUserInfo(userId: number, userInfo: Partial<BackendUser>) {
-        //console.log("ID: " + userId);
-        //console.log(userInfo);
+        console.log("ID: " + userId);
+        console.log(userInfo);
         try {
             const response = await fetch(buildUrl(endpoints.users.updateUser(userId)), {
                 method: 'PUT',
@@ -57,7 +57,6 @@ export function useUser(userId: number) {
 
     // Fetches a user's information by their user ID
     useEffect(() => {
-        if (userId) {
         const fetchUserInfo = async () => {
             console.log("Fetching user info...");
             const fetchedInfo = await getUserInfo(userId); 
@@ -70,8 +69,7 @@ export function useUser(userId: number) {
             setLoading(false);
         };
         fetchUserInfo();
-        }
-    }, []);
+    }, [userId]);
 
     // Updates a user's information
     const updateUser = async (userInfo: Partial<BackendUser>) => {
