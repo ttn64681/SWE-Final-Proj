@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRegistration } from '@/contexts/RegistrationContext';
 import { validateEmail, validatePassword } from '@/services/auth';
+import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import AuthInput from '@/components/common/auth/AuthInput';
 import AuthButton from '@/components/common/auth/AuthButton';
-import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 
 export default function RegisterPage() {
   const { data, updateData, isStepValid } = useRegistration();
@@ -16,48 +16,40 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Create new errors object to avoid async state issues
-    const newErrors: {[key: string]: string} = {};
+    setErrors({});
 
     // Validate email
     if (!data.email) {
-      newErrors.email = 'Email is required';
+      setErrors(prev => ({ ...prev, email: 'Email is required' }));
     } else if (!validateEmail(data.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }));
     }
 
     // Validate password
     if (!data.password) {
-      newErrors.password = 'Password is required';
+      setErrors(prev => ({ ...prev, password: 'Password is required' }));
     } else {
       const passwordValidation = validatePassword(data.password);
       if (!passwordValidation.isValid) {
-        newErrors.password = passwordValidation.message || 'Invalid password';
+        setErrors(prev => ({ ...prev, password: passwordValidation.message || 'Invalid password' }));
       }
     }
 
     // Validate confirm password
     if (!data.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      setErrors(prev => ({ ...prev, confirmPassword: 'Please confirm your password' }));
     } else if (data.password !== data.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      setErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }));
     }
 
-    // Set errors and only proceed if no errors
-    // Using newErrors instead of checking old errors state prevents async issues
-    setErrors(newErrors);
-    
-    if (Object.keys(newErrors).length === 0 && isStepValid(1)) {
+    // If no errors, proceed to next step
+    if (Object.keys(errors).length === 0 && isStepValid(1)) {
       router.push('/auth/register/step2');
     }
   };
 
   return (
-    <AuthFormContainer
-      stepNumber={1}
-      stepTitle="Create an Account"
-      stepDescription="Step 1 of 3 - Get started with your account"
-    >
+    <AuthFormContainer title="Create an Account" subtitle="Step 1 of 3">
       <form onSubmit={handleSubmit} className="space-y-6">
         <AuthInput
           id="email"
@@ -98,10 +90,10 @@ export default function RegisterPage() {
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-white/60 text-sm">
+        <p className="text-white/70 text-sm">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-acm-pink hover:text-acm-orange transition-colors cursor-pointer">
-            &nbsp;Sign in
+          <Link href="/auth/login" className="text-acm-pink hover:text-acm-orange transition-colors">
+            Sign in
           </Link>
         </p>
       </div>

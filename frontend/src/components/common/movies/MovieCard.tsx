@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import SelectedMovie from './selectedMovie/SelectedMovie';
+import SelectedMovie from './SelectedMovie';
 import TrailerEmbed from './TrailerEmbed';
 import { BackendMovie } from '@/types/movie';
 import { IoPlay } from 'react-icons/io5';
@@ -73,8 +73,8 @@ export default function MovieCard({ movie }: MovieCardProps) {
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=" // Base64 blur placeholder
           />
 
-          {/* MPAA Rating Badge - Light mode rounded design with enhanced drop shadow */}
-          <div className="absolute top-2 right-2 z-10 rounded-full bg-white px-2.5 py-1 text-xs font-black text-gray-800 border border-gray-200/50 shadow-2xl drop-shadow-2xl hover:shadow-2xl transition-shadow duration-200">
+          {/* MPAA Rating Badge - Above overlay */}
+          <div className="absolute top-3 right-3 z-10 rounded-full bg-white/90 backdrop-blur-sm px-2 py-1 text-xs font-bold text-gray-800 shadow-sm">
             {movie.rating}
           </div>
 
@@ -114,7 +114,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300">
               <button
                 onClick={handlePreviewClick}
-                className="flex items-center gap-2 bg-acm-pink hover:bg-acm-pink/80 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105 cursor-pointer"
+                className="flex items-center gap-2 bg-acm-pink hover:bg-acm-pink/80 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 hover:scale-105"
                 title="Preview Trailer"
               >
                 <IoPlay className="text-lg" />

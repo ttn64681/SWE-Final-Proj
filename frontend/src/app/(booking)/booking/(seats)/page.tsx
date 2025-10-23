@@ -4,9 +4,8 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/common/navBar/NavBar';
-import CinemaLayout from '@/components/specific/booking/seats/CinemaLayout';
+import CinemaLayout from '@/components/specific/booking/CinemaLayout';
 import PromoBanner from '@/components/common/promos/PromoBanner';
-import Spinner from '@/components/common/Spinner';
 import { useSeats } from '@/hooks/useSeats';
 import styles from './seats.module.css';
 
@@ -120,7 +119,7 @@ export default function SeatingPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <Spinner size="lg" color="pink" text="Loading seats..." />
+        <div className="text-white text-xl">Loading...</div>
       </div>
     }>
       <SeatingPageContent />
