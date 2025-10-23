@@ -11,12 +11,12 @@ interface PaymentSectionProps {
 }
 
 export default function PaymentSection({ data, updateData, isLoading = false }: PaymentSectionProps) {
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Add new payment card (max 3 cards allowed)
   const addPaymentCard = () => {
     if (data.paymentCards.length >= 3) return;
-    
+
     const newCard: PaymentCard = {
       id: `card_${Date.now()}`,
       cardType: '',
@@ -31,17 +31,17 @@ export default function PaymentSection({ data, updateData, isLoading = false }: 
     };
 
     const updatedCards = [...data.paymentCards, newCard];
-    updateData({ 
+    updateData({
       paymentCards: updatedCards,
-      defaultCardId: data.paymentCards.length === 0 ? newCard.id : data.defaultCardId
+      defaultCardId: data.paymentCards.length === 0 ? newCard.id : data.defaultCardId,
     });
   };
 
   // Remove payment card and handle default card reassignment
   const removePaymentCard = (cardId: string) => {
-    const updatedCards = data.paymentCards.filter(card => card.id !== cardId);
-    const wasDefault = data.paymentCards.find(card => card.id === cardId)?.isDefault;
-    
+    const updatedCards = data.paymentCards.filter((card) => card.id !== cardId);
+    const wasDefault = data.paymentCards.find((card) => card.id === cardId)?.isDefault;
+
     let newDefaultId = data.defaultCardId;
     if (wasDefault && updatedCards.length > 0) {
       // Set first remaining card as default
@@ -51,35 +51,33 @@ export default function PaymentSection({ data, updateData, isLoading = false }: 
       newDefaultId = undefined;
     }
 
-    updateData({ 
+    updateData({
       paymentCards: updatedCards,
-      defaultCardId: newDefaultId
+      defaultCardId: newDefaultId,
     });
   };
 
   // Update individual card field
   const updatePaymentCard = (cardId: string, field: keyof PaymentCard, value: string | boolean) => {
-    const updatedCards = data.paymentCards.map(card => 
-      card.id === cardId ? { ...card, [field]: value } : card
-    );
+    const updatedCards = data.paymentCards.map((card) => (card.id === cardId ? { ...card, [field]: value } : card));
     updateData({ paymentCards: updatedCards });
   };
 
   // Set a card as the default (only one can be default at a time)
   const setDefaultCard = (cardId: string) => {
-    const updatedCards = data.paymentCards.map(card => ({
+    const updatedCards = data.paymentCards.map((card) => ({
       ...card,
-      isDefault: card.id === cardId
+      isDefault: card.id === cardId,
     }));
-    updateData({ 
+    updateData({
       paymentCards: updatedCards,
-      defaultCardId: cardId
+      defaultCardId: cardId,
     });
   };
 
-  const validateCard = (card: PaymentCard): {[key: string]: string} => {
-    const cardErrors: {[key: string]: string} = {};
-    
+  const validateCard = (card: PaymentCard): { [key: string]: string } => {
+    const cardErrors: { [key: string]: string } = {};
+
     if (!card.cardType) cardErrors.cardType = 'Card type is required';
     if (!card.cardNumber) cardErrors.cardNumber = 'Card number is required';
     if (!card.expirationDate) cardErrors.expirationDate = 'Expiration date is required';
@@ -88,7 +86,7 @@ export default function PaymentSection({ data, updateData, isLoading = false }: 
     if (!card.billingCity) cardErrors.billingCity = 'Billing city is required';
     if (!card.billingState) cardErrors.billingState = 'Billing state is required';
     if (!card.billingZip) cardErrors.billingZip = 'Billing zip is required';
-    
+
     return cardErrors;
   };
 
