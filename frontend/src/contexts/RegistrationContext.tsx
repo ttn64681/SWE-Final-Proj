@@ -2,6 +2,19 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+export interface PaymentCard {
+  id: string;
+  cardType: string;
+  cardNumber: string;
+  expirationDate: string;
+  cvv: string;
+  billingStreet: string;
+  billingCity: string;
+  billingState: string;
+  billingZip: string;
+  isDefault: boolean;
+}
+
 export interface RegistrationData {
   // Step 1
   email: string;
@@ -12,21 +25,19 @@ export interface RegistrationData {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  // Address fields (optional)
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
 
-  // // Step 3
-  // address: string;
-  // state: string;
-  // country: string;
-
-  // Step 3 - Payment Method (Optional)
-  cardType?: string;
-  cardNumber?: string;
-  expirationDate?: string;
-  cvv?: string;
-  billingStreet?: string;
-  billingCity?: string;
-  billingState?: string;
-  billingZip?: string;
+  // Step 3 - Payment Methods (Optional, up to 3 cards)
+  paymentCards: PaymentCard[];
+  defaultCardId?: string;
+  
+  // Step 3 - Preferences
+  enrollForPromotions?: boolean;
 }
 
 interface RegistrationContextType {
@@ -43,19 +54,17 @@ const initialData: RegistrationData = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
-
-  // address: '',
-  // state: '',
-  // country: '',
-
-  cardType: '',
-  cardNumber: '',
-  expirationDate: '',
-  cvv: '',
-  billingStreet: '',
-  billingCity: '',
-  billingState: '',
-  billingZip: '',
+  // Address fields
+  address: '',
+  city: '',
+  state: '',
+  zipCode: '',
+  country: 'US',
+  // Payment fields
+  paymentCards: [],
+  defaultCardId: undefined,
+  // Preferences
+  enrollForPromotions: false,
 };
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);

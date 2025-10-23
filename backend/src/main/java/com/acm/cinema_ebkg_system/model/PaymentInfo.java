@@ -32,7 +32,7 @@ public class PaymentInfo {
 
     @NotNull
     @Column(nullable = false)
-    private Long card_number;
+    private String card_number;
 
     @NotBlank
     @Column(nullable = false)
@@ -41,6 +41,10 @@ public class PaymentInfo {
     @NotNull
     @Column(nullable = false)
     private LocalDate expiration_date;
+
+    @NotNull
+    @Column(nullable = false)
+    private String cardholder_name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
