@@ -4,6 +4,7 @@
  */
 
 import axios from 'axios';
+import { BackendUser } from '@/types/user';
 
 // Get the base URL from environment variables
 const getApiUrl = (): string => {
@@ -49,7 +50,7 @@ export const apiConfig = {
     users: {
 
       getUserById: (userId: number) => `/api/users/${userId}`,
-      updateUserInfo: (userId: number) => `/api/users/${userId}/info`,
+      updateUser: (userId: number) => `/api/users/${userId}/info`,
 
     },
     
