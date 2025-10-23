@@ -41,7 +41,8 @@ export default function ProfilePage() {
   // Initialize user profile data
   const [userData, setUserData] = useState({
     email: "",
-    password: "",
+    currentPassword: "",
+    newPassword: "",
     firstName: "",
     lastName: "",
     phone: "",
@@ -55,7 +56,8 @@ export default function ProfilePage() {
     if (user) {
       setUserData({
         email: user.email,
-        password: "",
+        currentPassword: "",
+        newPassword: "",
         firstName: user.firstName,
         lastName: user.lastName,
         phone: user.phoneNumber,
@@ -164,7 +166,10 @@ export default function ProfilePage() {
           </aside>
 
           {/* Form */}
+          
           <section className="p-0">
+            <h1 className="text-2xl text-acm-pink font-red-rose mb-10"> Edit Personal Info </h1>
+
             <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-y-6 gap-x-6">
               <label className="self-center text-white font-afacad text-lg font-bold">Email</label>
               <input
@@ -173,15 +178,9 @@ export default function ProfilePage() {
                 readOnly
                 className={styles.emailInput}
                 placeholder="Email address"
-              />
-
-              <label className="self-center text-white font-afacad text-lg font-bold">Password</label>
-              <input
-                type="password"
-                value={userData.password}
-                readOnly
-                className={styles.emailInput}
-                placeholder="Enter password"
+                style={{ 
+                  cursor: "not-allowed"
+                }}
               />
 
               <label className="self-center text-white font-afacad text-lg font-bold">Name</label>
@@ -244,6 +243,43 @@ export default function ProfilePage() {
                 Save Changes
               </button>
             </div>
+
+            {/* Change Password */}
+            <h1 className="text-2xl text-acm-pink font-red-rose mt-10"> Change Password </h1>
+            <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-y-6 gap-x-6 mt-10">
+              
+                <label className="self-center text-white font-afacad text-lg font-bold">Current Password </label>
+                <input
+                  type="password"
+                  value={userData.currentPassword}
+                  onChange={(e) => setUserData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                  className={styles.profileInput}
+                  placeholder="Enter current password"
+                />
+
+                <label className="self-center text-white font-afacad text-lg font-bold">New Password </label>
+                <input
+                  type="password"
+                  value={userData.newPassword}
+                  onChange={(e) => setUserData(prev => ({ ...prev, newPassword: e.target.value }))}
+                  className={styles.profileInput}
+                  placeholder="Enter new password"
+                />
+            </div>
+
+            {/* Change password button */}
+              <div className="flex justify-center mt-10">
+                <button
+                  className="px-8 py-3 rounded-full font-afacad font-bold text-black"
+                    style={{ 
+                      background: "linear-gradient(to right, #FF478B, #FF5C33)",
+                      border: "none",
+                      cursor: "pointer"
+                    }}
+                  >
+                  Change Password
+                </button>
+              </div>
           </section>
         </div>
       </div>
