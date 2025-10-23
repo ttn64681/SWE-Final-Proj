@@ -13,7 +13,7 @@ import java.time.LocalDate; // (YYYY-MM-DD)
 import java.time.LocalDateTime; // date + time (timestamp)
 
 @Entity
-@Table(name = "show_dates")
+@Table(name = "show_date")
 public class ShowDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
