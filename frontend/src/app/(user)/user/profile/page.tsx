@@ -41,12 +41,23 @@ function validatePhoneNumber(phoneNumber: string) {
   return phoneRegex.test(phoneNumber);
 }
 
-function comparePasswords(currentPwd: string, newPwd: string) {
-  if (currentPwd != newPwd) {
-    return true;
-  } else {
-    return false;
+function checkPasswordSecurity(currentPwd: string, newPwd: string) {
+  if (currentPwd == newPwd) {
+    return { secure: false, message: "The new password should be different from the old password." }
   }
+  if (newPwd.length < 8) {
+    return { secure: false, message: 'The new password must be at least 8 characters long.' };
+  }
+  if (!/(?=.*[a-z])/.test(newPwd)) {
+    return { secure: false, message: 'The new password must contain at least one lowercase letter.' };
+  }
+  if (!/(?=.*[A-Z])/.test(newPwd)) {
+    return { secure: false, message: 'The new password must contain at least one uppercase letter.' };
+  }
+  if (!/(?=.*\d)/.test(newPwd)) {
+    return { secure: false, message: 'The new password must contain at least one number.' };
+  }
+  return { secure: true };
 }
 
 
@@ -76,7 +87,7 @@ export default function ProfilePage() {
         lastName: user.lastName,
         phone: user.phoneNumber,
       });
-      console.log("User data set");
+      //console.log("User data set");
     }
   }, [user]);
 
@@ -101,19 +112,26 @@ export default function ProfilePage() {
 
   // Send updated password data to the backend
   const savePasswordChange = async () => {
-    if (comparePasswords(userData.currentPassword, userData.newPassword)) {
+    // Check if new password meets security requirements
+    const {secure, message} = checkPasswordSecurity(userData.currentPassword, userData.newPassword);
+
+    // If it does, send the password inputs to the backend
+    if (secure) {
       const success = await updatePassword( {
         currentPassword: userData.currentPassword,
         newPassword: userData.newPassword
       });
 
+      // Password was updated successfully
       if (success) {
         alert("Password changed successfully.");
+      // Password was not updated: current password is incorrect
       } else {
         alert("Failed to update password. Check that your current password is correct.");
       }
     } else {
-      alert("The new password cannot be the same as the old password.");
+      // If the new password does not meet security requirements, tell the user why
+      alert(message);
     }
   } 
 

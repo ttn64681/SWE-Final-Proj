@@ -13,6 +13,7 @@ import { BackendUser } from '../types/user';
                 },
             });
             const data = await response.json();
+            console.log("Successfully retrieved user data from backend");
             return data;
 
         } catch (error) {
@@ -74,6 +75,7 @@ export function useUser(userId: number) {
         
             if (fetchedInfo) {
                 setUser(fetchedInfo);
+                console.log("User info fetched.");
                 return user;
             } else {
                 console.log("Failed to load user data.");
@@ -99,17 +101,16 @@ export function useUser(userId: number) {
 
     // Updates a user's password
     const updatePassword = async (passwordInfo: Partial<BackendUser>) => {
-        console.log("Updating user info...");
+        console.log("Updating password info...");
         const updatedUser = await changePassword(userId, passwordInfo); 
         
         if (updatedUser) {
             setUser(updatedUser);
             return true;
         } else {
-            console.log("Failed to update user data.");
+            console.log("Failed to update password data.");
             return false;
         }
     };
-    //console.log(user);
     return {user, updateUser, updatePassword};
 }
