@@ -112,13 +112,23 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className="mt-6 text-center space-y-3">
         <p className="text-white/70 text-sm">
           Don&apos;t have an account?{' '}
           <Link href="/auth/register" className="text-acm-pink hover:text-acm-pink/80 transition-colors">
             Sign up
           </Link>
         </p>
+        
+        <div className="border-t border-white/10 pt-3">
+          <p className="text-white/60 text-sm mb-2">Administrator Access</p>
+          <Link 
+            href="/auth/admin-login" 
+            className="text-acm-orange hover:text-acm-orange/80 transition-colors text-sm font-medium"
+          >
+            Login as Admin
+          </Link>
+        </div>
       </div>
     </AuthFormContainer>
   );
