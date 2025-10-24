@@ -10,6 +10,7 @@ interface SmallPromoProps {
 export default function SmallPromo({ discount, promo, imageUrl }: SmallPromoProps) {
   return (
     <motion.div
+      title={`${promo} - ${discount}`}
       whileHover={{
         y: -5,
         transition: { duration: 0.2 },
@@ -22,6 +23,7 @@ export default function SmallPromo({ discount, promo, imageUrl }: SmallPromoProp
           alt="Promotion Image"
           fill
           priority
+          title="Promotion Image"
           className="object-cover"
           sizes="160px"
         />

@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from '@/config/api';
 
 /**
- * Email Verification Page
+ * Email Verification Page Content
  *
- * This page handles email verification when users click the link in their verification email.
+ * This component handles email verification when users click the link in their verification email.
  * It extracts the token from the URL and calls the backend verification endpoint.
  */
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'verifying' | 'success' | 'error' | 'registration-success'>('verifying');
@@ -316,5 +316,37 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Email Verification Page
+ *
+ * This page handles email verification when users click the link in their verification email.
+ * It extracts the token from the URL and calls the backend verification endpoint.
+ */
+export default function VerifyEmailPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white rounded-lg shadow-2xl p-8">
+              <div className="text-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Email Verification</h1>
+              </div>
+              <div className="flex justify-center mb-6">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+              </div>
+              <div className="text-center mb-6 p-4 rounded-lg bg-blue-50 text-blue-800">
+                <p className="text-lg font-medium">Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

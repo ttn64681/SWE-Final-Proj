@@ -12,4 +12,7 @@ export interface BackendUser {
   phoneNumber: string;
   currentPassword: string;
   newPassword: string;
+  address: string;
+  state: string;
+  country: string;
 }

@@ -11,24 +11,24 @@ interface Showtime {
   ampm: string;
 }
 
-interface Movie {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  _meta?: {
-    movieType?: string;
-    genre?: string;
-    trailerUrl?: string;
-    synopsis?: string;
-    director?: string;
-    producer?: string;
-    cast?: string;
-    reviews?: string;
-    rating?: string;
-    showtimes?: Showtime[];
-  };
-}
+// interface Movie {
+//   id: number;
+//   title: string;
+//   date: string;
+//   time: string;
+//   _meta?: {
+//     movieType?: string;
+//     genre?: string;
+//     trailerUrl?: string;
+//     synopsis?: string;
+//     director?: string;
+//     producer?: string;
+//     cast?: string;
+//     reviews?: string;
+//     rating?: string;
+//     showtimes?: Showtime[];
+//   };
+// }
 
 export default function AdminAddMoviePage() {
   const router = useRouter();
@@ -60,7 +60,7 @@ export default function AdminAddMoviePage() {
         if (existing) {
           try {
             const movies = JSON.parse(existing);
-            const movieToEdit = movies.find((m: Movie) => m.id === parseInt(editId));
+            const movieToEdit = movies.find((m: { id: number }) => m.id === parseInt(editId));
 
             if (movieToEdit) {
               setEditingId(parseInt(editId));
