@@ -32,25 +32,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuthStatus = useCallback(() => {
     setIsLoading(true);
     const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-    
+
     if (token) {
       // Try to refresh token to validate it
-      authAPI.refreshToken().then((response) => {
-        if (response.success && response.user) {
-          setUser(response.user);
-        } else {
-          // Token is invalid, clear it
+      authAPI
+        .refreshToken()
+        .then((response) => {
+          if (response.success && response.user) {
+            setUser(response.user);
+          } else {
+            // Token is invalid, clear it
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            setUser(null);
+          }
+          setIsLoading(false);
+        })
+        .catch(() => {
           localStorage.removeItem('token');
           sessionStorage.removeItem('token');
           setUser(null);
-        }
-        setIsLoading(false);
-      }).catch(() => {
-        localStorage.removeItem('token');
-        sessionStorage.removeItem('token');
-        setUser(null);
-        setIsLoading(false);
-      });
+          setIsLoading(false);
+        });
     } else {
       setIsLoading(false);
     }
@@ -59,14 +62,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check if user is logged in on app start
   useEffect(() => {
     checkAuthStatus();
-  }, [checkAuthStatus]); 
+  }, [checkAuthStatus]);
   // CACHES: Function reference (not behavior) - persists across AuthProvider re-renders
   // CHANGES: Never (empty deps) - BUT will recreate if AuthProvider component unmounts/remounts
   // WITHOUT useCallback: New reference every AuthProvider re-render → useMemo recreates context → all auth consumers re-render
   // WHY MATTERS: Prevents context recreation cascade
   const login = useCallback(async (email: string, password: string, rememberMe = false): Promise<AuthResponse> => {
     const response = await authAPI.login({ email, password, rememberMe });
-    
+
     if (response.success && response.user && response.token) {
       setUser(response.user);
       // Store JWT token client-side only (stateless - server doesn't store sessions)
@@ -77,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         sessionStorage.setItem('token', response.token);
       }
     }
-    
+
     return response;
   }, []);
 
@@ -102,20 +105,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // CHANGES: When user, isLoading, or function references change - BUT will recreate if AuthProvider component unmounts/remounts
   // WITHOUT useMemo: New object every AuthProvider re-render → all auth consumers re-render (NavBar, protected routes, etc.)
   // WHY MATTERS: Prevents cascading re-renders across entire auth component tree
-  const contextValue = useMemo(() => ({
-    user,
-    isAuthenticated: !!user,
-    isLoading,
-    login,
-    logout,
-    checkAuthStatus
-  }), [user, isLoading, login, logout, checkAuthStatus]);
-
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isLoading,
+      login,
+      logout,
+      checkAuthStatus,
+    }),
+    [user, isLoading, login, logout, checkAuthStatus]
   );
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

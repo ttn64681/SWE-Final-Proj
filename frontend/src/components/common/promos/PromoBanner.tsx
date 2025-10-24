@@ -10,13 +10,7 @@ interface PromoBannerProps {
   className?: string;
 }
 
-export default function PromoBanner({ 
-  title, 
-  description, 
-  buttonText, 
-  buttonHref, 
-  className = "" 
-}: PromoBannerProps) {
+export default function PromoBanner({ title, description, buttonText, buttonHref, className = '' }: PromoBannerProps) {
   return (
     <div className={`px-6 pb-10 ${className}`}>
       <div className="max-w-5xl mx-auto">
@@ -26,8 +20,8 @@ export default function PromoBanner({
               <p className="text-white font-semibold text-base sm:text-lg">{title}</p>
               <p className="text-white/80 text-xs sm:text-sm">{description}</p>
             </div>
-            <Link 
-              href={buttonHref} 
+            <Link
+              href={buttonHref}
               className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-acm-pink text-white hover:brightness-110 whitespace-nowrap text-sm font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg drop-shadow-lg"
             >
               {buttonText}

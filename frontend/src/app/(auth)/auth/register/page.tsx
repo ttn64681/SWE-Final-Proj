@@ -11,13 +11,13 @@ import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 
 export default function RegisterPage() {
   const { data, updateData, isStepValid } = useRegistration();
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Create new errors object to avoid async state issues
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: { [key: string]: string } = {};
 
     // Validate email
     if (!data.email) {
@@ -46,7 +46,7 @@ export default function RegisterPage() {
     // Set errors and only proceed if no errors
     // Using newErrors instead of checking old errors state prevents async issues
     setErrors(newErrors);
-    
+
     if (Object.keys(newErrors).length === 0 && isStepValid(1)) {
       router.push('/auth/register/step2');
     }

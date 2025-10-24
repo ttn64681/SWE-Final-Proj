@@ -1,27 +1,25 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
-import NavBar from "@/components/common/navBar/NavBar";
-import { useProfile } from "@/contexts/ProfileContext";
-import Checkbox from "@/components/common/forms/Checkbox";
-import styles from "./profile.module.css";
+import Link from 'next/link';
+import { useState } from 'react';
+import NavBar from '@/components/common/navBar/NavBar';
+import { useProfile } from '@/contexts/ProfileContext';
+import Checkbox from '@/components/common/forms/Checkbox';
+import styles from './profile.module.css';
 
 export default function ProfilePage() {
   // User profile data
   const [userData, setUserData] = useState({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
   });
 
-
-  
   // Promotions subscription state
   const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
-  
+
   const { profilePic, setProfilePic, profilePicUrl, setProfilePicUrl } = useProfile();
 
   // Handle profile picture upload - was a real pain to get working
@@ -40,34 +38,24 @@ export default function ProfilePage() {
 
       {/* Navigation */}
       <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose" style={{ fontSize: '30px' }}>
-        <Link 
-          href="/user/profile" 
-          className="relative font-bold"
-          style={{ color: '#FF478B' }}
-        >
+        <Link href="/user/profile" className="relative font-bold" style={{ color: '#FF478B' }}>
           Account Info
-          <span 
+          <span
             className="absolute rounded-full"
-            style={{ 
-              bottom: '-8px', 
-              left: '50%', 
-              transform: 'translateX(-50%)', 
-              width: '32px', 
-              height: '2px', 
-              backgroundColor: '#FF478B' 
-            }} 
+            style={{
+              bottom: '-8px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '32px',
+              height: '2px',
+              backgroundColor: '#FF478B',
+            }}
           />
         </Link>
-        <Link 
-          href="/user/payments" 
-          className="font-bold text-gray-300 hover:text-white transition-colors"
-        >
+        <Link href="/user/payments" className="font-bold text-gray-300 hover:text-white transition-colors">
           Payment
         </Link>
-        <Link 
-          href="/user/orders" 
-          className="font-bold text-gray-300 hover:text-white transition-colors"
-        >
+        <Link href="/user/orders" className="font-bold text-gray-300 hover:text-white transition-colors">
           Order History
         </Link>
       </div>
@@ -85,20 +73,16 @@ export default function ProfilePage() {
                 onChange={onImageUpload}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full z-10"
               />
-              <div 
+              <div
                 className="rounded-full flex items-center justify-center transition-colors"
-                style={{ 
-                  width: '170px', 
-                  height: '170px', 
-                  backgroundColor: '#2B2B2B' 
+                style={{
+                  width: '170px',
+                  height: '170px',
+                  backgroundColor: '#2B2B2B',
                 }}
               >
                 {profilePicUrl ? (
-                  <img
-                    src={profilePicUrl}
-                    alt="Profile"
-                    className="w-full h-full rounded-full object-cover"
-                  />
+                  <img src={profilePicUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
                 ) : (
                   <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" strokeWidth="1.2">
                     <circle cx="12" cy="8" r="4" />
@@ -111,10 +95,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-            <button
-              className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg"
-              type="button"
-            >
+            <button className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg" type="button">
               Log Out
             </button>
           </aside>
@@ -135,7 +116,7 @@ export default function ProfilePage() {
               <input
                 type="password"
                 value={userData.password}
-                onChange={(e) => setUserData(prev => ({ ...prev, password: e.target.value }))}
+                onChange={(e) => setUserData((prev) => ({ ...prev, password: e.target.value }))}
                 className={styles.profileInput}
                 placeholder="Enter password"
               />
@@ -149,7 +130,7 @@ export default function ProfilePage() {
                     value={userData.firstName}
                     onChange={(e) => {
                       const newValue = e.target.value;
-                      setUserData(prev => ({ ...prev, firstName: newValue }));
+                      setUserData((prev) => ({ ...prev, firstName: newValue }));
                     }}
                     className={styles.profileInput}
                     placeholder="Enter first name"
@@ -160,7 +141,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     value={userData.lastName}
-                    onChange={(e) => setUserData(prev => ({ ...prev, lastName: e.target.value }))}
+                    onChange={(e) => setUserData((prev) => ({ ...prev, lastName: e.target.value }))}
                     className={styles.profileInput}
                     placeholder="Enter last name"
                   />
@@ -171,7 +152,7 @@ export default function ProfilePage() {
               <input
                 type="text"
                 value={userData.phone}
-                onChange={(e) => setUserData(prev => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) => setUserData((prev) => ({ ...prev, phone: e.target.value }))}
                 className={styles.profileInput}
                 placeholder="Enter phone number"
               />
@@ -193,10 +174,10 @@ export default function ProfilePage() {
                 type="button"
                 title="Save Changes"
                 className="px-8 py-3 rounded-full font-afacad font-bold text-black"
-                style={{ 
-                  background: "linear-gradient(to right, #FF478B, #FF5C33)",
-                  border: "none",
-                  cursor: "pointer"
+                style={{
+                  background: 'linear-gradient(to right, #FF478B, #FF5C33)',
+                  border: 'none',
+                  cursor: 'pointer',
                 }}
               >
                 Save Changes

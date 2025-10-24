@@ -15,10 +15,18 @@ export default function Footer() {
 
           {/* Links relevant to this project */}
           <nav className="flex flex-wrap items-center gap-4 text-sm">
-            <Link href="/movies" className="hover:text-acm-pink transition-colors">Movies</Link>
-            <Link href="/promos" className="hover:text-acm-pink transition-colors">Promotions</Link>
-            <Link href="/booking" className="hover:text-acm-pink transition-colors">Book Tickets</Link>
-            <Link href="/auth/register" className="hover:text-acm-pink transition-colors">Join</Link>
+            <Link href="/movies" className="hover:text-acm-pink transition-colors">
+              Movies
+            </Link>
+            <Link href="/promos" className="hover:text-acm-pink transition-colors">
+              Promotions
+            </Link>
+            <Link href="/booking" className="hover:text-acm-pink transition-colors">
+              Book Tickets
+            </Link>
+            <Link href="/auth/register" className="hover:text-acm-pink transition-colors">
+              Join
+            </Link>
           </nav>
         </div>
 

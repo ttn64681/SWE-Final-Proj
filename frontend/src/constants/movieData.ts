@@ -8,7 +8,7 @@ export const sampleMovies: BackendMovie[] = [
     poster_link: '/poster_godzilla.jpg',
     synopsis: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: 'Action, Sci-Fi, Thriller',
-    rating: "PG-13",
+    rating: 'PG-13',
     release_date: '2024-03-15',
     cast_names: 'Actor 1, Actor 2, Actor 3',
     producers: 'Producer Name',
@@ -22,7 +22,7 @@ export const sampleMovies: BackendMovie[] = [
     poster_link: '/cinema_people.jpg',
     synopsis: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: 'Drama, Comedy',
-    rating: "PG",
+    rating: 'PG',
     release_date: '2024-04-20',
     cast_names: 'Actor 1, Actor 2, Actor 3, Actor 4, Actor 5',
     producers: 'Producer Name',
@@ -36,7 +36,7 @@ export const sampleMovies: BackendMovie[] = [
     poster_link: '/poster_oldboy.jpg',
     synopsis: 'I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me... I am Godzilla fear me...',
     genres: 'Horror, Thriller, Drama, Mystery',
-    rating: "R",
+    rating: 'R',
     release_date: '2024-05-10',
     cast_names: 'Actor 1, Actor 2, Actor 3',
     producers: 'Producer Name',
@@ -48,20 +48,20 @@ export const sampleMovies: BackendMovie[] = [
 
 export const promotions = [
   {
-    discount: "20% DISCOUNT",
-    promo: "FIRST-TIME WATCHER PROMO"
+    discount: '20% DISCOUNT',
+    promo: 'FIRST-TIME WATCHER PROMO',
   },
   {
-    discount: "15% DISCOUNT",
-    promo: "CONCESSION COMBO MEAL PROMO"
+    discount: '15% DISCOUNT',
+    promo: 'CONCESSION COMBO MEAL PROMO',
   },
   {
-    discount: "10% DISCOUNT",
-    promo: "3+ FAMILY MEMBERS PROMO"
+    discount: '10% DISCOUNT',
+    promo: '3+ FAMILY MEMBERS PROMO',
   },
   {
-    discount: "95% DISCOUNT",
-    promo: "PROMO PROMO PROMO PROMO"
+    discount: '95% DISCOUNT',
+    promo: 'PROMO PROMO PROMO PROMO',
   },
 ];
 

@@ -39,6 +39,9 @@ export default function PaymentSection({ data, updateData, isLoading = false }: 
 
   // Remove payment card and handle default card reassignment
   const removePaymentCard = (cardId: string) => {
+    // Don't allow removing the initial first card
+    if (data.paymentCards.length <= 1) return;
+    
     const updatedCards = data.paymentCards.filter((card) => card.id !== cardId);
     const wasDefault = data.paymentCards.find((card) => card.id === cardId)?.isDefault;
 
@@ -136,18 +139,20 @@ export default function PaymentSection({ data, updateData, isLoading = false }: 
                     <span className="text-white/70 text-sm">Default</span>
                   </label>
                 )}
-                <motion.button
-                  type="button"
-                  onClick={() => removePaymentCard(card.id)}
-                  disabled={isLoading}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="text-red-400 hover:text-red-300 p-1"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </motion.button>
+                {data.paymentCards.length > 1 && (
+                  <motion.button
+                    type="button"
+                    onClick={() => removePaymentCard(card.id)}
+                    disabled={isLoading}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="text-red-400 hover:text-red-300 p-1"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </motion.button>
+                )}
               </div>
             </div>
 
@@ -262,12 +267,6 @@ export default function PaymentSection({ data, updateData, isLoading = false }: 
         ))}
       </AnimatePresence>
 
-      {data.paymentCards.length === 0 && (
-        <div className="text-center py-8 text-white/60">
-          <p className="mb-4">No payment cards added yet.</p>
-          <p className="text-sm">You can add up to 3 payment cards for easy checkout.</p>
-        </div>
-      )}
     </div>
   );
 }

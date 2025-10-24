@@ -6,7 +6,7 @@ import api from '@/config/api';
 
 /**
  * Email Verification Page
- * 
+ *
  * This page handles email verification when users click the link in their verification email.
  * It extracts the token from the URL and calls the backend verification endpoint.
  */
@@ -24,17 +24,20 @@ export default function VerifyEmailPage() {
       // Get token from URL query parameter
       const token = searchParams.get('token');
 
-
       if (!token) {
         // Check if this is a redirect from registration (no token but coming from registration flow)
         const fromRegistration = searchParams.get('from') === 'registration';
-        
+
         if (fromRegistration) {
           setStatus('registration-success');
-          setMessage('Registration successful! A verification email has been sent to your inbox. Please check your email and click the verification link to activate your account.');
+          setMessage(
+            'Registration successful! A verification email has been sent to your inbox. Please check your email and click the verification link to activate your account.'
+          );
         } else {
           setStatus('error');
-          setMessage('No verification token found. If you clicked a verification link, please try again. Otherwise, use the form below to request a new verification email.');
+          setMessage(
+            'No verification token found. If you clicked a verification link, please try again. Otherwise, use the form below to request a new verification email.'
+          );
         }
         return;
       }
@@ -42,7 +45,7 @@ export default function VerifyEmailPage() {
       try {
         // Call verification endpoint
         const response = await api.post(`/api/auth/verify-email?token=${token}`);
-        
+
         if (response.data.success) {
           setStatus('success');
           setMessage(response.data.message || 'Email verified successfully!');
@@ -68,13 +71,19 @@ export default function VerifyEmailPage() {
         }
       } catch (error) {
         setStatus('error');
-        const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Verification failed. The token may be invalid or expired.';
-        
+        const errorMessage =
+          (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+          'Verification failed. The token may be invalid or expired.';
+
         // Add more helpful context
         if (errorMessage.includes('expired')) {
-          setMessage('This verification link has expired (valid for 24 hours). Please request a new verification email below.');
+          setMessage(
+            'This verification link has expired (valid for 24 hours). Please request a new verification email below.'
+          );
         } else if (errorMessage.includes('Invalid')) {
-          setMessage('This verification link is invalid or has already been used. If you already verified your account, you can try logging in. Otherwise, request a new verification email below.');
+          setMessage(
+            'This verification link is invalid or has already been used. If you already verified your account, you can try logging in. Otherwise, request a new verification email below.'
+          );
         } else {
           setMessage(`Verification failed: ${errorMessage}. Please request a new verification email below.`);
         }
@@ -86,7 +95,7 @@ export default function VerifyEmailPage() {
 
   const handleResendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!resendEmail.trim()) {
       setResendStatus('error');
       setResendMessage('Please enter your email address.');
@@ -95,13 +104,13 @@ export default function VerifyEmailPage() {
 
     setResendStatus('loading');
     setResendMessage('Sending verification email...');
-    
+
     try {
       console.log('Sending resend verification request for:', resendEmail.trim());
       const response = await api.post(`/api/auth/resend-verification?email=${encodeURIComponent(resendEmail.trim())}`);
-      
+
       console.log('Resend verification response:', response.data);
-      
+
       if (response.data.success) {
         setResendStatus('success');
         setResendMessage('Verification email has been sent! Please check your inbox and spam folder.');
@@ -113,7 +122,9 @@ export default function VerifyEmailPage() {
     } catch (error) {
       console.error('Resend verification error:', error);
       setResendStatus('error');
-      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to send verification email. Please try again.';
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+        'Failed to send verification email. Please try again.';
       setResendMessage(errorMessage);
     }
   };
@@ -124,9 +135,7 @@ export default function VerifyEmailPage() {
         <div className="bg-white rounded-lg shadow-2xl p-8">
           {/* Header */}
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Email Verification
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Email Verification</h1>
           </div>
 
           {/* Status Icon */}
@@ -144,7 +153,12 @@ export default function VerifyEmailPage() {
             {status === 'registration-success' && (
               <div className="rounded-full h-16 w-16 bg-blue-100 flex items-center justify-center">
                 <svg className="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
             )}
@@ -158,16 +172,19 @@ export default function VerifyEmailPage() {
           </div>
 
           {/* Message */}
-          <div className={`text-center mb-6 p-4 rounded-lg ${
-            status === 'verifying' ? 'bg-blue-50 text-blue-800' :
-            status === 'success' ? 'bg-green-50 text-green-800' :
-            status === 'registration-success' ? 'bg-blue-50 text-blue-800' :
-            'bg-red-50 text-red-800'
-          }`}>
+          <div
+            className={`text-center mb-6 p-4 rounded-lg ${
+              status === 'verifying'
+                ? 'bg-blue-50 text-blue-800'
+                : status === 'success'
+                  ? 'bg-green-50 text-green-800'
+                  : status === 'registration-success'
+                    ? 'bg-blue-50 text-blue-800'
+                    : 'bg-red-50 text-red-800'
+            }`}
+          >
             <p className="text-lg font-medium">{message}</p>
-            {status === 'success' && (
-              <p className="text-sm mt-2">Redirecting to home page...</p>
-            )}
+            {status === 'success' && <p className="text-sm mt-2">Redirecting to home page...</p>}
             {status === 'registration-success' && (
               <p className="text-sm mt-2">Check your email inbox and spam folder for the verification link.</p>
             )}
@@ -178,17 +195,19 @@ export default function VerifyEmailPage() {
             <div className="space-y-4">
               {/* Resend Email Form */}
               <div className="border-t pt-4">
-                <h3 className="text-lg font-medium text-gray-900 mb-3 text-center">
-                  Request New Verification Email
-                </h3>
-                
+                <h3 className="text-lg font-medium text-gray-900 mb-3 text-center">Request New Verification Email</h3>
+
                 {/* Resend Status Message */}
                 {resendMessage && (
-                  <div className={`mb-4 p-3 rounded-lg text-sm ${
-                    resendStatus === 'success' ? 'bg-green-50 text-green-800' :
-                    resendStatus === 'error' ? 'bg-red-50 text-red-800' :
-                    'bg-blue-50 text-blue-800'
-                  }`}>
+                  <div
+                    className={`mb-4 p-3 rounded-lg text-sm ${
+                      resendStatus === 'success'
+                        ? 'bg-green-50 text-green-800'
+                        : resendStatus === 'error'
+                          ? 'bg-red-50 text-red-800'
+                          : 'bg-blue-50 text-blue-800'
+                    }`}
+                  >
                     {resendMessage}
                   </div>
                 )}
@@ -209,7 +228,7 @@ export default function VerifyEmailPage() {
                       disabled={resendStatus === 'loading'}
                     />
                   </div>
-                  
+
                   <button
                     type="submit"
                     disabled={resendStatus === 'loading'}
@@ -218,8 +237,19 @@ export default function VerifyEmailPage() {
                     {resendStatus === 'loading' ? (
                       <span className="flex items-center justify-center">
                         <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Sending...
                       </span>
@@ -288,4 +318,3 @@ export default function VerifyEmailPage() {
     </div>
   );
 }
-

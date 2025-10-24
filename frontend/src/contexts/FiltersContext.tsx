@@ -14,11 +14,7 @@ interface FiltersContextType {
     day: string;
     year: string;
   };
-  setSelectedDate: (date: {
-    month: string;
-    day: string;
-    year: string;
-  }) => void;
+  setSelectedDate: (date: { month: string; day: string; year: string }) => void;
   // Global popup state
   isFiltersOpen: boolean;
   setIsFiltersOpen: (open: boolean) => void;
@@ -30,15 +26,14 @@ const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
 
 // Wrapper component that provides filter state to all child components
 export function FiltersProvider({ children }: { children: ReactNode }) {
-  
   // Track which genres user has selected (can select multiple)
   const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
-  
+
   // Track the release date user wants to filter by
   const [selectedDate, setSelectedDate] = useState({
     month: '',
     day: '',
-    year: ''
+    year: '',
   });
 
   // Global popup state
@@ -50,7 +45,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     setSelectedDate({
       month: '',
       day: '',
-      year: ''
+      year: '',
     });
   };
 
@@ -58,15 +53,18 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   // CHANGES: When selectedGenres, selectedDate, or isFiltersOpen change
   // WITHOUT useMemo: New object every FiltersProvider re-render → all filter consumers re-render
   // WHY MATTERS: Prevents cascading re-renders across entire filter component tree
-  const contextValue = useMemo(() => ({
-    selectedGenres,
-    setSelectedGenres,
-    selectedDate,
-    setSelectedDate,
-    isFiltersOpen,
-    setIsFiltersOpen,
-    resetFilters
-  }), [selectedGenres, selectedDate, isFiltersOpen]);
+  const contextValue = useMemo(
+    () => ({
+      selectedGenres,
+      setSelectedGenres,
+      selectedDate,
+      setSelectedDate,
+      isFiltersOpen,
+      setIsFiltersOpen,
+      resetFilters,
+    }),
+    [selectedGenres, selectedDate, isFiltersOpen]
+  );
 
   return (
     <FiltersContext.Provider value={contextValue}>
@@ -83,13 +81,11 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
         - Portal only works in browser, so we check if we're client-side
         - Prevents hydration mismatches between server and client
       */}
-      {typeof window !== 'undefined' && createPortal(
-        <FiltersPopUp 
-          isClosed={!isFiltersOpen} 
-          setIsClosed={(closed) => setIsFiltersOpen(!closed)}
-        />,
-        document.body
-      )}
+      {typeof window !== 'undefined' &&
+        createPortal(
+          <FiltersPopUp isClosed={!isFiltersOpen} setIsClosed={(closed) => setIsFiltersOpen(!closed)} />,
+          document.body
+        )}
     </FiltersContext.Provider>
   );
 }

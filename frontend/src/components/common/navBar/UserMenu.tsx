@@ -82,7 +82,7 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
             </p>
             <p className="text-white/60 text-xs">{user?.email}</p>
           </div>
-          
+
           <div className="py-1">
             {/* Menu items with hover effects */}
             <MenuItem href="/user/orders" onClick={handleMenuItemClick}>
@@ -92,9 +92,7 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
               Account Settings
             </MenuItem>
             <div className="border-t border-white/10 my-1"></div>
-            <MenuItem onClick={handleLogout}>
-              Sign Out
-            </MenuItem>
+            <MenuItem onClick={handleLogout}>Sign Out</MenuItem>
           </div>
         </div>
       )}

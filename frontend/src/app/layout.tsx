@@ -45,9 +45,7 @@ export default function RootLayout({
           <AuthProvider>
             <ProfileProvider>
               <FiltersProvider>
-                <BokehBackground>
-                  {children}
-                </BokehBackground>
+                <BokehBackground>{children}</BokehBackground>
               </FiltersProvider>
             </ProfileProvider>
           </AuthProvider>

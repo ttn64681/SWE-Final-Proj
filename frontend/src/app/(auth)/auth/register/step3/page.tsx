@@ -7,7 +7,6 @@ import { authAPI } from '@/services/auth';
 import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import AuthButtonGroup from '@/components/common/auth/AuthButtonGroup';
 import PaymentSection from '@/components/specific/auth/PaymentSection';
-import BillingAddressSection from '@/components/specific/auth/BillingAddressSection';
 import PreferencesSection from '@/components/specific/auth/PreferencesSection';
 
 export default function RegisterStep3Page() {
@@ -81,23 +80,9 @@ export default function RegisterStep3Page() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <PaymentSection 
-          data={data} 
-          updateData={updateData} 
-          isLoading={isLoading}
-        />
-        
-        <BillingAddressSection 
-          data={data} 
-          updateData={updateData} 
-          isLoading={isLoading}
-        />
-        
-        <PreferencesSection 
-          data={data} 
-          updateData={updateData} 
-          isLoading={isLoading}
-        />
+        <PaymentSection data={data} updateData={updateData} isLoading={isLoading} />
+
+        <PreferencesSection data={data} updateData={updateData} isLoading={isLoading} />
 
         <AuthButtonGroup
           primaryText={isLoading ? 'Creating Account...' : 'Create Account'}

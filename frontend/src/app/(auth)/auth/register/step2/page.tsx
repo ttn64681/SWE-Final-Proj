@@ -11,7 +11,7 @@ import AddressSection from '@/components/specific/auth/AddressSection';
 
 export default function RegisterStep2Page() {
   const { data, updateData, isStepValid } = useRegistration();
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,17 +21,17 @@ export default function RegisterStep2Page() {
     // ==== VALIDATE REQUIRED FIELDS ====
     // Validate first name
     if (!data.firstName.trim()) {
-      setErrors(prev => ({ ...prev, firstName: 'First name is required' }));
+      setErrors((prev) => ({ ...prev, firstName: 'First name is required' }));
     }
 
     if (!data.lastName.trim()) {
-      setErrors(prev => ({ ...prev, lastName: 'Last name is required' }));
+      setErrors((prev) => ({ ...prev, lastName: 'Last name is required' }));
     }
 
     if (!data.phoneNumber.trim()) {
-      setErrors(prev => ({ ...prev, phoneNumber: 'Phone number is required' }));
+      setErrors((prev) => ({ ...prev, phoneNumber: 'Phone number is required' }));
     } else if (!validatePhoneNumber(data.phoneNumber)) {
-      setErrors(prev => ({ ...prev, phoneNumber: 'Please enter a valid phone number' }));
+      setErrors((prev) => ({ ...prev, phoneNumber: 'Please enter a valid phone number' }));
     }
 
     // If no errors, proceed to next step
@@ -52,16 +52,9 @@ export default function RegisterStep2Page() {
       maxWidth="2xl"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
-        <PersonalInfoSection 
-          data={data} 
-          updateData={updateData} 
-          errors={errors} 
-        />
-        
-        <AddressSection 
-          data={data} 
-          updateData={updateData} 
-        />
+        <PersonalInfoSection data={data} updateData={updateData} errors={errors} />
+
+        <AddressSection data={data} updateData={updateData} />
 
         <AuthButtonGroup
           primaryText="Continue"
