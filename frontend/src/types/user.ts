@@ -10,4 +10,6 @@ export interface BackendUser {
   firstName: string,
   lastName: string,
   phoneNumber: string
+  currentPassword: string,
+  newPassword: string
 }

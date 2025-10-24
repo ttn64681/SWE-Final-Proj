@@ -51,6 +51,7 @@ export const apiConfig = {
 
       getUserById: (userId: number) => `/api/users/${userId}`,
       updateUser: (userId: number) => `/api/users/${userId}/info`,
+      changePassword: (userId: number) => `/api/users/${userId}/change-password`,
 
     },
     
