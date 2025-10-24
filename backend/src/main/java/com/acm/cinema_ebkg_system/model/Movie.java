@@ -26,7 +26,7 @@ import jakarta.validation.constraints.NotNull;
  * producers
  */
 @Entity
-@Table(name = "movies")
+@Table(name = "movie")
 public class Movie {
     @Id // identifies below 'movie_id' as primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // generates unique val for primary key

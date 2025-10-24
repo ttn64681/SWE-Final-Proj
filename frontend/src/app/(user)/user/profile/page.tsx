@@ -52,7 +52,7 @@ export default function ProfilePage() {
   const {user, loading, error, updateUser} = useUser(getUserID());
 
   useEffect(() => {
-    console.log(user);
+    //console.log(user);
     if (user) {
       setUserData({
         email: user.email,
@@ -68,9 +68,9 @@ export default function ProfilePage() {
   // Send updated user data to the backend
   const saveProfileChanges = async () => {
     const success = await updateUser( {
-      firstName: "Squidward",//userData.firstName,
-      lastName: "Tentacles", //userData.lastName,
-      phoneNumber: "404" //userData.phone
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phoneNumber: userData.phone
     });
 
     if (success) {
