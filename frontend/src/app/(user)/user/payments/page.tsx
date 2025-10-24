@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavBar from "@/components/common/navBar/NavBar";
 import { useProfile } from "@/contexts/ProfileContext";
+import { usePayments } from "@/hooks/usePayments";
+import { BackendPayment } from "@/types/payment";
 
 export default function PaymentsPage() {
-  const [paymentMethods, setPaymentMethods] = useState([
-    { id: 1, type: "Mastercard", number: "**** **** **** 6973", isDefault: true },
-    { id: 2, type: "Mastercard", number: "**** **** **** 9999", isDefault: false }
-  ]);
+
+  
+  const [paymentMethods, setPaymentMethods] = useState<BackendPayment[]>([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newCardData, setNewCardData] = useState({
@@ -22,6 +23,44 @@ export default function PaymentsPage() {
     city: "",
     state: ""
   });
+
+  function decodeJWT(token: string) {
+  const [, payloadBase64] = token.split('.');
+  const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
+  
+  return JSON.parse(decodedPayload);
+}
+
+  function getUserID() {
+  const token = sessionStorage.getItem("token");
+  console.log(token);
+
+  if (token) {
+    const userData = decodeJWT(token);
+    console.log("Decoded User Data:", userData);
+    const userId = userData.userId;
+    console.log("User ID:", userId);
+    return userId;
+  } else {
+    // If the token is somehow not present, return 0 as a failsafe, which is an unused ID
+    return 0;
+  }
+}
+
+  const userId = getUserID();
+  const { payments, addPayment, updatePayment, deletePayment, fetchPayments } = usePayments(userId);
+
+  useEffect(() => {
+    // Fetch user payment when page loads or userId changes
+    fetchPayments();
+  }, [userId]);
+
+  useEffect(() => {
+    console.log("User ID: " + userId);
+    console.log("Payments: " + payments);
+    // console.log("Holder: " + payments)
+    if (payments && payments.length > 0) setPaymentMethods(payments);
+  }, [payments]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,7 +86,34 @@ export default function PaymentsPage() {
         isDefault: false
       };
       
-      setPaymentMethods(prev => [...prev, card]);
+
+      // Remove spaces from card number
+      const cleanedCardNumber = newCardData.cardNumber.replace(/\s+/g, '');
+
+      // Format expiration date to YYYY-MM-DD
+      const [expMonth, expYear] = newCardData.expirationDate.split('/');
+      const formattedExpDate = `20${expYear}-${expMonth.padStart(2, '0')}-01`;
+
+
+      addPayment(
+        {
+          card_number: cleanedCardNumber,
+          billing_address: newCardData.billingAddress,
+          expiration_date: formattedExpDate,
+          cardholder_name: newCardData.cardholderName
+        }
+      );
+      // fetchPayments();
+
+      // Should call addPayment from usePayments
+      // setPaymentMethods(prev => [...prev, {
+      //   payment_info_id: card.id,
+      //   user_id: 0, // This should be set to the actual user ID
+      //   card_number: newCardData.cardNumber,
+      //   billing_address: newCardData.billingAddress,
+      //   expiration_date: newCardData.expirationDate,
+      //   cardholder_name: newCardData.cardholderName
+      // }]);
       
       clearForm();
       setShowAddModal(false);
@@ -179,15 +245,15 @@ export default function PaymentsPage() {
           <section className="p-0">
             <div className="space-y-0">
               {paymentMethods.map((method) => (
-                <div key={method.id} className="flex items-center py-4 border-b border-white">
-                  <div className="w-24">
+                <div key={method.payment_info_id} className="flex items-center py-4 border-b border-white">
+                  {/* <div className="w-24">
                     {method.isDefault && (
                       <span className="text-white font-afacad font-bold">Default</span>
                     )}
-                  </div>
+                  </div> */}
                   <div className="flex items-center flex-1 justify-center">
-                    <span className="text-white font-afacad text-xl w-32 text-left">{method.type}</span>
-                    <span className="text-white font-afacad text-xl">{method.number}</span>
+                    <span className="text-white font-afacad text-xl w-32 text-left">{method.cardholder_name}</span>
+                    <span className="text-white font-afacad text-xl">{method.card_number}</span>
                   </div>
                 </div>
               ))}

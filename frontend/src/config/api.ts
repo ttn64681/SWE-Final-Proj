@@ -55,6 +55,14 @@ export const apiConfig = {
 
     },
     
+    // PAYMENT ENDPOINTS
+    payments: {
+      getPayments: (userId: number) => `/api/users/${userId}/payment/`,
+      addPaymentInfo: (userId: number) => `/api/users/${userId}/payment/`,
+      updatePaymentInfo: (userId: number, paymentId: number) => `/api/users/${userId}/payment/${paymentId}`,
+      deletePaymentInfo: (userId: number, paymentId: number) => `/api/users/${userId}/payment/${paymentId}`
+    },
+        
     // 🔐 AUTH ENDPOINTS
     auth: {
       login: '/api/auth/login',
