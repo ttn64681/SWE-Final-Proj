@@ -60,7 +60,7 @@ export default function AdminAddMoviePage() {
         if (existing) {
           try {
             const movies = JSON.parse(existing);
-            const movieToEdit = movies.find((m: Movie) => m.id === parseInt(editId));
+            const movieToEdit = movies.find((m: { id: number }) => m.id === parseInt(editId));
             
             if (movieToEdit) {
               setEditingId(parseInt(editId));
