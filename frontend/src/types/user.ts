@@ -5,14 +5,14 @@
 
 // Backend user data interface (matches your Java backend)
 export interface BackendUser {
-  id: number,
-  email: string,
-  firstName: string,
-  lastName: string,
-  phoneNumber: string
-  currentPassword: string,
-  newPassword: string,
-  address: string,
-  state: string,
-  country: string
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  currentPassword: string;
+  newPassword: string;
+  address: string;
+  state: string;
+  country: string;
 }

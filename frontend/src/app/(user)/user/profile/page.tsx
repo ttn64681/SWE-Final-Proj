@@ -1,27 +1,26 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import Checkbox from "@/components/common/forms/Checkbox";
-import NavBar from "@/components/common/navBar/NavBar";
-import { useProfile } from "@/contexts/ProfileContext";
-import styles from "./profile.module.css";
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import Checkbox from '@/components/common/forms/Checkbox';
+import NavBar from '@/components/common/navBar/NavBar';
+import { useProfile } from '@/contexts/ProfileContext';
+import styles from './profile.module.css';
 
 // Hook to retrieve user from backend
 import { useUser } from '@/hooks/useUser';
-
 
 // Decode the token for the current login session
 function decodeJWT(token: string) {
   const [, payloadBase64] = token.split('.');
   const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
-  
+
   return JSON.parse(decodedPayload);
 }
 
 // Get the ID of the logged in user using the token
 function getUserID() {
-  const token = sessionStorage.getItem("token");
+  const token = sessionStorage.getItem('token');
   //console.log(token);
 
   if (token) {
@@ -43,7 +42,7 @@ function validatePhoneNumber(phoneNumber: string) {
 
 function checkPasswordSecurity(currentPwd: string, newPwd: string) {
   if (currentPwd == newPwd) {
-    return { secure: false, message: "The new password should be different from the old password." }
+    return { secure: false, message: 'The new password should be different from the old password.' };
   }
   if (newPwd.length < 8) {
     return { secure: false, message: 'The new password must be at least 8 characters long.' };
@@ -60,38 +59,36 @@ function checkPasswordSecurity(currentPwd: string, newPwd: string) {
   return { secure: true };
 }
 
-
 export default function ProfilePage() {
   // Initialize user profile data
   // Get the user profile data from the backend
-  const {user, updateUser, updatePassword} = useUser(getUserID());
+  const { user, updateUser, updatePassword } = useUser(getUserID());
 
   const [userData, setUserData] = useState({
-    email: "",
-    currentPassword: "",
-    newPassword: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
-    street: "",
-    state: "",
-    country: ""
+    email: '',
+    currentPassword: '',
+    newPassword: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
+    street: '',
+    state: '',
+    country: '',
   });
-
 
   useEffect(() => {
     //console.log(user);
     if (user) {
       setUserData({
         email: user.email,
-        currentPassword: "",
-        newPassword: "",
+        currentPassword: '',
+        newPassword: '',
         firstName: user.firstName,
         lastName: user.lastName,
         phone: user.phoneNumber,
         street: user.address,
         state: user.state,
-        country: user.country
+        country: user.country,
       });
       //console.log("User data set");
     }
@@ -100,53 +97,53 @@ export default function ProfilePage() {
   // Send updated user data to the backend
   const saveProfileChanges = async () => {
     if (validatePhoneNumber(userData.phone)) {
-      const success = await updateUser( {
+      const success = await updateUser({
         firstName: userData.firstName,
         lastName: userData.lastName,
         phoneNumber: userData.phone,
         address: userData.street,
         state: userData.state,
-        country: userData.country
+        country: userData.country,
       });
 
       if (success) {
-        alert("Profile updated successfully.");
+        alert('Profile updated successfully.');
       } else {
-        alert("Failed to update user profile.");
+        alert('Failed to update user profile.');
       }
     } else {
-      alert("The phone number is invalid. Check that it contains only numbers.");
+      alert('The phone number is invalid. Check that it contains only numbers.');
     }
-  } 
+  };
 
   // Send updated password data to the backend
   const savePasswordChange = async () => {
     // Check if new password meets security requirements
-    const {secure, message} = checkPasswordSecurity(userData.currentPassword, userData.newPassword);
+    const { secure, message } = checkPasswordSecurity(userData.currentPassword, userData.newPassword);
 
     // If it does, send the password inputs to the backend
     if (secure) {
-      const success = await updatePassword( {
+      const success = await updatePassword({
         currentPassword: userData.currentPassword,
-        newPassword: userData.newPassword
+        newPassword: userData.newPassword,
       });
 
       // Password was updated successfully
       if (success) {
-        alert("Password changed successfully.");
-      // Password was not updated: current password is incorrect
+        alert('Password changed successfully.');
+        // Password was not updated: current password is incorrect
       } else {
-        alert("Failed to update password. Check that your current password is correct.");
+        alert('Failed to update password. Check that your current password is correct.');
       }
     } else {
       // If the new password does not meet security requirements, tell the user why
       alert(message);
     }
-  } 
+  };
 
   // Promotions subscription state
   const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
-  
+
   const { profilePic, setProfilePic, profilePicUrl, setProfilePicUrl } = useProfile();
 
   // Handle profile picture upload - was a real pain to get working
@@ -165,34 +162,24 @@ export default function ProfilePage() {
 
       {/* Navigation */}
       <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose" style={{ fontSize: '30px' }}>
-        <Link 
-          href="/user/profile" 
-          className="relative font-bold"
-          style={{ color: '#FF478B' }}
-        >
+        <Link href="/user/profile" className="relative font-bold" style={{ color: '#FF478B' }}>
           Account Info
-          <span 
+          <span
             className="absolute rounded-full"
-            style={{ 
-              bottom: '-8px', 
-              left: '50%', 
-              transform: 'translateX(-50%)', 
-              width: '32px', 
-              height: '2px', 
-              backgroundColor: '#FF478B' 
-            }} 
+            style={{
+              bottom: '-8px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '32px',
+              height: '2px',
+              backgroundColor: '#FF478B',
+            }}
           />
         </Link>
-        <Link 
-          href="/user/payments" 
-          className="font-bold text-gray-300 hover:text-white transition-colors"
-        >
+        <Link href="/user/payments" className="font-bold text-gray-300 hover:text-white transition-colors">
           Payment
         </Link>
-        <Link 
-          href="/user/orders" 
-          className="font-bold text-gray-300 hover:text-white transition-colors"
-        >
+        <Link href="/user/orders" className="font-bold text-gray-300 hover:text-white transition-colors">
           Order History
         </Link>
       </div>
@@ -210,20 +197,16 @@ export default function ProfilePage() {
                 onChange={onImageUpload}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full z-10"
               />
-              <div 
+              <div
                 className="rounded-full flex items-center justify-center transition-colors"
-                style={{ 
-                  width: '170px', 
-                  height: '170px', 
-                  backgroundColor: '#2B2B2B' 
+                style={{
+                  width: '170px',
+                  height: '170px',
+                  backgroundColor: '#2B2B2B',
                 }}
               >
                 {profilePicUrl ? (
-                  <img
-                    src={profilePicUrl}
-                    alt="Profile"
-                    className="w-full h-full rounded-full object-cover"
-                  />
+                  <img src={profilePicUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
                 ) : (
                   <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" strokeWidth="1.2">
                     <circle cx="12" cy="8" r="4" />
@@ -236,16 +219,13 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-            <button
-              className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg"
-              type="button"
-            >
+            <button className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg" type="button">
               Log Out
             </button>
           </aside>
 
           {/* Form */}
-          
+
           <section className="p-0">
             <h1 className="text-2xl text-acm-pink font-red-rose mb-10"> Edit Personal Info </h1>
 
@@ -258,8 +238,8 @@ export default function ProfilePage() {
                 readOnly
                 className={styles.emailInput}
                 placeholder="Email address"
-                style={{ 
-                  cursor: "not-allowed"
+                style={{
+                  cursor: 'not-allowed',
                 }}
               />
 
@@ -273,7 +253,7 @@ export default function ProfilePage() {
                     value={userData.firstName}
                     onChange={(e) => {
                       const newValue = e.target.value;
-                      setUserData(prev => ({ ...prev, firstName: newValue }));
+                      setUserData((prev) => ({ ...prev, firstName: newValue }));
                     }}
                     className={styles.profileInput}
                     placeholder="Enter first name"
@@ -284,7 +264,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     value={userData.lastName}
-                    onChange={(e) => setUserData(prev => ({ ...prev, lastName: e.target.value }))}
+                    onChange={(e) => setUserData((prev) => ({ ...prev, lastName: e.target.value }))}
                     className={styles.profileInput}
                     placeholder="Enter last name"
                   />
@@ -301,7 +281,7 @@ export default function ProfilePage() {
                     value={userData.street}
                     onChange={(e) => {
                       const newValue = e.target.value;
-                      setUserData(prev => ({ ...prev, street: newValue }));
+                      setUserData((prev) => ({ ...prev, street: newValue }));
                     }}
                     className={styles.profileInput}
                     placeholder="Enter street address"
@@ -312,7 +292,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     value={userData.state}
-                    onChange={(e) => setUserData(prev => ({ ...prev, state: e.target.value }))}
+                    onChange={(e) => setUserData((prev) => ({ ...prev, state: e.target.value }))}
                     className={styles.profileInput}
                     placeholder="Enter state"
                   />
@@ -322,7 +302,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     value={userData.country}
-                    onChange={(e) => setUserData(prev => ({ ...prev, country: e.target.value }))}
+                    onChange={(e) => setUserData((prev) => ({ ...prev, country: e.target.value }))}
                     className={styles.profileInput}
                     placeholder="Enter country"
                   />
@@ -334,7 +314,7 @@ export default function ProfilePage() {
               <input
                 type="text"
                 value={userData.phone}
-                onChange={(e) => setUserData(prev => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) => setUserData((prev) => ({ ...prev, phone: e.target.value }))}
                 className={styles.profileInput}
                 placeholder="Enter phone number"
               />
@@ -355,10 +335,10 @@ export default function ProfilePage() {
               <button
                 onClick={saveProfileChanges}
                 className="px-8 py-3 rounded-full font-afacad font-bold text-black"
-                style={{ 
-                  background: "linear-gradient(to right, #FF478B, #FF5C33)",
-                  border: "none",
-                  cursor: "pointer"
+                style={{
+                  background: 'linear-gradient(to right, #FF478B, #FF5C33)',
+                  border: 'none',
+                  cursor: 'pointer',
                 }}
               >
                 Save Changes
@@ -368,40 +348,39 @@ export default function ProfilePage() {
             {/* Change Password */}
             <h1 className="text-2xl text-acm-pink font-red-rose mt-10"> Change Password </h1>
             <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-y-6 gap-x-6 mt-10">
-              
-                <label className="self-center text-white font-afacad text-lg font-bold">Current Password </label>
-                <input
-                  type="password"
-                  value={userData.currentPassword}
-                  onChange={(e) => setUserData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                  className={styles.profileInput}
-                  placeholder="Enter current password"
-                />
+              <label className="self-center text-white font-afacad text-lg font-bold">Current Password </label>
+              <input
+                type="password"
+                value={userData.currentPassword}
+                onChange={(e) => setUserData((prev) => ({ ...prev, currentPassword: e.target.value }))}
+                className={styles.profileInput}
+                placeholder="Enter current password"
+              />
 
-                <label className="self-center text-white font-afacad text-lg font-bold">New Password </label>
-                <input
-                  type="password"
-                  value={userData.newPassword}
-                  onChange={(e) => setUserData(prev => ({ ...prev, newPassword: e.target.value }))}
-                  className={styles.profileInput}
-                  placeholder="Enter new password"
-                />
+              <label className="self-center text-white font-afacad text-lg font-bold">New Password </label>
+              <input
+                type="password"
+                value={userData.newPassword}
+                onChange={(e) => setUserData((prev) => ({ ...prev, newPassword: e.target.value }))}
+                className={styles.profileInput}
+                placeholder="Enter new password"
+              />
             </div>
 
             {/* Change password button */}
-              <div className="flex justify-center mt-10">
-                <button
-                  onClick={savePasswordChange}
-                  className="px-8 py-3 rounded-full font-afacad font-bold text-black"
-                    style={{ 
-                      background: "linear-gradient(to right, #FF478B, #FF5C33)",
-                      border: "none",
-                      cursor: "pointer"
-                    }}
-                  >
-                  Change Password
-                </button>
-              </div>
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={savePasswordChange}
+                className="px-8 py-3 rounded-full font-afacad font-bold text-black"
+                style={{
+                  background: 'linear-gradient(to right, #FF478B, #FF5C33)',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                Change Password
+              </button>
+            </div>
           </section>
         </div>
       </div>

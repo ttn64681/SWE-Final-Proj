@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -25,25 +25,29 @@ function AdminUsersPage() {
     if (storedUsers) {
       const users = JSON.parse(storedUsers);
       const admins = users.filter((user: any) => user.type === 'admin');
-      const members = users.filter((user: any) => user.type === 'member').map((member: any) => ({
-        ...member,
-        status: member.status || 'active' // Default to 'active' if no status
-      }));
-      
-      if (admins.length) setAdminList(prev => [...prev, ...admins]);
-      if (members.length) setMemberList(prev => [...prev, ...members]);
+      const members = users
+        .filter((user: any) => user.type === 'member')
+        .map((member: any) => ({
+          ...member,
+          status: member.status || 'active', // Default to 'active' if no status
+        }));
+
+      if (admins.length) setAdminList((prev) => [...prev, ...admins]);
+      if (members.length) setMemberList((prev) => [...prev, ...members]);
     }
   }, []);
 
   // Function to toggle member suspension status
   const toggleMemberSuspension = (memberId: number) => {
-    setMemberList(prev => prev.map(member => {
-      if (member.id === memberId) {
-        const newStatus = member.status === 'suspended' ? 'active' : 'suspended';
-        return { ...member, status: newStatus };
-      }
-      return member;
-    }));
+    setMemberList((prev) =>
+      prev.map((member) => {
+        if (member.id === memberId) {
+          const newStatus = member.status === 'suspended' ? 'active' : 'suspended';
+          return { ...member, status: newStatus };
+        }
+        return member;
+      })
+    );
   };
 
   return (
@@ -52,8 +56,20 @@ function AdminUsersPage() {
       <div style={{ height: '120px' }} />
 
       <div className="flex items-center justify-center gap-10 text-[30px] font-red-rose mt-2 mb-18">
-        <Link href="/admin/movies" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Movies & Showtimes</Link>
-        <Link href="/admin/pricing" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Pricing & Promotions</Link>
+        <Link
+          href="/admin/movies"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Movies & Showtimes
+        </Link>
+        <Link
+          href="/admin/pricing"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Pricing & Promotions
+        </Link>
         <Link href="/admin/users" className="relative" style={{ color: '#FF478B', fontWeight: 'bold' }}>
           Users & Admins
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />

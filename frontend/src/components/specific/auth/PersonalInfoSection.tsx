@@ -6,17 +6,15 @@ import { RegistrationData } from '@/contexts/RegistrationContext';
 interface PersonalInfoSectionProps {
   data: RegistrationData;
   updateData: (stepData: Partial<RegistrationData>) => void;
-  errors: {[key: string]: string};
+  errors: { [key: string]: string };
   isLoading?: boolean;
 }
 
 export default function PersonalInfoSection({ data, updateData, errors, isLoading = false }: PersonalInfoSectionProps) {
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">
-        Personal Information
-      </h3>
-      
+      <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Personal Information</h3>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label htmlFor="firstName" className="block text-white text-sm mb-2">
@@ -72,4 +70,3 @@ export default function PersonalInfoSection({ data, updateData, errors, isLoadin
     </div>
   );
 }
-

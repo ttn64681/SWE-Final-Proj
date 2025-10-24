@@ -1,12 +1,5 @@
-import OrderDetails from "@/components/specific/booking/order/OrderDetails";
-
+import OrderDetails from '@/components/specific/booking/order/OrderDetails';
 
 export default function page() {
-
-
-    return (
-        <>
-        
-        </>
-    );
+  return <></>;
 }

@@ -5,7 +5,7 @@ interface SelectedMovieTrailerProps {
 }
 
 export default function SelectedMovieTrailer({ movie }: SelectedMovieTrailerProps) {
-  const trailer = movie.trailer_link || "https://youtu.be/xvFZjo5PgG0?si=m8MvlXG6nrugG0nO";
+  const trailer = movie.trailer_link || 'https://youtu.be/xvFZjo5PgG0?si=m8MvlXG6nrugG0nO';
 
   return (
     <div className="mb-8">
@@ -16,7 +16,7 @@ export default function SelectedMovieTrailer({ movie }: SelectedMovieTrailerProp
       <div className="relative w-full h-64 rounded-2xl overflow-hidden border border-white/10 hover:border-acm-pink/30 transition-all duration-300 bg-black/50">
         <iframe
           className="w-full h-full"
-          src={trailer ? trailer.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
+          src={trailer ? trailer.replace('watch?v=', 'embed/') : 'https://www.youtube.com/embed/dQw4w9WgXcQ'}
           title="YouTube video player"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

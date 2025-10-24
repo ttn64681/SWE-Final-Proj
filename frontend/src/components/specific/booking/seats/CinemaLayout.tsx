@@ -10,17 +10,12 @@ interface CinemaLayoutProps {
   onToggleSeat: (seat: { id: string; occupied: boolean }) => void;
 }
 
-export default function CinemaLayout({ 
-  frontRows, 
-  backRows, 
-  selectedSeats, 
-  onToggleSeat 
-}: CinemaLayoutProps) {
+export default function CinemaLayout({ frontRows, backRows, selectedSeats, onToggleSeat }: CinemaLayoutProps) {
   return (
     <div className={styles.cinemaLayout}>
       {/* Screen */}
       <div className={styles.screen}></div>
-      
+
       {/* Seats */}
       <div>
         {/* Front rows (1-3) */}
@@ -34,10 +29,10 @@ export default function CinemaLayout({
             isFrontRow={true}
           />
         ))}
-        
+
         {/* Row gap */}
         <div className={styles.rowGap}></div>
-        
+
         {/* Back rows (4-7) */}
         {backRows.map((rowSeats, index) => (
           <SeatRow

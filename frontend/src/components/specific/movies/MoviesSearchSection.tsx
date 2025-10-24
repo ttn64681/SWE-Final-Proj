@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { PiMagnifyingGlass } from "react-icons/pi";
-import { IoFilterOutline } from "react-icons/io5";
-import { motion } from "framer-motion";
+import Image from 'next/image';
+import { PiMagnifyingGlass } from 'react-icons/pi';
+import { IoFilterOutline } from 'react-icons/io5';
+import { motion } from 'framer-motion';
 
 interface MoviesSearchSectionProps {
   searchQuery: string;
@@ -11,12 +11,12 @@ interface MoviesSearchSectionProps {
   onFilterClick: () => void;
 }
 
-export default function MoviesSearchSection({ 
-  searchQuery, 
-  setSearchQuery, 
-  onSearch, 
-  onKeyPress, 
-  onFilterClick 
+export default function MoviesSearchSection({
+  searchQuery,
+  setSearchQuery,
+  onSearch,
+  onKeyPress,
+  onFilterClick,
 }: MoviesSearchSectionProps) {
   return (
     <div className="w-screen h-[60vh] relative flex flex-col items-center gap-8 py-36 overflow-hidden">
@@ -49,12 +49,7 @@ export default function MoviesSearchSection({
             className="w-full p-3 pl-4 text-lg border duration-200 border-white/30 hover:border-white/60 focus:border-white outline-none rounded-md backdrop-blur-sm backdrop-brightness-125 bg-white/10 text-white placeholder-white/70"
           />
         </div>
-        <button 
-          title="Filter"
-          type='button'
-          className="ml-5"
-          onClick={onFilterClick}
-        >
+        <button title="Filter" type="button" className="ml-5" onClick={onFilterClick}>
           <IoFilterOutline className="text-white text-4xl hover:text-acm-pink hover:scale-105 hover:cursor-pointer" />
         </button>
       </div>

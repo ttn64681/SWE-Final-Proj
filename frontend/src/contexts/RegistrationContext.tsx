@@ -35,7 +35,7 @@ export interface RegistrationData {
   // Step 3 - Payment Methods (Optional, up to 3 cards)
   paymentCards: PaymentCard[];
   defaultCardId?: string;
-  
+
   // Step 3 - Preferences
   enrollForPromotions?: boolean;
 }

@@ -44,7 +44,7 @@ export default function BokehBackground({ children }: BokehBackgroundProps) {
               animate="animate"
               transition={{
                 duration: 5,
-                ease: "easeInOut",
+                ease: 'easeInOut',
                 repeat: Infinity,
                 repeatDelay: 2,
                 delay: i * 0.3,
@@ -60,9 +60,7 @@ export default function BokehBackground({ children }: BokehBackgroundProps) {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen">
-        {children}
-      </div>
+      <div className="relative z-10 min-h-screen">{children}</div>
     </div>
   );
 }

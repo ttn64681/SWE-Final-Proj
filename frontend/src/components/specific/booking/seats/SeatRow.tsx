@@ -11,25 +11,14 @@ interface SeatRowProps {
   isFrontRow?: boolean;
 }
 
-export default function SeatRow({ 
-  rowNumber, 
-  seats, 
-  selectedSeats, 
-  onToggleSeat, 
-  isFrontRow = false 
-}: SeatRowProps) {
+export default function SeatRow({ rowNumber, seats, selectedSeats, onToggleSeat, isFrontRow = false }: SeatRowProps) {
   const containerClass = isFrontRow ? styles.frontSeats : styles.backSeats;
-  
+
   return (
     <div className={containerClass}>
       <div className={styles.rowNumber}>{rowNumber}</div>
-      {seats.map(seat => (
-        <Seat
-          key={seat.id}
-          seat={seat}
-          isSelected={selectedSeats.includes(seat.id)}
-          onToggle={onToggleSeat}
-        />
+      {seats.map((seat) => (
+        <Seat key={seat.id} seat={seat} isSelected={selectedSeats.includes(seat.id)} onToggle={onToggleSeat} />
       ))}
       <div className={styles.rowNumber}>{rowNumber}</div>
     </div>

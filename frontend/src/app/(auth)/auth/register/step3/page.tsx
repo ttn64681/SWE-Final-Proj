@@ -81,23 +81,11 @@ export default function RegisterStep3Page() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <PaymentSection 
-          data={data} 
-          updateData={updateData} 
-          isLoading={isLoading}
-        />
-        
-        <BillingAddressSection 
-          data={data} 
-          updateData={updateData} 
-          isLoading={isLoading}
-        />
-        
-        <PreferencesSection 
-          data={data} 
-          updateData={updateData} 
-          isLoading={isLoading}
-        />
+        <PaymentSection data={data} updateData={updateData} isLoading={isLoading} />
+
+        <BillingAddressSection data={data} updateData={updateData} isLoading={isLoading} />
+
+        <PreferencesSection data={data} updateData={updateData} isLoading={isLoading} />
 
         <AuthButtonGroup
           primaryText={isLoading ? 'Creating Account...' : 'Create Account'}

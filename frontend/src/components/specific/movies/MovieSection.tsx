@@ -1,7 +1,7 @@
-import MovieCardsGrid from "@/components/common/movies/MovieCardsGrid";
-import WhiteSeparator from "@/components/common/WhiteSeparator";
-import Spinner from "@/components/common/Spinner";
-import { BackendMovie } from "@/types/movie";
+import MovieCardsGrid from '@/components/common/movies/MovieCardsGrid';
+import WhiteSeparator from '@/components/common/WhiteSeparator';
+import Spinner from '@/components/common/Spinner';
+import { BackendMovie } from '@/types/movie';
 
 interface MovieSectionProps {
   title: string;

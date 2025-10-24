@@ -1,8 +1,8 @@
-"use client";  
+'use client';
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import { IoClose } from "react-icons/io5";
+import { IoClose } from 'react-icons/io5';
 import SelectedMovieBookButton from './SelectedMovieBookButton';
 import SelectedMovieInfo from './SelectedMovieInfo';
 import SelectedMovieShowtimes from './SelectedMovieShowtimes';
@@ -27,11 +27,11 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
   const [currentDate, setCurrentDate] = useState<string>('');
   const [selectedShowtime, setSelectedShowtime] = useState<string | null>(null);
 
-  // Fetch dates with useQuery 
-  const { 
-    data: availableDates = [], 
-    isLoading: datesLoading, 
-    error: datesError 
+  // Fetch dates with useQuery
+  const {
+    data: availableDates = [],
+    isLoading: datesLoading,
+    error: datesError,
   } = useQuery({
     queryKey: ['movie-dates', movie.movie_id], // uniqueKey for system to invalidate query if movie ID changes
     queryFn: async () => {
@@ -54,15 +54,14 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
     <div className="fixed inset-0 flex z-50 items-center justify-center p-4">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      
+
       {/* Main Popup Container */}
       <div className="relative w-[90vw] max-w-6xl h-[85vh] backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden flex">
-
         {/* Close Button */}
-        <button 
-          title='Close' 
-          type='button' 
-          onClick={onClose} 
+        <button
+          title="Close"
+          type="button"
+          onClick={onClose}
           className="absolute top-5 right-6 z-[60] bg-black/50 hover:bg-black/70 backdrop-blur-sm rounded-full p-2 text-white hover:text-acm-pink duration-200 text-2xl hover:cursor-pointer border border-white/20 hover:border-acm-pink/50"
         >
           <IoClose />
@@ -73,10 +72,9 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
 
         {/* Right Side - trailer, showtimes, cast */}
         <div className="w-1/2 h-full p-6 flex flex-col overflow-y-auto bg-gradient-to-br from-black/90 to-gray-900/90 backdrop-blur-sm">
-          
           {/* Trailer Section */}
           <SelectedMovieTrailer movie={movie} />
-          
+
           {/* Showtimes Section */}
           <SelectedMovieShowtimes
             movie={movie}
@@ -88,17 +86,13 @@ export default function SelectedMovie({ movie, onClose }: MovieDetailProps) {
             onShowtimeSelect={setSelectedShowtime}
             selectedShowtime={selectedShowtime}
           />
-            
+
           {/* Movie Credits Section */}
           <SelectedMovieCredits movie={movie} />
 
-          <SelectedMovieBookButton 
-            selectedShowtime={selectedShowtime ?? ''} 
-            movie={movie} 
-            currentDate={currentDate} 
-          />
+          <SelectedMovieBookButton selectedShowtime={selectedShowtime ?? ''} movie={movie} currentDate={currentDate} />
+        </div>
       </div>
-    </div>
     </div>
   );
 }
