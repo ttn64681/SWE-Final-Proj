@@ -6,9 +6,6 @@ import { BackendUser } from '../types/user';
 // Function to fetch user information from the backend (Corresponds to getUserById endpoint)
     async function getUserInfo(userId: number) {
         try {
-            //const response = await api.get(endpoints.users.getUserById(userId)); // backend GET request
-            //return response.data;
-
             const response = await fetch(buildUrl(endpoints.users.getUserById(userId)), {
                 method: 'GET',
                 headers: {
@@ -37,9 +34,6 @@ import { BackendUser } from '../types/user';
                 body: JSON.stringify(userInfo),
             });
             const data = await response.json();
-
-            
-        // backend PUT request
             return data;
 
         } catch (error) {
@@ -48,12 +42,29 @@ import { BackendUser } from '../types/user';
         }
     }
 
+// Function to request the backend to change a user's password (Corresponds to changePassword endpoint)
+    async function changePassword(userId: number, passwordInfo: Partial<BackendUser>) {
+        try {
+            const response = await fetch(buildUrl(endpoints.users.changePassword(userId)), {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(passwordInfo),
+            });
+            const data = await response.json();
+            return data;
+
+        } catch (error) {
+            console.error("Error updating password:", error);
+            return null;
+        }
+    }
+
 
 export function useUser(userId: number) {
 
     const [user, setUser] = useState<BackendUser | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(<string | null>(null));
 
     // Fetches a user's information by their user ID
     useEffect(() => {
@@ -63,10 +74,11 @@ export function useUser(userId: number) {
         
             if (fetchedInfo) {
                 setUser(fetchedInfo);
+                return user;
             } else {
-                setError("Failed to load user data.");
+                console.log("Failed to load user data.");
+                return null;
             }
-            setLoading(false);
         };
         fetchUserInfo();
     }, [userId]);
@@ -80,10 +92,24 @@ export function useUser(userId: number) {
             setUser(updatedUser);
             return true;
         } else {
-            setError("Failed to update user data.");
+            console.log("Failed to update user data.");
             return false;
         }
     };
-    console.log(user);
-    return { user, loading, error, updateUser};
+
+    // Updates a user's password
+    const updatePassword = async (passwordInfo: Partial<BackendUser>) => {
+        console.log("Updating user info...");
+        const updatedUser = await changePassword(userId, passwordInfo); 
+        
+        if (updatedUser) {
+            setUser(updatedUser);
+            return true;
+        } else {
+            console.log("Failed to update user data.");
+            return false;
+        }
+    };
+    //console.log(user);
+    return {user, updateUser, updatePassword};
 }

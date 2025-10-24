@@ -22,13 +22,13 @@ function decodeJWT(token: string) {
 // Get the ID of the logged in user using the token
 function getUserID() {
   const token = sessionStorage.getItem("token");
-  console.log(token);
+  //console.log(token);
 
   if (token) {
     const userData = decodeJWT(token);
-    console.log("Decoded User Data:", userData);
+    //console.log("Decoded User Data:", userData);
     const userId = userData.userId;
-    console.log("User ID:", userId);
+    //console.log("User ID:", userId);
     return userId;
   } else {
     // If the token is somehow not present, return 0 as a failsafe, which is an unused ID
@@ -36,9 +36,25 @@ function getUserID() {
   }
 }
 
+function validatePhoneNumber(phoneNumber: string) {
+  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+  return phoneRegex.test(phoneNumber);
+}
+
+function comparePasswords(currentPwd: string, newPwd: string) {
+  if (currentPwd != newPwd) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
 export default function ProfilePage() {
   // Initialize user profile data
+  // Get the user profile data from the backend
+  const {user, updateUser, updatePassword} = useUser(getUserID());
+
   const [userData, setUserData] = useState({
     email: "",
     currentPassword: "",
@@ -48,8 +64,6 @@ export default function ProfilePage() {
     phone: "",
   });
 
-  // Get the user profile data from the backend
-  const {user, loading, error, updateUser} = useUser(getUserID());
 
   useEffect(() => {
     //console.log(user);
@@ -62,23 +76,46 @@ export default function ProfilePage() {
         lastName: user.lastName,
         phone: user.phoneNumber,
       });
+      console.log("User data set");
     }
   }, [user]);
 
   // Send updated user data to the backend
   const saveProfileChanges = async () => {
-    const success = await updateUser( {
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      phoneNumber: userData.phone
-    });
+    if (validatePhoneNumber(userData.phone)) {
+      const success = await updateUser( {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        phoneNumber: userData.phone
+      });
 
-    if (success) {
-      alert("Profile updated successfully.");
+      if (success) {
+        alert("Profile updated successfully.");
+      } else {
+        alert("Failed to update user profile.");
+      }
     } else {
-      alert("Failed to update user profile. Check debug logs.");
+      alert("The phone number is invalid. Check that it contains only numbers.");
     }
-  }
+  } 
+
+  // Send updated password data to the backend
+  const savePasswordChange = async () => {
+    if (comparePasswords(userData.currentPassword, userData.newPassword)) {
+      const success = await updatePassword( {
+        currentPassword: userData.currentPassword,
+        newPassword: userData.newPassword
+      });
+
+      if (success) {
+        alert("Password changed successfully.");
+      } else {
+        alert("Failed to update password. Check that your current password is correct.");
+      }
+    } else {
+      alert("The new password cannot be the same as the old password.");
+    }
+  } 
 
   // Promotions subscription state
   const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
@@ -286,6 +323,7 @@ export default function ProfilePage() {
             {/* Change password button */}
               <div className="flex justify-center mt-10">
                 <button
+                  onClick={savePasswordChange}
                   className="px-8 py-3 rounded-full font-afacad font-bold text-black"
                     style={{ 
                       background: "linear-gradient(to right, #FF478B, #FF5C33)",
