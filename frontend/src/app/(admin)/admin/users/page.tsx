@@ -4,6 +4,13 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import NavBar from '@/components/common/navBar/NavBar';
 
+interface StoredUser {
+  id: number;
+  name: string;
+  type: 'admin' | 'member';
+  status?: 'active' | 'inactive' | 'suspended';
+}
+
 function AdminUsersPage() {
   const [adminList, setAdminList] = useState([
     { id: 1, name: 'Administrator 1' },
@@ -23,11 +30,11 @@ function AdminUsersPage() {
   useEffect(() => {
     const storedUsers = sessionStorage.getItem('adminUsers');
     if (storedUsers) {
-      const users = JSON.parse(storedUsers);
-      const admins = users.filter((user: any) => user.type === 'admin');
+      const users: StoredUser[] = JSON.parse(storedUsers);
+      const admins = users.filter((user) => user.type === 'admin');
       const members = users
-        .filter((user: any) => user.type === 'member')
-        .map((member: any) => ({
+        .filter((user) => user.type === 'member')
+        .map((member) => ({
           ...member,
           status: member.status || 'active', // Default to 'active' if no status
         }));
