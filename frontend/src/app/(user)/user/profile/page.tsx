@@ -73,6 +73,9 @@ export default function ProfilePage() {
     firstName: "",
     lastName: "",
     phone: "",
+    street: "",
+    state: "",
+    country: ""
   });
 
 
@@ -86,6 +89,9 @@ export default function ProfilePage() {
         firstName: user.firstName,
         lastName: user.lastName,
         phone: user.phoneNumber,
+        street: user.address,
+        state: user.state,
+        country: user.country
       });
       //console.log("User data set");
     }
@@ -97,7 +103,10 @@ export default function ProfilePage() {
       const success = await updateUser( {
         firstName: userData.firstName,
         lastName: userData.lastName,
-        phoneNumber: userData.phone
+        phoneNumber: userData.phone,
+        address: userData.street,
+        state: userData.state,
+        country: userData.country
       });
 
       if (success) {
@@ -240,6 +249,7 @@ export default function ProfilePage() {
           <section className="p-0">
             <h1 className="text-2xl text-acm-pink font-red-rose mb-10"> Edit Personal Info </h1>
 
+            {/* Email (read only) */}
             <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-y-6 gap-x-6">
               <label className="self-center text-white font-afacad text-lg font-bold">Email</label>
               <input
@@ -253,6 +263,7 @@ export default function ProfilePage() {
                 }}
               />
 
+              {/* Name */}
               <label className="self-center text-white font-afacad text-lg font-bold">Name</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -280,6 +291,45 @@ export default function ProfilePage() {
                 </div>
               </div>
 
+              {/* Address */}
+              <label className="self-center text-white font-afacad text-lg font-bold">Address</label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <div className="text-sm text-gray-400 mb-2 font-afacad">Street</div>
+                  <input
+                    type="text"
+                    value={userData.street}
+                    onChange={(e) => {
+                      const newValue = e.target.value;
+                      setUserData(prev => ({ ...prev, street: newValue }));
+                    }}
+                    className={styles.profileInput}
+                    placeholder="Enter street address"
+                  />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-400 mb-2 font-afacad">State</div>
+                  <input
+                    type="text"
+                    value={userData.state}
+                    onChange={(e) => setUserData(prev => ({ ...prev, state: e.target.value }))}
+                    className={styles.profileInput}
+                    placeholder="Enter state"
+                  />
+                </div>
+                <div>
+                  <div className="text-sm text-gray-400 mb-2 font-afacad">Country</div>
+                  <input
+                    type="text"
+                    value={userData.country}
+                    onChange={(e) => setUserData(prev => ({ ...prev, country: e.target.value }))}
+                    className={styles.profileInput}
+                    placeholder="Enter country"
+                  />
+                </div>
+              </div>
+
+              {/* Phone number */}
               <label className="self-center text-white font-afacad text-lg font-bold">Phone Number</label>
               <input
                 type="text"

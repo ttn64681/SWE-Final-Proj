@@ -11,5 +11,8 @@ export interface BackendUser {
   lastName: string,
   phoneNumber: string
   currentPassword: string,
-  newPassword: string
+  newPassword: string,
+  address: string,
+  state: string,
+  country: string
 }
