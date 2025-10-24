@@ -47,10 +47,18 @@ export function usePayments(userId: number) {
     }
 
     async function updatePayment(currentPaymentId: number, updatedPayment: Partial<BackendPayment>) {
-        try {
-            const response = await api.put(endpoints.payments.updatePaymentInfo(userId, currentPaymentId), updatedPayment);
+        try {        
+            const response = await fetch(apiConfig.buildUrl(endpoints.payments.updatePaymentInfo(userId, currentPaymentId)), {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedPayment),
+            });
+            // const response = await api.put(endpoints.payments.updatePaymentInfo(userId, currentPaymentId), updatedPayment);
             await fetchPayments(); // refresh list
-            return response.data;
+            const data = await response.json();
+            return data;
         } catch(error) {
             console.error("Update payment error ", error);
             setError("Failed to update payment data.");
@@ -59,7 +67,13 @@ export function usePayments(userId: number) {
 
     async function deletePayment(currentPaymentId: number) {
         try {
-            const response = await api.delete(endpoints.payments.deletePaymentInfo(userId, currentPaymentId));
+            const response = await fetch(apiConfig.buildUrl(endpoints.payments.deletePaymentInfo(userId, currentPaymentId)), {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            //const response = await api.delete(endpoints.payments.deletePaymentInfo(userId, currentPaymentId));
             await fetchPayments(); // refresh list
         } catch(error) {
             console.error("Delete payment error ", error);
