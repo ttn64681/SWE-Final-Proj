@@ -12,7 +12,7 @@ export default function ResendVerificationPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email) {
       setStatus('error');
       setMessage('Please enter your email address.');
@@ -24,11 +24,11 @@ export default function ResendVerificationPage() {
 
     try {
       const response = await api.post(`/api/auth/resend-verification?email=${encodeURIComponent(email)}`);
-      
+
       if (response.data.success) {
         setStatus('success');
         setMessage('Verification email has been sent! Please check your inbox and spam folder.');
-        
+
         // Redirect to verify-email page after 3 seconds
         setTimeout(() => {
           router.push('/auth/verify-email');
@@ -39,7 +39,9 @@ export default function ResendVerificationPage() {
       }
     } catch (error) {
       setStatus('error');
-      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to send verification email. Please try again.';
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+        'Failed to send verification email. Please try again.';
       setMessage(errorMessage);
     }
   };
@@ -50,12 +52,8 @@ export default function ResendVerificationPage() {
         <div className="bg-white rounded-lg shadow-2xl p-8">
           {/* Header */}
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Resend Verification Email
-            </h1>
-            <p className="text-gray-600">
-              Enter your email address to receive a new verification link
-            </p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Resend Verification Email</h1>
+            <p className="text-gray-600">Enter your email address to receive a new verification link</p>
           </div>
 
           {/* Status Icon */}
@@ -80,7 +78,12 @@ export default function ResendVerificationPage() {
             {status === 'idle' && (
               <div className="rounded-full h-16 w-16 bg-blue-100 flex items-center justify-center">
                 <svg className="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
             )}
@@ -88,11 +91,15 @@ export default function ResendVerificationPage() {
 
           {/* Message */}
           {message && (
-            <div className={`text-center mb-6 p-4 rounded-lg ${
-              status === 'success' ? 'bg-green-50 text-green-800' :
-              status === 'error' ? 'bg-red-50 text-red-800' :
-              'bg-blue-50 text-blue-800'
-            }`}>
+            <div
+              className={`text-center mb-6 p-4 rounded-lg ${
+                status === 'success'
+                  ? 'bg-green-50 text-green-800'
+                  : status === 'error'
+                    ? 'bg-red-50 text-red-800'
+                    : 'bg-blue-50 text-blue-800'
+              }`}
+            >
               <p className="text-sm">{message}</p>
             </div>
           )}

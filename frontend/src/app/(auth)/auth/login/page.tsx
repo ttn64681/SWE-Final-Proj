@@ -57,10 +57,7 @@ export default function LoginPage() {
           <p className="text-red-200 text-sm">{error}</p>
           {error.includes('verify your email') && (
             <div className="mt-2">
-              <Link 
-                href="/auth/resend-verification" 
-                className="text-blue-300 hover:text-blue-200 text-sm underline"
-              >
+              <Link href="/auth/resend-verification" className="text-blue-300 hover:text-blue-200 text-sm underline">
                 Resend verification email
               </Link>
             </div>
@@ -70,7 +67,9 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="email" className="block text-white text-sm mb-2">Email</label>
+          <label htmlFor="email" className="block text-white text-sm mb-2">
+            Email
+          </label>
           <input
             type="email"
             id="email"
@@ -84,7 +83,9 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-white text-sm mb-2">Password</label>
+          <label htmlFor="password" className="block text-white text-sm mb-2">
+            Password
+          </label>
           <input
             type="password"
             id="password"
@@ -122,13 +123,23 @@ export default function LoginPage() {
         </button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className="mt-6 text-center space-y-3">
         <p className="text-white/70 text-sm">
           Don&apos;t have an account?{' '}
           <Link href="/auth/register" className="text-acm-pink hover:text-acm-pink/80 transition-colors">
             Sign up
           </Link>
         </p>
+        
+        <div className="border-t border-white/10 pt-3">
+          <p className="text-white/60 text-sm mb-2">Administrator Access</p>
+          <Link 
+            href="/auth/admin-login" 
+            className="text-acm-orange hover:text-acm-orange/80 transition-colors text-sm font-medium"
+          >
+            Login as Admin
+          </Link>
+        </div>
       </div>
     </AuthFormContainer>
   );

@@ -1,18 +1,25 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 
 interface BokehBackgroundProps {
   children: ReactNode;
 }
 
 export default function BokehBackground({ children }: BokehBackgroundProps) {
-  // Generate random positions for particles
-  const generateRandomPosition = () => ({
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-  });
+  const [particlePositions, setParticlePositions] = useState<Array<{ left: number; top: number }>>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  // Generate random positions for particles only on client side
+  useEffect(() => {
+    setIsClient(true);
+    const positions = [...Array(20)].map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+    }));
+    setParticlePositions(positions);
+  }, []);
 
   // Floating particles with random positions
   const particleVariants = {
@@ -34,35 +41,30 @@ export default function BokehBackground({ children }: BokehBackgroundProps) {
     <div className="relative">
       {/* Floating particles with random positions */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(20)].map((_, i) => {
-          const position = generateRandomPosition();
-          return (
-            <motion.div
-              key={i}
-              variants={particleVariants}
-              initial="initial"
-              animate="animate"
-              transition={{
-                duration: 5,
-                ease: "easeInOut",
-                repeat: Infinity,
-                repeatDelay: 2,
-                delay: i * 0.3,
-              }}
-              className="absolute w-1.5 h-1.5 bg-gradient-to-r from-acm-pink/40 to-acm-orange/40 rounded-full"
-              style={{
-                left: `${position.left}%`,
-                top: `${position.top}%`,
-              }}
-            />
-          );
-        })}
+        {isClient && particlePositions.map((position, i) => (
+          <motion.div
+            key={i}
+            variants={particleVariants}
+            initial="initial"
+            animate="animate"
+            transition={{
+              duration: 5,
+              ease: 'easeInOut',
+              repeat: Infinity,
+              repeatDelay: 2,
+              delay: i * 0.2,
+            }}
+            className="absolute w-3 h-3 bg-gradient-to-r from-acm-pink/60 to-acm-orange/60 rounded-full shadow-lg"
+            style={{
+              left: `${position.left}%`,
+              top: `${position.top}%`,
+            }}
+          />
+        ))}
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 min-h-screen">
-        {children}
-      </div>
+      <div className="relative z-10 min-h-screen">{children}</div>
     </div>
   );
 }

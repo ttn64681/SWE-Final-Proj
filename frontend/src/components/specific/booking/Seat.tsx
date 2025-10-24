@@ -13,7 +13,7 @@ interface SeatProps {
 
 export default function Seat({ seat, isSelected, onToggle }: SeatProps) {
   const seatClass = `${styles.seat} ${isSelected ? styles.selected : ''} ${seat.occupied ? styles.occupied : ''}`;
-  
+
   return (
     <div className={seatClass} onClick={() => onToggle(seat)}>
       <div className={styles.seatBody}></div>

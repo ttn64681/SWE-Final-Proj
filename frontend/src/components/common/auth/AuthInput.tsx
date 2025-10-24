@@ -25,7 +25,7 @@ export default function AuthInput({
   error,
   required = false,
   disabled = false,
-  className = ""
+  className = '',
 }: AuthInputProps) {
   return (
     <div className={className}>

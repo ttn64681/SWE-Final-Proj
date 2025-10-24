@@ -1,6 +1,6 @@
 /* Ticket counter button styles */
 .btnCounter {
-  background: linear-gradient(135deg, #FF478B 0%, #FF5C33 100%);
+  background: linear-gradient(135deg, #ff478b 0%, #ff5c33 100%);
   color: white;
   border: none;
   border-radius: 50%;
@@ -50,7 +50,7 @@
 
 /* Checkout button styles */
 .checkoutButton {
-  background: linear-gradient(135deg, #FF478B 0%, #FF5C33 100%);
+  background: linear-gradient(135deg, #ff478b 0%, #ff5c33 100%);
   color: white;
   border: none;
   border-radius: 0.75rem;
@@ -77,7 +77,7 @@
 .checkoutButtonDisabled {
   background: transparent;
   color: white;
-  border: 2px solid #FF478B;
+  border: 2px solid #ff478b;
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   font-weight: 600;

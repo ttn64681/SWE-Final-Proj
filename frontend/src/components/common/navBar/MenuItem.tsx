@@ -52,7 +52,7 @@ export default function MenuItem({
 
   return (
     <button
-      type='button'
+      type="button"
       className={`w-full text-left text-white ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

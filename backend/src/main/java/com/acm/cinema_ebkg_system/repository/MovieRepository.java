@@ -43,13 +43,13 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      * Combined AND filters with optional parts and multi-genre OR (native Postgres).
      * - title: substring (optional)
      * - genresCsv: comma-separated; ANY token match (optional)
-     * - date parts: match against show_dates (each part optional)
+     * - date parts: match against show_date (each part optional)
      * Return: List<Movie> (mixed NOW_PLAYING/UPCOMING)
      * Example JSON: [ { "movie_id": 4, "status": "NOW_PLAYING", ... }, { "movie_id": 9, "status": "UPCOMING", ... } ]
      */
     @Query(value =
-        "SELECT DISTINCT m.* FROM movies m " +
-        "LEFT JOIN show_dates sd ON sd.movie_id = m.movie_id " +
+        "SELECT DISTINCT m.* FROM movie m " +
+        "LEFT JOIN show_date sd ON sd.movie_id = m.movie_id " +
         "WHERE " +
         "(:title IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
         "(:genresCsv IS NULL OR EXISTS ( " +
@@ -72,8 +72,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      * Example JSON: [ { "movie_id": 2, "title": "Superman", ... }, { "movie_id": 5, ... } ]
      */
     @Query(value = """
-      SELECT m.* FROM movies m
-      JOIN show_dates sd ON sd.movie_id = m.movie_id
+      SELECT m.* FROM movie m
+      JOIN show_date sd ON sd.movie_id = m.movie_id
       WHERE m.status = 'NOW_PLAYING' AND sd.show_date >= CURRENT_DATE
       GROUP BY m.movie_id
       ORDER BY MIN(sd.show_date) ASC
@@ -86,8 +86,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      * Example JSON: [ { "movie_id": 9, "title": "Oldboy", ... }, { "movie_id": 12, ... } ]
      */
     @Query(value = """
-      SELECT m.* FROM movies m
-      JOIN show_dates sd ON sd.movie_id = m.movie_id
+      SELECT m.* FROM movie m
+      JOIN show_date sd ON sd.movie_id = m.movie_id
       WHERE m.status = 'UPCOMING' AND sd.show_date > CURRENT_DATE
       GROUP BY m.movie_id
       ORDER BY MIN(sd.show_date) ASC
@@ -101,7 +101,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      * Example JSON: [ { "movie_id": 2, "status": "NOW_PLAYING", ... }, ... ]
      */
     @Query(value = """
-      SELECT m.* FROM movies m
+      SELECT m.* FROM movie m
       WHERE m.status = 'NOW_PLAYING'
         AND (:title IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%')))
         AND (:genresCsv IS NULL OR EXISTS (
@@ -111,7 +111,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         AND (
           (:month IS NULL AND :day IS NULL AND :year IS NULL) OR
           EXISTS (
-            SELECT 1 FROM show_dates sd 
+            SELECT 1 FROM show_date sd 
             WHERE sd.movie_id = m.movie_id 
               AND (:month IS NULL OR EXTRACT(MONTH FROM sd.show_date) = :month)
               AND (:day IS NULL OR EXTRACT(DAY FROM sd.show_date) = :day)
@@ -120,7 +120,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         )
       ORDER BY (
         SELECT MIN(sd.show_date) 
-        FROM show_dates sd 
+        FROM show_date sd 
         WHERE sd.movie_id = m.movie_id
       ) ASC
     """, nativeQuery = true)
@@ -137,7 +137,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      * Example JSON: [ { "movie_id": 12, "status": "UPCOMING", ... }, ... ]
      */
     @Query(value = """
-      SELECT m.* FROM movies m
+      SELECT m.* FROM movie m
       WHERE m.status = 'UPCOMING'
         AND (:title IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%')))
         AND (:genresCsv IS NULL OR EXISTS (
@@ -147,7 +147,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         AND (
           (:month IS NULL AND :day IS NULL AND :year IS NULL) OR
           EXISTS (
-            SELECT 1 FROM show_dates sd 
+            SELECT 1 FROM show_date sd 
             WHERE sd.movie_id = m.movie_id 
               AND (:month IS NULL OR EXTRACT(MONTH FROM sd.show_date) = :month)
               AND (:day IS NULL OR EXTRACT(DAY FROM sd.show_date) = :day)
@@ -156,7 +156,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
         )
       ORDER BY (
         SELECT MIN(sd.show_date) 
-        FROM show_dates sd 
+        FROM show_date sd 
         WHERE sd.movie_id = m.movie_id
       ) ASC
     """, nativeQuery = true)
@@ -167,13 +167,13 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
                                       @Param("year") Integer year);
 
     /**
-     * Get all unique genres from all movies.
+     * Get all unique genres from all movie.
      * Return: List<String> of unique genre names (sorted alphabetically)
      * Example JSON: ["Action", "Comedy", "Drama", "Horror", "Sci-Fi"]
      */
     @Query(value = """
         SELECT DISTINCT trim(unnest(string_to_array(genres, ','))) as genre
-        FROM movies 
+        FROM movie 
         WHERE genres IS NOT NULL AND genres != ''
         ORDER BY genre ASC
     """, nativeQuery = true)

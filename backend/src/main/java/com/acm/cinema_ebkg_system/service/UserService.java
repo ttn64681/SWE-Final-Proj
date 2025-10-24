@@ -250,7 +250,11 @@ public class UserService {
         if (userInfo.getCountry() != null) {
             user.setCountry(userInfo.getCountry());
         }
-        
+
+        // Send confirmation email
+        emailService.sendEditProfileConfirmationEmail(user.getEmail(), user.getFirstName());
+
+        // Save user to database
         return userRepository.save(user);
     }
 
@@ -330,6 +334,10 @@ public class UserService {
 
             System.out.println("Saved hashed password: " + savedUser.getPassword());
             System.out.println("Passwords match: " + passwordEncoder.matches(newPassword, savedUser.getPassword()));
+
+            // Send confirmation email
+            emailService.sendChangePasswordConfirmationEmail(user.getEmail(), user.getFirstName());
+
             return savedUser;
         }
     }

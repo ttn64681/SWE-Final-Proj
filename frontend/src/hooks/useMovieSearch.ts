@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { buildUrl, endpoints } from '@/config/api';
 import { BackendMovie } from '@/types/movie';
 
 export function useMovieSearch() {
   const searchParams = useSearchParams();
-  
+
   // Separate state for Now Playing and Upcoming movies (both sections show simultaneously)
   const [nowPlayingMovies, setNowPlayingMovies] = useState<BackendMovie[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<BackendMovie[]>([]);
-  
+
   // Independent loading states for each section
   const [isLoadingNowPlaying, setIsLoadingNowPlaying] = useState(false);
   const [isLoadingUpcoming, setIsLoadingUpcoming] = useState(false);
@@ -22,7 +22,7 @@ export function useMovieSearch() {
     const month = searchParams.get('month');
     const day = searchParams.get('day');
     const year = searchParams.get('year');
-    
+
     // If no search parameters, show empty arrays
     if (!title && !genres && !month && !day && !year) {
       setNowPlayingMovies([]);
@@ -46,9 +46,9 @@ export function useMovieSearch() {
       try {
         const nowPlayingUrl = `${buildUrl(endpoints.movies.searchNowPlaying)}?${queryString}`;
         const response = await fetch(nowPlayingUrl);
-        
+
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         const results = await response.json();
         setNowPlayingMovies(results);
       } catch (err) {
@@ -64,9 +64,9 @@ export function useMovieSearch() {
       try {
         const upcomingUrl = `${buildUrl(endpoints.movies.searchUpcoming)}?${queryString}`;
         const response = await fetch(upcomingUrl);
-        
+
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         const results = await response.json();
         setUpcomingMovies(results);
       } catch (err) {
@@ -86,6 +86,6 @@ export function useMovieSearch() {
     nowPlayingMovies,
     upcomingMovies,
     isLoadingNowPlaying,
-    isLoadingUpcoming
+    isLoadingUpcoming,
   };
 }

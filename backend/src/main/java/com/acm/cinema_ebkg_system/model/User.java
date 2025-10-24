@@ -19,9 +19,6 @@ import java.util.ArrayList;
  * - Password hashing handled at service layer (not stored as plain text)
  * - Automatic timestamp management for created_at and updated_at
  * - Email uniqueness constraint for login purposes
- * 
- * @author ACM Cinema Team
- * @version 1.0
  */
 @Entity
 @Table(name = "users")

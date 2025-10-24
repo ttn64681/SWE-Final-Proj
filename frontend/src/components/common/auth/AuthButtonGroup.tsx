@@ -30,7 +30,7 @@ export default function AuthButtonGroup({
   skipText,
   skipOnClick,
   skipDisabled = false,
-  className = ""
+  className = '',
 }: AuthButtonGroupProps) {
   return (
     <div className={`space-y-4 ${className}`}>
@@ -46,7 +46,7 @@ export default function AuthButtonGroup({
         >
           {primaryText}
         </AuthButton>
-        
+
         {secondaryText && (
           <AuthButton
             type="button"
@@ -59,7 +59,7 @@ export default function AuthButtonGroup({
           </AuthButton>
         )}
       </div>
-      
+
       {/* Skip button - smaller, less prominent */}
       {skipText && (
         <div className="text-center pt-4">

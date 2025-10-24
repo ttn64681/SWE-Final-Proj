@@ -20,16 +20,16 @@ export function useGenres() {
       const response = await fetch(url);
       console.log('Response status:', response.status);
       console.log('Response ok:', response.ok);
-      
+
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      
+
       const responseText = await response.text();
       console.log('Response text:', responseText);
       if (!responseText.trim()) {
         console.warn('Empty response from genres endpoint');
         return;
       }
-      
+
       const genreNames = JSON.parse(responseText);
       console.log('Genres received:', genreNames);
       setGenres(genreNames);
@@ -43,7 +43,7 @@ export function useGenres() {
 
   // Fetch genres only once on mount
   useEffect(() => {
-    fetchGenres()
+    fetchGenres();
   }, [fetchGenres]);
 
   return { genres, isLoadingGenres, refetchGenres: fetchGenres };
