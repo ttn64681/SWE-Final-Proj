@@ -145,5 +145,50 @@ public class EmailService {
             throw new RuntimeException("Failed to send password reset email: " + e.getMessage());
         }
     }
+
+    public void sendEditProfileConfirmationEmail(String toEmail, String name) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("ACM Cinemas - User Profile Updated");
+
+            String emailBody = "Hello " + name + ", \n\n"
+                + "Your profile settings have been successfully updated.\n"
+                + "Best regards,\n"
+                + "ACM Cinema Team";
+            
+            message.setText(emailBody);
+            mailSender.send(message);
+            
+            System.out.println("Confirmation email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send confirmation email to: " + toEmail);
+            throw new RuntimeException("Failed to send confirmation email: " + e.getMessage());
+        }
+    }
+
+    public void sendChangePasswordConfirmationEmail(String toEmail, String name) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("ACM Cinemas - Password Change Notification");
+
+            String emailBody = "Hello " + name + ", \n\n"
+                + "You are receiving this email to confirm that your password has been changed successfully.\n"
+                + "If you did not change your password, please reach out to us immediately so we can secure your account.\n"
+                + "Best regards,\n"
+                + "ACM Cinema Team";
+            
+            message.setText(emailBody);
+            mailSender.send(message);
+            
+            System.out.println("Confirmation email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send confirmation email to: " + toEmail);
+            throw new RuntimeException("Failed to send confirmation email: " + e.getMessage());
+        }
+    }
 }
 
