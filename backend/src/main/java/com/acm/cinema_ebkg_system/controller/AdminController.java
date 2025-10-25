@@ -106,7 +106,7 @@ public class AdminController {
     @PostMapping("/create")
     public ResponseEntity<AuthResponse> createAdmin(@RequestBody CreateAdminRequest request) {
         try {
-            Admin admin = adminService.createAdmin(
+            adminService.createAdmin(
                 request.getEmail(),
                 request.getPassword(),
                 request.getProfileImageLink()

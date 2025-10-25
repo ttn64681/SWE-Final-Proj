@@ -4,9 +4,6 @@ package com.acm.cinema_ebkg_system.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.util.ArrayList;
 
 /**
  * User Entity - Represents a user in the cinema booking system
@@ -99,9 +96,6 @@ public class User {
      * @param firstName User's first name
      * @param lastName User's last name
      */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<PaymentInfo> paymentInfos = new ArrayList<>();
 
     // Custom constructor for registration (kept for business logic)
     public User(String email, String password, String firstName, String lastName) {
@@ -184,6 +178,4 @@ public class User {
     public LocalDateTime getPasswordResetTokenExpiresAt() { return passwordResetTokenExpiresAt; }
     public void setPasswordResetTokenExpiresAt(LocalDateTime passwordResetTokenExpiresAt) { this.passwordResetTokenExpiresAt = passwordResetTokenExpiresAt; }
     
-    public List<PaymentInfo> getPaymentInfos() { return paymentInfos; }
-    public void setPaymentInfos(List<PaymentInfo> paymentInfos) { this.paymentInfos = paymentInfos; }
 }
