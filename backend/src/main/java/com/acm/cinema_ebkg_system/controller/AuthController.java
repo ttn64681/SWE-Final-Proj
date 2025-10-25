@@ -3,8 +3,8 @@ package com.acm.cinema_ebkg_system.controller;
 import com.acm.cinema_ebkg_system.dto.auth.AuthResponse;
 import com.acm.cinema_ebkg_system.dto.auth.LoginRequest;
 import com.acm.cinema_ebkg_system.dto.auth.RegisterRequest;
-import com.acm.cinema_ebkg_system.dto.auth.ResetPasswordRequest;
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.repository.UserRepository;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,9 @@ public class AuthController {
     
     @Autowired
     private UserService userService;  // Service layer for user business logic
+
+    @Autowired
+    private UserRepository userRepository;  // Repository for direct database access
 
     @Autowired
     private JwtUtil jwtUtil;  // Utility for JWT token operations
@@ -114,9 +117,8 @@ public class AuthController {
             }
 
             // Step 3: Generate new JWT tokens for authenticated session
-            // Use different expiration times based on "Remember Me" selection
-            String token = jwtUtil.generateToken(user.getEmail(), user.getId(), request.isRememberMe());
-            String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId(), request.isRememberMe());
+            String token = jwtUtil.generateToken(user.getEmail(), user.getId());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
 
             // Step 4: Create user DTO (excludes sensitive data like password)
             AuthResponse.UserDto userDto = new AuthResponse.UserDto(
@@ -159,32 +161,12 @@ public class AuthController {
             // Step 1: Validate refresh token and extract user information
             String email = jwtUtil.getUsernameFromToken(refreshToken);
             Long userId = jwtUtil.getUserIdFromToken(refreshToken);
-            Boolean rememberMe = jwtUtil.getRememberMeFromToken(refreshToken);
 
-            // Step 2: Get user information from database
-            User user = userService.getUserById(userId);
-            if (user == null) {
-                AuthResponse response = new AuthResponse(false, "User not found");
-                return ResponseEntity.badRequest().body(response);
-            }
+            // Step 2: Generate new access token with same user information
+            String newToken = jwtUtil.generateToken(email, userId);
 
-            // Step 3: Generate new access token with same user information and remember me preference
-            String newToken = jwtUtil.generateToken(email, userId, rememberMe != null ? rememberMe : false);
-
-            // Step 4: Create user DTO
-            AuthResponse.UserDto userDto = new AuthResponse.UserDto(
-                user.getId(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPhoneNumber(),
-                user.getAddress(),
-                user.getState(),
-                user.getCountry()
-            );
-
-            // Step 5: Return new access token with user information (refresh token stays the same)
-            AuthResponse response = new AuthResponse(true, "Token refreshed successfully", newToken, refreshToken, userDto);
+            // Step 3: Return new access token (refresh token stays the same)
+            AuthResponse response = new AuthResponse(true, "Token refreshed successfully", newToken, refreshToken, null);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -206,9 +188,9 @@ public class AuthController {
             // Step 1: Verify the email token and activate user
             User user = userService.verifyEmail(token);
             
-            // Step 2: Generate JWT tokens for verified user (default to remember me for email verification)
-            String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getId(), true);
-            String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId(), true);
+            // Step 2: Generate JWT tokens for verified user
+            String jwtToken = jwtUtil.generateToken(user.getEmail(), user.getId());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getId());
             
             // Step 3: Create user DTO
             AuthResponse.UserDto userDto = new AuthResponse.UserDto(
@@ -249,81 +231,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
-    /**
-     * Initiate forgot password process
-     * 
-     * Process Flow:
-     * 1. Find user by email address
-     * 2. Generate password reset token
-     * 3. Send password reset email with reset link
-     * 
-     * @param email User's email address
-     * @return ResponseEntity<AuthResponse> with success status
-     */
-    @PostMapping("/forgot-password")
-    public ResponseEntity<AuthResponse> forgotPassword(@RequestParam String email) {
-        try {
-            userService.initiatePasswordReset(email);
-            AuthResponse response = new AuthResponse(true, "Password reset email has been sent. Please check your inbox.");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            AuthResponse response = new AuthResponse(false, e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    /**
-     * Reset password using reset token
-     * 
-     * Process Flow:
-     * 1. Validate reset token and check expiration
-     * 2. Find user by reset token
-     * 3. Update password with new password
-     * 4. Clear reset token
-     * 
-     * @param request ResetPasswordRequest containing token and new password
-     * @return ResponseEntity<AuthResponse> with success status
-     */
-    @PostMapping("/reset-password")
-    public ResponseEntity<AuthResponse> resetPassword(@RequestBody ResetPasswordRequest request) {
-        try {
-            userService.resetPasswordWithToken(request.getToken(), request.getNewPassword());
-            AuthResponse response = new AuthResponse(true, "Password has been reset successfully. You can now log in with your new password.");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            AuthResponse response = new AuthResponse(false, e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    /**
-     * Check if email is already taken
-     * 
-     * Process Flow:
-     * 1. Check if user exists with given email
-     * 2. Return availability status
-     * 
-     * @param email Email address to check
-     * @return ResponseEntity<AuthResponse> with availability status
-     */
-    @PostMapping("/check-email")
-    public ResponseEntity<AuthResponse> checkEmail(@RequestParam String email) {
-        try {
-            boolean emailExists = userService.emailExists(email);
-            if (emailExists) {
-                AuthResponse response = new AuthResponse(false, "Email is already taken. Please use a different email address.");
-                return ResponseEntity.badRequest().body(response);
-            } else {
-                AuthResponse response = new AuthResponse(true, "Email is available.");
-                return ResponseEntity.ok(response);
-            }
-        } catch (Exception e) {
-            AuthResponse response = new AuthResponse(false, "Error checking email availability.");
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
 
     /**
      * Logout endpoint - primarily for client-side token cleanup

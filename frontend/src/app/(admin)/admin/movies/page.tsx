@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { PiPencilSimple, PiX } from 'react-icons/pi';
+import NavBar from '@/components/common/navBar/NavBar';
 import { useState, useEffect } from 'react';
-import AdminNavBar from '@/components/common/navBar/AdminNavBar';
 
 interface Movie {
   id: number;
@@ -64,8 +64,8 @@ export default function AdminMoviesPage() {
 
   return (
     <div className="text-white" style={{ backgroundColor: '#1C1C1C', minHeight: '100vh' }}>
-      <AdminNavBar />
-      <div style={{ height: '120px' }} />
+      <NavBar />
+      <div className="h-30" />
 
       {/* Tabs */}
       <div className="flex items-center justify-center gap-10 text-[30px] font-red-rose mt-2 mb-18">

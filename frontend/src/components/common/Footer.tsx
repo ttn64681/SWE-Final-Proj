@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ACMLogo from '@/components/common/ACMLogo';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -6,9 +7,9 @@ export default function Footer() {
     <footer className="mt-12 border-t border-white/10 bg-black/60 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto px-6 py-8 text-white/90">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-          {/* Brand */}
-          <div className="flex items-center gap-3">
-            <span className="text-3xl font-pacifico acm-gradient leading-none">acm</span>
+          {/* Brand - Centered */}
+          <div className="flex items-center justify-center sm:justify-start gap-3">
+            <ACMLogo size="md" showHoverAnimation={true} className="transform -translate-y-1" />
             <span className="text-white/70">Actual Cinema Movies</span>
           </div>
 

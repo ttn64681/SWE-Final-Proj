@@ -140,11 +140,13 @@ export default function ProfilePage() {
       alert(message);
     }
   };
+
   // Promotions subscription state
   const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
 
   const { profilePic, setProfilePic, profilePicUrl, setProfilePicUrl } = useProfile();
 
+  // Handle profile picture upload - was a real pain to get working
   const onImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {

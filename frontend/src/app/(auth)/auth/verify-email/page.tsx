@@ -2,13 +2,12 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import NavBar from '@/components/common/navBar/NavBar';
 import api from '@/config/api';
 
 /**
- * Email Verification Page
- * 
- * This page handles email verification when users click the link in their verification email.
+ * Email Verification Page Content
+ *
+ * This component handles email verification when users click the link in their verification email.
  * It extracts the token from the URL and calls the backend verification endpoint.
  */
 function VerifyEmailContent() {
@@ -25,17 +24,20 @@ function VerifyEmailContent() {
       // Get token from URL query parameter
       const token = searchParams.get('token');
 
-
       if (!token) {
         // Check if this is a redirect from registration (no token but coming from registration flow)
         const fromRegistration = searchParams.get('from') === 'registration';
-        
+
         if (fromRegistration) {
           setStatus('registration-success');
-          setMessage('Registration successful! A verification email has been sent to your inbox. Please check your email and click the verification link to activate your account.');
+          setMessage(
+            'Registration successful! A verification email has been sent to your inbox. Please check your email and click the verification link to activate your account.'
+          );
         } else {
           setStatus('error');
-          setMessage('No verification token found. If you clicked a verification link, please try again. Otherwise, use the form below to request a new verification email.');
+          setMessage(
+            'No verification token found. If you clicked a verification link, please try again. Otherwise, use the form below to request a new verification email.'
+          );
         }
         return;
       }
@@ -43,7 +45,7 @@ function VerifyEmailContent() {
       try {
         // Call verification endpoint
         const response = await api.post(`/api/auth/verify-email?token=${token}`);
-        
+
         if (response.data.success) {
           setStatus('success');
           setMessage(response.data.message || 'Email verified successfully!');
@@ -69,13 +71,19 @@ function VerifyEmailContent() {
         }
       } catch (error) {
         setStatus('error');
-        const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Verification failed. The token may be invalid or expired.';
-        
+        const errorMessage =
+          (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+          'Verification failed. The token may be invalid or expired.';
+
         // Add more helpful context
         if (errorMessage.includes('expired')) {
-          setMessage('This verification link has expired (valid for 24 hours). Please request a new verification email below.');
+          setMessage(
+            'This verification link has expired (valid for 24 hours). Please request a new verification email below.'
+          );
         } else if (errorMessage.includes('Invalid')) {
-          setMessage('This verification link is invalid or has already been used. If you already verified your account, you can try logging in. Otherwise, request a new verification email below.');
+          setMessage(
+            'This verification link is invalid or has already been used. If you already verified your account, you can try logging in. Otherwise, request a new verification email below.'
+          );
         } else {
           setMessage(`Verification failed: ${errorMessage}. Please request a new verification email below.`);
         }
@@ -87,7 +95,7 @@ function VerifyEmailContent() {
 
   const handleResendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!resendEmail.trim()) {
       setResendStatus('error');
       setResendMessage('Please enter your email address.');
@@ -96,13 +104,13 @@ function VerifyEmailContent() {
 
     setResendStatus('loading');
     setResendMessage('Sending verification email...');
-    
+
     try {
       console.log('Sending resend verification request for:', resendEmail.trim());
       const response = await api.post(`/api/auth/resend-verification?email=${encodeURIComponent(resendEmail.trim())}`);
-      
+
       console.log('Resend verification response:', response.data);
-      
+
       if (response.data.success) {
         setResendStatus('success');
         setResendMessage('Verification email has been sent! Please check your inbox and spam folder.');
@@ -114,48 +122,49 @@ function VerifyEmailContent() {
     } catch (error) {
       console.error('Resend verification error:', error);
       setResendStatus('error');
-      const errorMessage = (error as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to send verification email. Please try again.';
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message ||
+        'Failed to send verification email. Please try again.';
       setResendMessage(errorMessage);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black">
-      <NavBar />
-      
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
-        <div className="w-full max-w-md">
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-xl">
-            {/* Header */}
-            <div className="text-center mb-6">
-              <h1 className="text-3xl font-bold text-white mb-2">
-                Email Verification
-              </h1>
-              <p className="text-white/70 text-sm mt-1">Verify your email address to continue</p>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="max-w-md w-full mx-4">
+        <div className="bg-white rounded-lg shadow-2xl p-8">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Email Verification</h1>
+          </div>
 
           {/* Status Icon */}
           <div className="flex justify-center mb-6">
             {status === 'verifying' && (
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-acm-pink"></div>
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
             )}
             {status === 'success' && (
-              <div className="rounded-full h-16 w-16 bg-green-900/40 border border-green-500/60 flex items-center justify-center">
-                <svg className="h-10 w-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="rounded-full h-16 w-16 bg-green-100 flex items-center justify-center">
+                <svg className="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
             )}
             {status === 'registration-success' && (
-              <div className="rounded-full h-16 w-16 bg-blue-900/40 border border-blue-500/60 flex items-center justify-center">
-                <svg className="h-10 w-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <div className="rounded-full h-16 w-16 bg-blue-100 flex items-center justify-center">
+                <svg className="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
             )}
             {status === 'error' && (
-              <div className="rounded-full h-16 w-16 bg-red-900/40 border border-red-500/60 flex items-center justify-center">
-                <svg className="h-10 w-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="rounded-full h-16 w-16 bg-red-100 flex items-center justify-center">
+                <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
@@ -163,18 +172,21 @@ function VerifyEmailContent() {
           </div>
 
           {/* Message */}
-          <div className={`text-center mb-6 p-4 rounded-lg ${
-            status === 'verifying' ? 'bg-blue-900/40 border border-blue-500/60 text-blue-200' :
-            status === 'success' ? 'bg-green-900/40 border border-green-500/60 text-green-200' :
-            status === 'registration-success' ? 'bg-blue-900/40 border border-blue-500/60 text-blue-200' :
-            'bg-red-900/40 border border-red-500/60 text-red-200'
-          }`}>
+          <div
+            className={`text-center mb-6 p-4 rounded-lg ${
+              status === 'verifying'
+                ? 'bg-blue-50 text-blue-800'
+                : status === 'success'
+                  ? 'bg-green-50 text-green-800'
+                  : status === 'registration-success'
+                    ? 'bg-blue-50 text-blue-800'
+                    : 'bg-red-50 text-red-800'
+            }`}
+          >
             <p className="text-lg font-medium">{message}</p>
-            {status === 'success' && (
-              <p className="text-sm mt-2 text-white/70">Redirecting to home page...</p>
-            )}
+            {status === 'success' && <p className="text-sm mt-2">Redirecting to home page...</p>}
             {status === 'registration-success' && (
-              <p className="text-sm mt-2 text-white/70">Check your email inbox and spam folder for the verification link.</p>
+              <p className="text-sm mt-2">Check your email inbox and spam folder for the verification link.</p>
             )}
           </div>
 
@@ -182,25 +194,27 @@ function VerifyEmailContent() {
           {status === 'error' && (
             <div className="space-y-4">
               {/* Resend Email Form */}
-              <div className="border-t border-white/10 pt-4">
-                <h3 className="text-lg font-medium text-white mb-3 text-center">
-                  Request New Verification Email
-                </h3>
-                
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-medium text-gray-900 mb-3 text-center">Request New Verification Email</h3>
+
                 {/* Resend Status Message */}
                 {resendMessage && (
-                  <div className={`mb-4 p-3 rounded-lg text-sm ${
-                    resendStatus === 'success' ? 'bg-green-900/40 border border-green-500/60 text-green-200' :
-                    resendStatus === 'error' ? 'bg-red-900/40 border border-red-500/60 text-red-200' :
-                    'bg-blue-900/40 border border-blue-500/60 text-blue-200'
-                  }`}>
+                  <div
+                    className={`mb-4 p-3 rounded-lg text-sm ${
+                      resendStatus === 'success'
+                        ? 'bg-green-50 text-green-800'
+                        : resendStatus === 'error'
+                          ? 'bg-red-50 text-red-800'
+                          : 'bg-blue-50 text-blue-800'
+                    }`}
+                  >
                     {resendMessage}
                   </div>
                 )}
 
                 <form onSubmit={handleResendEmail} className="space-y-3">
                   <div>
-                    <label htmlFor="resendEmail" className="block text-sm font-medium text-white mb-1">
+                    <label htmlFor="resendEmail" className="block text-sm font-medium text-gray-700 mb-1">
                       Email Address
                     </label>
                     <input
@@ -208,23 +222,34 @@ function VerifyEmailContent() {
                       id="resendEmail"
                       value={resendEmail}
                       onChange={(e) => setResendEmail(e.target.value)}
-                      className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
                       placeholder="Enter your email address"
                       required
                       disabled={resendStatus === 'loading'}
                     />
                   </div>
-                  
+
                   <button
                     type="submit"
                     disabled={resendStatus === 'loading'}
-                    className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                   >
                     {resendStatus === 'loading' ? (
                       <span className="flex items-center justify-center">
                         <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Sending...
                       </span>
@@ -239,13 +264,13 @@ function VerifyEmailContent() {
               <div className="space-y-2">
                 <button
                   onClick={() => router.push('/auth/login')}
-                  className="w-full bg-white/10 text-white py-2 px-4 rounded-md hover:bg-white/20 transition-colors font-medium border border-white/20"
+                  className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors font-medium"
                 >
                   Go to Login
                 </button>
                 <button
                   onClick={() => router.push('/auth/resend-verification')}
-                  className="w-full text-acm-pink hover:text-acm-pink/80 text-sm font-medium"
+                  className="w-full text-blue-600 hover:text-blue-500 text-sm font-medium"
                 >
                   Use dedicated resend page
                 </button>
@@ -256,7 +281,7 @@ function VerifyEmailContent() {
           {status === 'success' && (
             <button
               onClick={() => router.push('/')}
-              className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
               Continue to Home
             </button>
@@ -266,13 +291,13 @@ function VerifyEmailContent() {
             <div className="space-y-3">
               <button
                 onClick={() => router.push('/auth/login')}
-                className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 Go to Login
               </button>
               <button
                 onClick={() => router.push('/auth/resend-verification')}
-                className="w-full bg-white/10 text-white py-3 rounded-lg hover:bg-white/20 transition-colors font-medium border border-white/20"
+                className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium"
               >
                 Resend Verification Email
               </button>
@@ -282,26 +307,45 @@ function VerifyEmailContent() {
 
         {/* Help Text */}
         <div className="mt-6 text-center">
-          <p className="text-white/60 text-sm">
+          <p className="text-gray-400 text-sm">
             Need help?{' '}
-            <a href="/support" className="text-acm-pink hover:text-acm-pink/80 underline">
+            <a href="/support" className="text-blue-400 hover:text-blue-300 underline">
               Contact Support
             </a>
           </p>
         </div>
       </div>
     </div>
-    </div>
   );
 }
 
+/**
+ * Email Verification Page
+ *
+ * This page handles email verification when users click the link in their verification email.
+ * It extracts the token from the URL and calls the backend verification endpoint.
+ */
 export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-lg">Loading...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white rounded-lg shadow-2xl p-8">
+              <div className="text-center mb-6">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Email Verification</h1>
+              </div>
+              <div className="flex justify-center mb-6">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+              </div>
+              <div className="text-center mb-6 p-4 rounded-lg bg-blue-50 text-blue-800">
+                <p className="text-lg font-medium">Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
       <VerifyEmailContent />
     </Suspense>
   );
