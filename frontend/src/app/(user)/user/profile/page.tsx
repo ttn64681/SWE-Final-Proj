@@ -20,6 +20,11 @@ function decodeJWT(token: string) {
 
 // Get the ID of the logged in user using the token
 function getUserID() {
+  // Check if we're on the client side before accessing sessionStorage
+  if (typeof window === 'undefined') {
+    return 0; // Return default value during SSR
+  }
+
   const token = sessionStorage.getItem('token');
   //console.log(token);
 

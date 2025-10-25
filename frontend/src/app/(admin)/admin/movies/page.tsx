@@ -35,6 +35,9 @@ export default function AdminMoviesPage() {
 
   // load saved movies on mount
   useEffect(() => {
+    // Check if we're on the client side before accessing sessionStorage
+    if (typeof window === 'undefined') return;
+
     const savedMovies = sessionStorage.getItem('movies');
     if (savedMovies) {
       try {
@@ -59,7 +62,10 @@ export default function AdminMoviesPage() {
     const nonInitialMovies = updatedMovies.filter(
       (movie) => !moviesList.some((initialMovie) => initialMovie.id === movie.id)
     );
-    sessionStorage.setItem('movies', JSON.stringify(nonInitialMovies));
+    // Only set sessionStorage on client side
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('movies', JSON.stringify(nonInitialMovies));
+    }
   };
 
   return (

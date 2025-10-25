@@ -14,7 +14,7 @@ export default function CheckoutButton({ tickets, seats }: props) {
       {tickets >= seats ? (
         <div>
           <Link href="/booking/checkout">
-            <button className={`${styles.checkoutButton} inline-flex items-center gap-2 text-sm`}>
+            <button title="Checkout" type="button" className={`${styles.checkoutButton} inline-flex items-center gap-2 text-sm`}>
               <span>CHECKOUT</span>
               <span className="text-lg leading-none">
                 {' '}
