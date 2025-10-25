@@ -4,6 +4,9 @@ package com.acm.cinema_ebkg_system.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 /**
  * User Entity - Represents a user in the cinema booking system
@@ -80,6 +83,10 @@ public class User {
     @Column(name = "password_reset_token_expires_at")
     private LocalDateTime passwordResetTokenExpiresAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<PaymentInfo> paymentInfos = new ArrayList<>();
+
     // ========== CONSTRUCTORS ==========
     
     /**
@@ -98,13 +105,14 @@ public class User {
      */
 
     // Custom constructor for registration (kept for business logic)
-    public User(String email, String password, String firstName, String lastName) {
+    public User(String email, String password, String firstName, String lastName, PaymentInfo paymentInfo) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.paymentInfos.add(paymentInfo);
     }
 
     // ========== JPA LIFECYCLE CALLBACKS ==========
@@ -177,5 +185,8 @@ public class User {
     
     public LocalDateTime getPasswordResetTokenExpiresAt() { return passwordResetTokenExpiresAt; }
     public void setPasswordResetTokenExpiresAt(LocalDateTime passwordResetTokenExpiresAt) { this.passwordResetTokenExpiresAt = passwordResetTokenExpiresAt; }
+
+    public List<PaymentInfo> getPaymentInfos() { return this.paymentInfos; }
+    public void setPaymentInfos(List<PaymentInfo> paymentInfos) { this.paymentInfos = paymentInfos; }
     
 }
