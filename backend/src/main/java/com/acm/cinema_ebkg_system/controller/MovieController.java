@@ -1,7 +1,7 @@
 package com.acm.cinema_ebkg_system.controller;
 
+import com.acm.cinema_ebkg_system.dto.movie.MovieSummary;
 import com.acm.cinema_ebkg_system.model.Movie;
-import com.acm.cinema_ebkg_system.model.MovieSummary; // DTO
 import com.acm.cinema_ebkg_system.model.ShowTime;
 import com.acm.cinema_ebkg_system.service.MovieService;
 import com.acm.cinema_ebkg_system.service.ShowTimeService;

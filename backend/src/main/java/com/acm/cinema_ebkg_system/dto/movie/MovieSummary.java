@@ -1,5 +1,6 @@
-package com.acm.cinema_ebkg_system.model;
+package com.acm.cinema_ebkg_system.dto.movie;
 
+import com.acm.cinema_ebkg_system.model.Movie;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
