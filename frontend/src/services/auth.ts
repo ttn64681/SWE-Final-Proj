@@ -19,6 +19,9 @@ export interface RegisterRequest {
   cardNumber?: string;
   expirationDate?: string;
   billingCity?: string;
+  billingState?: string;
+  billingCountry?: string;
+  billingZip?: string;
 }
 
 export interface AuthResponse {
@@ -58,7 +61,7 @@ export const authAPI = {
       console.error('Login API error:', error);
       return {
         success: false,
-        message: 'Network error. Please try again.'
+        message: 'Network error. Please try again.',
       };
     }
   },
@@ -79,7 +82,7 @@ export const authAPI = {
       console.error('Registration API error:', error);
       return {
         success: false,
-        message: 'Network error. Please try again.'
+        message: 'Network error. Please try again.',
       };
     }
   },
@@ -90,7 +93,7 @@ export const authAPI = {
       const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
@@ -101,7 +104,7 @@ export const authAPI = {
       console.error('Token refresh error:', error);
       return {
         success: false,
-        message: 'Token refresh failed'
+        message: 'Token refresh failed',
       };
     }
   },
@@ -121,10 +124,10 @@ export const authAPI = {
       console.error('Logout error:', error);
       return {
         success: false,
-        message: 'Logout failed'
+        message: 'Logout failed',
       };
     }
-  }
+  },
 };
 
 // Validation utilities

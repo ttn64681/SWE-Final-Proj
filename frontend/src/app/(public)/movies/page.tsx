@@ -11,28 +11,17 @@ import { useSearchLogic } from '@/hooks/useSearchLogic';
 
 function MoviesPageContent() {
   // Custom hooks for clean separation of concerns
-  const {
-    searchQuery,
-    setSearchQuery,
-    setIsFilterClosed,
-    handleSearch,
-    handleKeyPress
-  } = useSearchLogic();
+  const { searchQuery, setSearchQuery, setIsFilterClosed, handleSearch, handleKeyPress } = useSearchLogic();
 
-  const {
-    nowPlayingMovies,
-    upcomingMovies,
-    isLoadingNowPlaying,
-    isLoadingUpcoming
-  } = useMovieSearch();
+  const { nowPlayingMovies, upcomingMovies, isLoadingNowPlaying, isLoadingUpcoming } = useMovieSearch();
 
   return (
     <div>
       <NavBar />
-      
+
       {/* Filters Popup - Now rendered globally via Context Portal */}
-      
-      <MoviesSearchSection 
+
+      <MoviesSearchSection
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         onSearch={handleSearch}
@@ -40,17 +29,9 @@ function MoviesPageContent() {
         onFilterClick={() => setIsFilterClosed(false)}
       />
 
-      <MovieSection 
-        title="Now Playing"
-        movies={nowPlayingMovies}
-        isLoading={isLoadingNowPlaying}
-      />
+      <MovieSection title="Now Playing" movies={nowPlayingMovies} isLoading={isLoadingNowPlaying} />
 
-      <MovieSection 
-        title="Upcoming"
-        movies={upcomingMovies}
-        isLoading={isLoadingUpcoming}
-      />
+      <MovieSection title="Upcoming" movies={upcomingMovies} isLoading={isLoadingUpcoming} />
 
       <Footer />
     </div>
@@ -59,11 +40,13 @@ function MoviesPageContent() {
 
 export default function MoviesPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Spinner size="lg" color="pink" text="Loading movies..." />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <Spinner size="lg" color="pink" text="Loading movies..." />
+        </div>
+      }
+    >
       <MoviesPageContent />
     </Suspense>
   );

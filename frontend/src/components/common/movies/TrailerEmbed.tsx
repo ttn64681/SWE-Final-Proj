@@ -1,4 +1,4 @@
-import { IoClose } from "react-icons/io5";
+import { IoClose } from 'react-icons/io5';
 
 interface TrailerEmbedProps {
   name: string;
@@ -13,7 +13,7 @@ export default function TrailerEmbed({ name, trailerUrl, isClosed, setIsClosed }
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* Backdrop Blur Overlay - Less dark */}
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setIsClosed(true)} />
-      
+
       {/* Popup Window - Less dark background */}
       <div className="flex flex-col items-center gap-y-8 w-4/5 h-4/5 relative bg-black/60 backdrop-blur-xl rounded-3xl border border-white/20 p-8 z-10 shadow-2xl">
         <button
@@ -28,7 +28,7 @@ export default function TrailerEmbed({ name, trailerUrl, isClosed, setIsClosed }
         <div className="w-full h-full rounded-2xl border border-white/20 hover:border-acm-pink/50 transition-colors duration-300 overflow-hidden">
           <iframe
             className="w-full h-full"
-            src={trailerUrl || "https://www.youtube.com/embed/dQw4w9WgXcQ"}
+            src={trailerUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ'}
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

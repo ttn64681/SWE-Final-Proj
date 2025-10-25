@@ -35,7 +35,7 @@ export interface RegistrationData {
   // Step 3 - Payment Methods (Optional, up to 3 cards)
   paymentCards: PaymentCard[];
   defaultCardId?: string;
-  
+
   // Step 3 - Preferences
   enrollForPromotions?: boolean;
 }
@@ -60,9 +60,22 @@ const initialData: RegistrationData = {
   state: '',
   zipCode: '',
   country: 'US',
-  // Payment fields
-  paymentCards: [],
-  defaultCardId: undefined,
+  // Payment fields - Start with one empty card
+  paymentCards: [
+    {
+      id: 'card_initial',
+      cardType: '',
+      cardNumber: '',
+      expirationDate: '',
+      cvv: '',
+      billingStreet: '',
+      billingCity: '',
+      billingState: '',
+      billingZip: '',
+      isDefault: true,
+    }
+  ],
+  defaultCardId: 'card_initial',
   // Preferences
   enrollForPromotions: false,
 };
@@ -105,12 +118,8 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
       case 2:
         return !!(data.firstName && data.lastName && data.phoneNumber);
       case 3:
-        // return !!(
-        //   data.state &&
-        //   data.country
-        // );
 
-        // Step 3 is now optional - payment method can be empty
+        // Step 3 is optional - payment method can be empty
         return true;
       default:
         return false;

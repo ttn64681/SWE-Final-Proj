@@ -6,16 +6,16 @@ import NavBar from '@/components/common/navBar/NavBar';
 import { useState, useEffect } from 'react';
 
 interface Movie {
-  id: number; 
-  title: string; 
+  id: number;
+  title: string;
   date: string;
   time: string;
   _meta?: {
-    showtimes?: Array<{date: string, time: string, ampm: string}>;
+    showtimes?: Array<{ date: string; time: string; ampm: string }>;
   };
 }
 
-// hardcoded movies for now 
+// hardcoded movies for now
 const moviesList: Movie[] = [
   { id: 1, title: 'Oldboy', date: '12/15/2025', time: '7:30PM' },
   { id: 2, title: 'Him', date: '12/20/2025', time: '8:00PM' },
@@ -41,7 +41,7 @@ export default function AdminMoviesPage() {
         const parsedMovies = JSON.parse(savedMovies);
         const allMovies = [...moviesList];
         parsedMovies.forEach((savedMovie: Movie) => {
-          if (!moviesList.some(movie => movie.id === savedMovie.id)) {
+          if (!moviesList.some((movie) => movie.id === savedMovie.id)) {
             allMovies.push(savedMovie);
           }
         });
@@ -54,10 +54,10 @@ export default function AdminMoviesPage() {
 
   // delete a movie
   const remove = (movieId: number) => {
-    const updatedMovies = movies.filter(movie => movie.id !== movieId);
+    const updatedMovies = movies.filter((movie) => movie.id !== movieId);
     setMovies(updatedMovies);
-    const nonInitialMovies = updatedMovies.filter(movie => 
-      !moviesList.some(initialMovie => initialMovie.id === movie.id)
+    const nonInitialMovies = updatedMovies.filter(
+      (movie) => !moviesList.some((initialMovie) => initialMovie.id === movie.id)
     );
     sessionStorage.setItem('movies', JSON.stringify(nonInitialMovies));
   };
@@ -73,34 +73,52 @@ export default function AdminMoviesPage() {
           Movies & Showtimes
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
         </Link>
-        <Link href="/admin/pricing" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Pricing & Promotions</Link>
-        <Link href="/admin/users" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Users & Admins</Link>
+        <Link
+          href="/admin/pricing"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Pricing & Promotions
+        </Link>
+        <Link
+          href="/admin/users"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Users & Admins
+        </Link>
       </div>
 
       {/* List */}
       <div className="relative max-w-[65rem] mx-auto h-[400px]">
-        <div 
-          className="border rounded-md p-4 sm:p-6 relative overflow-y-auto h-full" 
-          style={{ 
+        <div
+          className="border rounded-md p-4 sm:p-6 relative overflow-y-auto h-full"
+          style={{
             borderColor: '#FF478B',
             backgroundColor: '#242424',
             scrollbarWidth: 'thin',
-            scrollbarColor: '#9CA3AF #E5E7EB' 
-          }}>
+            scrollbarColor: '#9CA3AF #E5E7EB',
+          }}
+        >
           <ul>
             {movies.flatMap((movie) => {
               // get showtimes or use default
-              const showtimes = movie._meta?.showtimes || [{ date: movie.date, time: movie.time, ampm: movie.time.includes('AM') ? 'AM' : 'PM' }];
-              
+              const showtimes = movie._meta?.showtimes || [
+                { date: movie.date, time: movie.time, ampm: movie.time.includes('AM') ? 'AM' : 'PM' },
+              ];
+
               return showtimes.map((showtime, showtimeIndex) => {
                 const isFirst = showtimeIndex === 0;
-                
+
                 return (
                   <li key={`${movie.id}-${showtimeIndex}`} className="flex items-center py-3 sm:py-4">
                     <div className="flex-1 text-gray-200 font-afacad px-25 min-h-[1.5rem]">
                       {isFirst ? movie.title : ''}
                     </div>
-                    <div className="absolute left-1/2 transform -translate-x-1/2 text-gray-300 hidden sm:block font-afacad" style={{ textAlign: 'center' }}>
+                    <div
+                      className="absolute left-1/2 transform -translate-x-1/2 text-gray-300 hidden sm:block font-afacad"
+                      style={{ textAlign: 'center' }}
+                    >
                       {showtime.date} {showtime.time} {showtime.ampm}
                     </div>
                     <div className="flex items-center gap-3 text-gray-300 px-25 ml-auto min-w-[4rem]">
@@ -111,11 +129,12 @@ export default function AdminMoviesPage() {
                               <PiPencilSimple className="text-xl" />
                             </button>
                           </Link>
-                          <button 
-                            title="Remove" 
+                          <button
+                            title="Remove"
                             className="hover:text-white transition-colors"
                             onClick={() => remove(movie.id)}
-                            style={{ background: 'none', border: 'none' }}>
+                            style={{ background: 'none', border: 'none' }}
+                          >
                             <PiX className="text-xl" />
                           </button>
                         </>
@@ -132,11 +151,12 @@ export default function AdminMoviesPage() {
       {/* Add movie button */}
       <div className="flex justify-center mt-8">
         <Link href="/admin/movies/add">
-          <button 
+          <button
             type="button"
             title="Add movie"
-            className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold" 
-            style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}>
+            className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold"
+            style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}
+          >
             Add Movie
           </button>
         </Link>

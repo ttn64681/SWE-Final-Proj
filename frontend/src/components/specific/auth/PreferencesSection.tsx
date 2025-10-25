@@ -14,9 +14,7 @@ interface PreferencesSectionProps {
 export default function PreferencesSection({ data, updateData, isLoading = false }: PreferencesSectionProps) {
   return (
     <div className="space-y-4 pt-4">
-      <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">
-        Preferences
-      </h3>
+      <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">Preferences</h3>
       <Checkbox
         id="enrollForPromotions"
         label="I would like to receive promotional emails and special offers"
@@ -27,4 +25,3 @@ export default function PreferencesSection({ data, updateData, isLoading = false
     </div>
   );
 }
-

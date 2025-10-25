@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from 'next/link';
 import NavBar from '@/components/common/navBar/NavBar';
@@ -9,7 +9,7 @@ export default function AdminPricingPage() {
   // modals
   const [showPromotionModal, setShowPromotionModal] = useState(false);
   const [showBookingFeeModal, setShowBookingFeeModal] = useState(false);
-  
+
   // promotions
   const [promotions, setPromotions] = useState([
     { id: 1, name: 'Promotion 1', value: '% off' },
@@ -18,49 +18,54 @@ export default function AdminPricingPage() {
   const [promotionForm, setPromotionForm] = useState({
     image: '',
     name: '',
-    discount: ''
+    discount: '',
   });
   const [editingPromotionId, setEditingPromotionId] = useState<number | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageName, setImageName] = useState<string>('');
-  
+
   // ticket pricing
   const [isEditingTicketPrices, setIsEditingTicketPrices] = useState(false);
   const [ticketPrices, setTicketPrices] = useState({
     child: 3.29,
     adult: 3.29,
-    senior: 3.29
+    senior: 3.29,
   });
-  
+
   // booking fees
   const [bookingFees, setBookingFees] = useState([
-    { id: 1, name: 'Service Fee', amount: 2.50 },
-    { id: 2, name: 'Processing Fee', amount: 1.00 },
+    { id: 1, name: 'Service Fee', amount: 2.5 },
+    { id: 2, name: 'Processing Fee', amount: 1.0 },
   ]);
   const [bookingFeeForm, setBookingFeeForm] = useState({
     name: '',
-    amount: 0
+    amount: 0,
   });
   const [editingBookingFeeId, setEditingBookingFeeId] = useState<number | null>(null);
 
   const handlePromotionSubmit = () => {
     if (!promotionForm.name || !promotionForm.discount) return;
-    
+
     if (editingPromotionId) {
-      setPromotions(promotions.map(promo => {
-        if (promo.id === editingPromotionId) {
-          return { ...promo, name: promotionForm.name, value: promotionForm.discount };
-        }
-        return promo;
-      }));
+      setPromotions(
+        promotions.map((promo) => {
+          if (promo.id === editingPromotionId) {
+            return { ...promo, name: promotionForm.name, value: promotionForm.discount };
+          }
+          return promo;
+        })
+      );
     } else {
-      setPromotions([...promotions, {
-        id: Date.now(),
-        name: promotionForm.name,
-        value: promotionForm.discount
-      }]);
+      setPromotions([
+        ...promotions,
+        {
+          id: Date.now(),
+          name: promotionForm.name,
+          value: promotionForm.discount,
+        },
+      ]);
     }
-    
+
     setShowPromotionModal(false);
     setPromotionForm({ image: '', name: '', discount: '' });
     setImagePreview(null);
@@ -80,36 +85,41 @@ export default function AdminPricingPage() {
     setPromotionForm({
       image: '',
       name: promo.name,
-      discount: promo.value
+      discount: promo.value,
     });
     setEditingPromotionId(promo.id);
     setShowPromotionModal(true);
   };
 
   const deletePromotion = (promoId: number) => {
-    setPromotions(promotions.filter(promo => promo.id !== promoId));
+    setPromotions(promotions.filter((promo) => promo.id !== promoId));
   };
 
   const handleBookingFeeSubmit = () => {
     if (!bookingFeeForm.name || bookingFeeForm.amount <= 0) {
       return;
     }
-    
+
     if (editingBookingFeeId) {
-      setBookingFees(bookingFees.map(fee => {
-        if (fee.id === editingBookingFeeId) {
-          return { ...fee, name: bookingFeeForm.name, amount: bookingFeeForm.amount };
-        }
-        return fee;
-      }));
+      setBookingFees(
+        bookingFees.map((fee) => {
+          if (fee.id === editingBookingFeeId) {
+            return { ...fee, name: bookingFeeForm.name, amount: bookingFeeForm.amount };
+          }
+          return fee;
+        })
+      );
     } else {
-      setBookingFees([...bookingFees, {
-        id: Date.now(),
-        name: bookingFeeForm.name,
-        amount: bookingFeeForm.amount
-      }]);
+      setBookingFees([
+        ...bookingFees,
+        {
+          id: Date.now(),
+          name: bookingFeeForm.name,
+          amount: bookingFeeForm.amount,
+        },
+      ]);
     }
-    
+
     setShowBookingFeeModal(false);
     setBookingFeeForm({ name: '', amount: 0 });
     setEditingBookingFeeId(null);
@@ -124,22 +134,22 @@ export default function AdminPricingPage() {
   const editBookingFee = (fee: { id: number; name: string; amount: number }) => {
     setBookingFeeForm({
       name: fee.name,
-      amount: fee.amount
+      amount: fee.amount,
     });
     setEditingBookingFeeId(fee.id);
     setShowBookingFeeModal(true);
   };
 
   const removeBookingFee = (feeId: number) => {
-    setBookingFees(bookingFees.filter(fee => fee.id !== feeId));
+    setBookingFees(bookingFees.filter((fee) => fee.id !== feeId));
   };
 
   const handleTicketPriceChange = (type: 'child' | 'adult' | 'senior', value: string) => {
     const numValue = parseFloat(value);
     if (!isNaN(numValue) && numValue >= 0) {
-      setTicketPrices(prev => ({
+      setTicketPrices((prev) => ({
         ...prev,
-        [type]: numValue
+        [type]: numValue,
       }));
     }
   };
@@ -153,13 +163,13 @@ export default function AdminPricingPage() {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    
+
     setImageName(file.name);
     const reader = new FileReader();
     reader.onload = (e) => {
       const result = e.target?.result as string;
       setImagePreview(result);
-      setPromotionForm({...promotionForm, image: result});
+      setPromotionForm({ ...promotionForm, image: result });
     };
     reader.readAsDataURL(file);
   };
@@ -176,12 +186,24 @@ export default function AdminPricingPage() {
 
       {/* Tabs (reuse look from Movies page) */}
       <div className="flex items-center justify-center gap-10 text-[30px] font-red-rose mt-2 mb-18">
-        <Link href="/admin/movies" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Movies & Showtimes</Link>
+        <Link
+          href="/admin/movies"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Movies & Showtimes
+        </Link>
         <Link href="/admin/pricing" className="relative" style={{ color: '#FF478B', fontWeight: 'bold' }}>
           Pricing & Promotions
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
         </Link>
-        <Link href="/admin/users" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Users & Admins</Link>
+        <Link
+          href="/admin/users"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Users & Admins
+        </Link>
       </div>
 
       <div className="max-w-[65rem] mx-auto px-4">
@@ -190,11 +212,11 @@ export default function AdminPricingPage() {
           <div className="font-afacad text-xl sm:text-2xl">Ticket Prices</div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            {[
-              { label: 'Child', type: 'child' as const, price: formatCurrency(ticketPrices.child) },
-              { label: 'Adult', type: 'adult' as const, price: formatCurrency(ticketPrices.adult) },
-              { label: 'Senior', type: 'senior' as const, price: formatCurrency(ticketPrices.senior) },
-            ].map((p) => (
+          {[
+            { label: 'Child', type: 'child' as const, price: formatCurrency(ticketPrices.child) },
+            { label: 'Adult', type: 'adult' as const, price: formatCurrency(ticketPrices.adult) },
+            { label: 'Senior', type: 'senior' as const, price: formatCurrency(ticketPrices.senior) },
+          ].map((p) => (
             <div key={p.label} className="flex items-center justify-between rounded-lg px-4 py-3 bg-transparent">
               {isEditingTicketPrices ? (
                 <div className="flex items-center gap-2">
@@ -213,7 +235,9 @@ export default function AdminPricingPage() {
                   </div>
                 </div>
               ) : (
-                <div className="text-lg sm:text-xl font-afacad">{p.label}: {p.price}</div>
+                <div className="text-lg sm:text-xl font-afacad">
+                  {p.label}: {p.price}
+                </div>
               )}
               <div className="w-6"></div>
             </div>
@@ -222,15 +246,19 @@ export default function AdminPricingPage() {
         <div className="flex justify-end gap-4 mb-8">
           {isEditingTicketPrices ? (
             <>
-              <button 
+              <button
+                title="Cancel"
+                type="button"
                 onClick={() => setIsEditingTicketPrices(false)}
                 className="text-gray-300 hover:text-white transition-colors px-4 py-2"
               >
                 Cancel
               </button>
-              <button 
+              <button
+                title="Save"
+                type="button"
                 onClick={handleSaveTicketPrices}
-                className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold" 
+                className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold"
                 style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}
               >
                 Save
@@ -238,14 +266,20 @@ export default function AdminPricingPage() {
             </>
           ) : (
             <>
-              <button 
-                title="Edit" 
+              <button
+                title="Edit"
+                type="button"
                 onClick={() => setIsEditingTicketPrices(true)}
                 className="text-gray-300 hover:text-white transition-colors"
               >
                 <PiPencilSimple className="text-2xl" />
               </button>
-              <button className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold" style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}>
+              <button
+                title="Add"
+                type="button"
+                className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold"
+                style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}
+              >
                 Add +
               </button>
             </>
@@ -255,7 +289,10 @@ export default function AdminPricingPage() {
         {/* Booking Fees */}
         <div className="mb-10">
           <div className="text-xl font-afacad mb-3">Booking Fees</div>
-          <div className="rounded-md overflow-hidden shadow-lg h-48 overflow-y-auto" style={{ backgroundColor: '#242424' }}>
+          <div
+            className="rounded-md overflow-hidden shadow-lg h-48 overflow-y-auto"
+            style={{ backgroundColor: '#242424' }}
+          >
             {bookingFees.map((fee, idx) => (
               <div key={fee.id} className="flex items-center justify-between px-5 py-4 border-b border-white/10">
                 <div className="flex-1 font-afacad flex items-center">
@@ -264,14 +301,29 @@ export default function AdminPricingPage() {
                 </div>
                 <div className="w-24 text-center"></div>
                 <div className="flex items-center gap-4 text-gray-300">
-                  <button title="Edit" className="hover:text-white transition-colors" onClick={() => editBookingFee(fee)}><PiPencilSimple className="text-lg" /></button>
-                  <button title="Delete" className="hover:text-white transition-colors" onClick={() => removeBookingFee(fee.id)}><PiX className="text-lg" /></button>
+                  <button
+                    type="button"
+                    title="Edit"
+                    className="hover:text-white transition-colors"
+                    onClick={() => editBookingFee(fee)}
+                  >
+                    <PiPencilSimple className="text-lg" />
+                  </button>
+                  <button
+                    type="button"
+                    title="Delete"
+                    className="hover:text-white transition-colors"
+                    onClick={() => removeBookingFee(fee.id)}
+                  >
+                    <PiX className="text-lg" />
+                  </button>
                 </div>
               </div>
             ))}
             <div className="flex items-center justify-end py-5 pr-5">
-              <button 
-                title="Add booking fee" 
+              <button
+                type="button"
+                title="Add booking fee"
                 className="text-gray-300 hover:text-white transition-colors"
                 onClick={() => setShowBookingFeeModal(true)}
               >
@@ -284,7 +336,10 @@ export default function AdminPricingPage() {
         {/* Promotions */}
         <div className="mb-16">
           <div className="text-xl font-afacad mb-3">Promotions</div>
-          <div className="rounded-md overflow-hidden shadow-lg h-48 overflow-y-auto" style={{ backgroundColor: '#242424' }}>
+          <div
+            className="rounded-md overflow-hidden shadow-lg h-48 overflow-y-auto"
+            style={{ backgroundColor: '#242424' }}
+          >
             {promotions.map((promo) => (
               <div key={promo.id} className="flex items-center justify-between px-5 py-4 border-b border-white/10">
                 <div className="flex-1 font-afacad flex items-center">
@@ -293,14 +348,29 @@ export default function AdminPricingPage() {
                 </div>
                 <div className="w-24 text-center"></div>
                 <div className="flex items-center gap-4 text-gray-300">
-                  <button title="Edit" className="hover:text-white transition-colors" onClick={() => editPromotion(promo)}><PiPencilSimple className="text-lg" /></button>
-                  <button title="Delete" className="hover:text-white transition-colors" onClick={() => deletePromotion(promo.id)}><PiX className="text-lg" /></button>
+                  <button
+                    title="Edit"
+                    type="button"
+                    className="hover:text-white transition-colors"
+                    onClick={() => editPromotion(promo)}
+                  >
+                    <PiPencilSimple className="text-lg" />
+                  </button>
+                  <button
+                    title="Delete"
+                    type="button"
+                    className="hover:text-white transition-colors"
+                    onClick={() => deletePromotion(promo.id)}
+                  >
+                    <PiX className="text-lg" />
+                  </button>
                 </div>
               </div>
             ))}
             <div className="flex items-center justify-end py-5 pr-5">
-              <button 
-                title="Add promotion" 
+              <button
+                type="button"
+                title="Add promotion"
                 className="text-gray-300 hover:text-white transition-colors"
                 onClick={() => setShowPromotionModal(true)}
               >
@@ -310,15 +380,20 @@ export default function AdminPricingPage() {
           </div>
         </div>
       </div>
-      
+
       {/* bottom spacing */}
       <div className="h-20"></div>
 
       {/* promotion modal */}
       {showPromotionModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4 relative" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}>
+          <div
+            className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4 relative"
+            style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}
+          >
             <button
+              title="Close"
+              type="button"
               onClick={closeModal}
               className="absolute top-3 right-4 text-white text-2xl hover:text-white/70 transition-colors leading-none"
             >
@@ -329,12 +404,13 @@ export default function AdminPricingPage() {
               <h2 className="text-white text-xl font-bold">
                 {editingPromotionId ? 'Edit Promotion' : 'Add Promotion'}
               </h2>
-              
+
               {/* Image Field */}
               <div>
                 <label className="block text-white text-sm mb-2">Image:</label>
                 <div className="relative">
                   <input
+                    title="Upload image"
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
@@ -356,7 +432,7 @@ export default function AdminPricingPage() {
                 <input
                   type="text"
                   value={promotionForm.name}
-                  onChange={(e) => setPromotionForm({...promotionForm, name: e.target.value})}
+                  onChange={(e) => setPromotionForm({ ...promotionForm, name: e.target.value })}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                   placeholder="Enter promotion name"
                 />
@@ -368,7 +444,7 @@ export default function AdminPricingPage() {
                 <input
                   type="text"
                   value={promotionForm.discount}
-                  onChange={(e) => setPromotionForm({...promotionForm, discount: e.target.value})}
+                  onChange={(e) => setPromotionForm({ ...promotionForm, discount: e.target.value })}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                   placeholder="Enter discount"
                 />
@@ -391,8 +467,13 @@ export default function AdminPricingPage() {
       {/* Edit Booking Fee Modal */}
       {showBookingFeeModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4 relative" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}>
+          <div
+            className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4 relative"
+            style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}
+          >
             <button
+              title="Close"
+              type="button"
               onClick={closeBookingFeeModal}
               className="absolute top-3 right-4 text-white text-2xl hover:text-white/70 transition-colors leading-none"
             >
@@ -403,14 +484,14 @@ export default function AdminPricingPage() {
               <h2 className="text-white text-xl font-bold">
                 {editingBookingFeeId ? 'Edit Booking Fee' : 'Add Booking Fee'}
               </h2>
-              
+
               {/* Name Field */}
               <div>
                 <label className="block text-white text-sm mb-2">Name:</label>
                 <input
                   type="text"
                   value={bookingFeeForm.name}
-                  onChange={(e) => setBookingFeeForm({...bookingFeeForm, name: e.target.value})}
+                  onChange={(e) => setBookingFeeForm({ ...bookingFeeForm, name: e.target.value })}
                   className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                   placeholder="Enter fee name"
                 />
@@ -421,20 +502,21 @@ export default function AdminPricingPage() {
                 <label className="block text-white text-sm mb-2">Amount:</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60">$</span>
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={bookingFeeForm.amount}
-                      onChange={(e) => {
-                        const value = parseFloat(e.target.value);
-                        if (!isNaN(value) && value >= 0) {
-                          setBookingFeeForm({...bookingFeeForm, amount: value});
-                        }
-                      }}
-                      className="w-full pl-8 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                      placeholder="0.00"
-                    />
+                  <input
+                    title="Amount"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={bookingFeeForm.amount}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      if (!isNaN(value) && value >= 0) {
+                        setBookingFeeForm({ ...bookingFeeForm, amount: value });
+                      }
+                    }}
+                    className="w-full pl-8 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                    placeholder="0.00"
+                  />
                 </div>
               </div>
 
@@ -454,5 +536,3 @@ export default function AdminPricingPage() {
     </div>
   );
 }
-
-

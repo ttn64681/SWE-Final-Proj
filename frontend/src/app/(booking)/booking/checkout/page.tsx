@@ -1,6 +1,6 @@
-import NavBar from "@/components/common/navBar/NavBar";
-import OrderDetails from "@/components/specific/booking/order/OrderDetails";
-import CheckoutSections from "@/components/specific/booking/order/CheckoutSections";
+import NavBar from '@/components/common/navBar/NavBar';
+import OrderDetails from '@/components/specific/booking/order/OrderDetails';
+import CheckoutSections from '@/components/specific/booking/order/CheckoutSections';
 
 export default function CheckoutPage() {
   return (

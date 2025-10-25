@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { PiMagnifyingGlass } from "react-icons/pi";
-import { IoFilterOutline } from "react-icons/io5";
+import { PiMagnifyingGlass } from 'react-icons/pi';
+import { IoFilterOutline } from 'react-icons/io5';
 import UserMenu from './UserMenu';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -25,22 +25,22 @@ export default function NavBar() {
   // When user clicks search button or presses Enter, build URL with all search parameters
   const handleSearch = () => {
     const params = new URLSearchParams();
-    
+
     // Add movie title if user typed something
     if (searchQuery.trim()) {
       params.set('title', searchQuery.trim());
     }
-    
+
     // Add selected genres (comma-separated) if any are selected
     if (selectedGenres.size > 0) {
       params.set('genres', Array.from(selectedGenres).join(','));
     }
-    
+
     // Add date filters if user selected a date
     if (selectedDate.month) params.set('month', selectedDate.month);
     if (selectedDate.day) params.set('day', selectedDate.day);
     if (selectedDate.year) params.set('year', selectedDate.year);
-    
+
     const queryString = params.toString();
     router.push(`/movies${queryString ? `?${queryString}` : ''}`);
   };
@@ -52,7 +52,6 @@ export default function NavBar() {
     }
   };
 
-  
   return (
     <nav className="fixed top-0 left-0 w-full bg-black/60 backdrop-blur-md z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,10 +61,10 @@ export default function NavBar() {
             {/* Brand Logo with hover animation */}
             <div className="flex-shrink-0 flex items-center">
               <motion.div
-                whileHover={{ 
+                whileHover={{
                   scale: 1.05,
                   rotate: [0, -4, 3, -2, 1, 0],
-                  transition: { duration: 0.3 }
+                  transition: { duration: 0.3 },
                 }}
                 whileTap={{ scale: 0.95 }}
                 className="cursor-pointer"
@@ -94,19 +93,19 @@ export default function NavBar() {
                   title="Search"
                   className="absolute left-2 top-2 transform w-3 h-3 text-gray-400 hover:text-acm-pink transition-colors duration-200 cursor-pointer"
                 >
-                  <PiMagnifyingGlass className="text-2xl"/>
+                  <PiMagnifyingGlass className="text-2xl" />
                 </button>
               </div>
-              
+
               {/* Filter Button - Right next to search bar */}
-              <button 
+              <button
                 title="Filter"
                 type="button"
-                className="text-white hover:text-acm-pink transition-colors p-1.5 sm:p-2 cursor-pointer border border-white/20 hover:border-acm-pink/50 rounded-lg" 
+                className="text-white hover:text-acm-pink transition-colors p-1.5 sm:p-2 cursor-pointer border border-white/20 hover:border-acm-pink/50 rounded-lg"
                 aria-label="filter"
                 onClick={() => setIsFiltersOpen(true)}
               >
-                <IoFilterOutline className="text-2xl"/>
+                <IoFilterOutline className="text-2xl" />
               </button>
             </div>
           </div>
@@ -115,10 +114,16 @@ export default function NavBar() {
           <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
             {/* Navigation Links - Hidden on small screens */}
             <div className="hidden lg:flex items-center space-x-6">
-              <Link href="/promos" className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer">
+              <Link
+                href="/promos"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer"
+              >
                 Promotions
               </Link>
-              <Link href="/movies" className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer">
+              <Link
+                href="/movies"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer"
+              >
                 Movies
               </Link>
             </div>
@@ -135,9 +140,7 @@ export default function NavBar() {
                 Join
               </Link>
             ) : (
-              <div className="text-white text-sm sm:text-base font-medium">
-                Hi, {user?.firstName || 'User'}
-              </div>
+              <div className="text-white text-sm sm:text-base font-medium">Hi, {user?.firstName || 'User'}</div>
             )}
 
             {/* User Menu Dropdown - Only show when authenticated */}
@@ -145,7 +148,7 @@ export default function NavBar() {
           </div>
         </div>
       </div>
-      
+
       {/* Filters Popup - Now rendered globally via Context Portal */}
     </nav>
   );

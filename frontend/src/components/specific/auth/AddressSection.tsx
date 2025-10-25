@@ -15,7 +15,7 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
       <h3 className="text-lg font-semibold text-white/90 border-b border-white/10 pb-2">
         Address Information <span className="text-white/60 text-sm font-normal">(Optional)</span>
       </h3>
-      
+
       <div>
         <label htmlFor="address" className="block text-white text-sm mb-2">
           Street Address
@@ -99,4 +99,3 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
     </div>
   );
 }
-

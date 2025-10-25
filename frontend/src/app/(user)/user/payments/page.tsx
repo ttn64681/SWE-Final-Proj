@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 import { MdDelete } from "react-icons/md";
@@ -74,9 +74,18 @@ export default function PaymentsPage() {
 
   const addCard = async () => {
     // check if all fields filled
-    const fields = ['cardType', 'cardNumber', 'expirationDate', 'cvv', 'cardholderName', 'billingAddress', 'city', 'state'];
-    const allFilled = fields.every(field => newCardData[field as keyof typeof newCardData]);
-    
+    const fields = [
+      'cardType',
+      'cardNumber',
+      'expirationDate',
+      'cvv',
+      'cardholderName',
+      'billingAddress',
+      'city',
+      'state',
+    ];
+    const allFilled = fields.every((field) => newCardData[field as keyof typeof newCardData]);
+
     if (!allFilled) {
       console.log('Missing required fields');
       return;
@@ -161,7 +170,7 @@ export default function PaymentsPage() {
   const formatCardNumber = (value: string) => {
     const cleaned = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     const matches = cleaned.match(/\d{4,16}/g);
-    const match = matches && matches[0] || '';
+    const match = (matches && matches[0]) || '';
     const parts = [];
     for (let i = 0, len = match.length; i < len; i += 4) {
       parts.push(match.substring(i, i + 4));
@@ -199,34 +208,24 @@ export default function PaymentsPage() {
 
       {/* Navigation */}
       <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose" style={{ fontSize: '30px' }}>
-        <Link 
-          href="/user/profile" 
-          className="font-bold text-gray-300 hover:text-white transition-colors"
-        >
+        <Link href="/user/profile" className="font-bold text-gray-300 hover:text-white transition-colors">
           Account Info
         </Link>
-        <Link 
-          href="/user/payments" 
-          className="relative font-bold"
-          style={{ color: '#FF478B' }}
-        >
+        <Link href="/user/payments" className="relative font-bold" style={{ color: '#FF478B' }}>
           Payment
-          <span 
+          <span
             className="absolute rounded-full"
-            style={{ 
-              bottom: '-8px', 
-              left: '50%', 
-              transform: 'translateX(-50%)', 
-              width: '32px', 
-              height: '2px', 
-              backgroundColor: '#FF478B' 
-            }} 
+            style={{
+              bottom: '-8px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '32px',
+              height: '2px',
+              backgroundColor: '#FF478B',
+            }}
           />
         </Link>
-        <Link 
-          href="/user/orders" 
-          className="font-bold text-gray-300 hover:text-white transition-colors"
-        >
+        <Link href="/user/orders" className="font-bold text-gray-300 hover:text-white transition-colors">
           Order History
         </Link>
       </div>
@@ -236,20 +235,16 @@ export default function PaymentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10 items-start">
           {/* Profile sidebar */}
           <aside className="flex flex-col items-center gap-6 -mt-2 md:-mt-20">
-            <div 
+            <div
               className="rounded-full flex items-center justify-center"
-              style={{ 
-                width: '170px', 
-                height: '170px', 
-                backgroundColor: '#2B2B2B' 
+              style={{
+                width: '170px',
+                height: '170px',
+                backgroundColor: '#2B2B2B',
               }}
             >
               {profilePicUrl ? (
-                <img
-                  src={profilePicUrl}
-                  alt="Profile"
-                  className="w-full h-full rounded-full object-cover"
-                />
+                <img src={profilePicUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
               ) : (
                 <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" strokeWidth="1.2">
                   <circle cx="12" cy="8" r="4" />
@@ -257,10 +252,7 @@ export default function PaymentsPage() {
                 </svg>
               )}
             </div>
-            <button
-              className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg"
-              type="button"
-            >
+            <button className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg" type="button">
               Log Out
             </button>
           </aside>
@@ -296,15 +288,15 @@ export default function PaymentsPage() {
                   </div>
                 </div>
               ))}
-              
+
               {/* Add payment method button */}
               <div className="mt-6">
                 <button
                   onClick={() => setShowAddModal({ isShown: true, text: "Add" })}
                   className="px-6 py-2 rounded-full font-afacad font-bold text-white border-2 transition-colors hover:bg-[#FF478B] hover:border-[#FF478B]"
-                  style={{ 
+                  style={{
                     borderColor: '#FF478B',
-                    backgroundColor: 'transparent'
+                    backgroundColor: 'transparent',
                   }}
                 >
                   Add +
@@ -318,7 +310,10 @@ export default function PaymentsPage() {
       {/* Add Payment Method Modal */}
       {showAddModal.isShown && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4" style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}>
+          <div
+            className="bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-md mx-4"
+            style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}
+          >
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-white font-afacad">{showAddModal.text} Payment Method</h2>
             </div>
@@ -330,7 +325,7 @@ export default function PaymentsPage() {
                 <select
                   title="Select Card Type"
                   value={newCardData.cardType}
-                  onChange={(e) => setNewCardData({...newCardData, cardType: e.target.value})}
+                  onChange={(e) => setNewCardData({ ...newCardData, cardType: e.target.value })}
                   className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent cursor-pointer"
                   required
                 >
@@ -348,7 +343,7 @@ export default function PaymentsPage() {
                 <input
                   type="text"
                   value={newCardData.cardNumber}
-                  onChange={(e) => setNewCardData({...newCardData, cardNumber: formatCardNumber(e.target.value)})}
+                  onChange={(e) => setNewCardData({ ...newCardData, cardNumber: formatCardNumber(e.target.value) })}
                   placeholder="1234 5678 9012 3456"
                   className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                   style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
@@ -363,7 +358,7 @@ export default function PaymentsPage() {
                 <input
                   type="text"
                   value={newCardData.cardholderName}
-                  onChange={(e) => setNewCardData({...newCardData, cardholderName: e.target.value})}
+                  onChange={(e) => setNewCardData({ ...newCardData, cardholderName: e.target.value })}
                   placeholder="Name"
                   className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                   required
@@ -377,7 +372,9 @@ export default function PaymentsPage() {
                   <input
                     type="text"
                     value={newCardData.expirationDate}
-                    onChange={(e) => setNewCardData({...newCardData, expirationDate: formatExpirationDate(e.target.value)})}
+                    onChange={(e) =>
+                      setNewCardData({ ...newCardData, expirationDate: formatExpirationDate(e.target.value) })
+                    }
                     placeholder="MM/YY"
                     className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                     maxLength={5}
@@ -389,7 +386,7 @@ export default function PaymentsPage() {
                   <input
                     type="text"
                     value={newCardData.cvv}
-                    onChange={(e) => setNewCardData({...newCardData, cvv: e.target.value.replace(/\D/g, '')})}
+                    onChange={(e) => setNewCardData({ ...newCardData, cvv: e.target.value.replace(/\D/g, '') })}
                     placeholder="123"
                     className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                     maxLength={4}
@@ -407,7 +404,7 @@ export default function PaymentsPage() {
                 <input
                   type="text"
                   value={newCardData.billingAddress}
-                  onChange={(e) => setNewCardData({...newCardData, billingAddress: e.target.value})}
+                  onChange={(e) => setNewCardData({ ...newCardData, billingAddress: e.target.value })}
                   placeholder="123 Main St"
                   className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                   required
@@ -421,7 +418,7 @@ export default function PaymentsPage() {
                   <input
                     type="text"
                     value={newCardData.city}
-                    onChange={(e) => setNewCardData({...newCardData, city: e.target.value})}
+                    onChange={(e) => setNewCardData({ ...newCardData, city: e.target.value })}
                     placeholder="New York"
                     className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                     required
@@ -432,7 +429,7 @@ export default function PaymentsPage() {
                   <input
                     type="text"
                     value={newCardData.state}
-                    onChange={(e) => setNewCardData({...newCardData, state: e.target.value})}
+                    onChange={(e) => setNewCardData({ ...newCardData, state: e.target.value })}
                     placeholder="NY"
                     className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-[#FF478B] focus:border-transparent"
                     maxLength={2}

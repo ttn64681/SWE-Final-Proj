@@ -5,7 +5,6 @@ import TrailerEmbed from './TrailerEmbed';
 import { BackendMovie } from '@/types/movie';
 import { IoPlay } from 'react-icons/io5';
 
-
 interface MovieCardProps {
   movie: BackendMovie;
 }
@@ -18,34 +17,25 @@ export default function MovieCard({ movie }: MovieCardProps) {
   // CHANGES: Never (movie.genres is static) - BUT will recreate if MovieCard component unmounts/remounts or movie prop changes
   // WITHOUT useMemo: Array recreated on every MovieCard re-render (hover, click, parent changes)
   // WHY MATTERS: Minimal - string split is fast, mostly unnecessary optimization
-  const genresArray = useMemo(() => 
-    movie.genres.split(', '), 
-    [movie.genres]
-  );
+  const genresArray = useMemo(() => movie.genres.split(', '), [movie.genres]);
 
   const handleDetailsPopup = () => {
     setSelectedMovie(movie);
-  }
+  };
 
   const handleClose = () => {
     setSelectedMovie(null);
-  }
+  };
 
   const handlePreviewClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the card click
     setIsTrailerOpen(true);
-  }
-
+  };
 
   return (
     <div className="relative">
       {/* Conditional Movie Details Popup */}
-      {selectedMovie && ( 
-        <SelectedMovie 
-          movie={selectedMovie} 
-          onClose={handleClose} 
-        />
-      )}
+      {selectedMovie && <SelectedMovie movie={selectedMovie} onClose={handleClose} />}
 
       {/* Trailer Embed Popup */}
       <TrailerEmbed
@@ -56,17 +46,17 @@ export default function MovieCard({ movie }: MovieCardProps) {
       />
 
       {/* Movie Card - Clean responsive design */}
-      <div 
+      <div
         className="group cursor-pointer bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 overflow-hidden"
         onClick={handleDetailsPopup}
       >
         {/* Movie Poster Container */}
         <div className="relative aspect-[2/3] w-full">
-          <Image 
-            src={movie.poster_link} 
-            alt={movie.title} 
-            fill 
-            className="object-cover" 
+          <Image
+            src={movie.poster_link}
+            alt={movie.title}
+            fill
+            className="object-cover"
             sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
             priority={false} // Lazy load images
             placeholder="blur" // Show blur while loading

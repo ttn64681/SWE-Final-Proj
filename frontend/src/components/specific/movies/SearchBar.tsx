@@ -9,32 +9,32 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export default function SearchBar({ placeholder = "Search movies..." }: SearchBarProps) {
+export default function SearchBar({ placeholder = 'Search movies...' }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
-  
+
   // Get the currently selected filters from shared context
   const { selectedGenres, selectedDate } = useFilters();
 
   // When user clicks search button or presses Enter, build URL with all search parameters
   const handleSearch = () => {
     const params = new URLSearchParams();
-    
+
     // Add movie title if user typed something
     if (searchQuery.trim()) {
       params.set('title', searchQuery.trim());
     }
-    
+
     // Add selected genres (comma-separated) if any are selected
     if (selectedGenres.size > 0) {
       params.set('genres', Array.from(selectedGenres).join(','));
     }
-    
+
     // Add date filters if user selected a date
     if (selectedDate.month) params.set('month', selectedDate.month);
     if (selectedDate.day) params.set('day', selectedDate.day);
     if (selectedDate.year) params.set('year', selectedDate.year);
-    
+
     const queryString = params.toString();
     router.push(`/movies${queryString ? `?${queryString}` : ''}`);
   };
