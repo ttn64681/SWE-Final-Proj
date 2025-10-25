@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import NavBar from '@/components/common/navBar/NavBar';
 import { PiPencilSimple, PiX, PiPlus } from 'react-icons/pi';
 import { useState } from 'react';
+import AdminNavBar from '@/components/common/navBar/AdminNavBar';
 
 export default function AdminPricingPage() {
   // modals
@@ -181,8 +181,8 @@ export default function AdminPricingPage() {
 
   return (
     <div className="text-white" style={{ backgroundColor: '#1C1C1C', minHeight: '100vh' }}>
-      <NavBar />
-      <div className="h-30" />
+      <AdminNavBar />
+      <div style={{ height: '120px' }} />
 
       {/* Tabs (reuse look from Movies page) */}
       <div className="flex items-center justify-center gap-10 text-[30px] font-red-rose mt-2 mb-18">

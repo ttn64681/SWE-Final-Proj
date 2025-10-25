@@ -4,17 +4,18 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRegistration } from '@/contexts/RegistrationContext';
-import { validateEmail, validatePassword } from '@/services/auth';
+import { validateEmail, validatePassword, authAPI } from '@/services/auth';
+import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import AuthInput from '@/components/common/auth/AuthInput';
 import AuthButton from '@/components/common/auth/AuthButton';
-import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 
 export default function RegisterPage() {
   const { data, updateData, isStepValid } = useRegistration();
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Create new errors object to avoid async state issues
     const newErrors: { [key: string]: string } = {};
@@ -46,7 +47,31 @@ export default function RegisterPage() {
     // Set errors and only proceed if no errors
     // Using newErrors instead of checking old errors state prevents async issues
     setErrors(newErrors);
+    
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
 
+    // If no validation errors, check email availability
+    if (data.email && validateEmail(data.email)) {
+      setIsCheckingEmail(true);
+      try {
+        const emailCheck = await authAPI.checkEmail(data.email);
+        if (!emailCheck.success) {
+          setErrors(prev => ({ ...prev, email: emailCheck.message }));
+          setIsCheckingEmail(false);
+          return;
+        }
+      } catch (error) {
+        setErrors(prev => ({ ...prev, email: 'Error checking email availability. Please try again.' }));
+        setIsCheckingEmail(false);
+        return;
+      }
+      setIsCheckingEmail(false);
+    }
+
+    // If no errors, proceed to next step
     if (Object.keys(newErrors).length === 0 && isStepValid(1)) {
       router.push('/auth/register/step2');
     }
@@ -92,8 +117,8 @@ export default function RegisterPage() {
           required
         />
 
-        <AuthButton type="submit" variant="primary">
-          Continue
+        <AuthButton type="submit" variant="primary" disabled={isCheckingEmail}>
+          {isCheckingEmail ? 'Checking email...' : 'Continue'}
         </AuthButton>
       </form>
 
