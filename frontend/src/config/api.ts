@@ -69,6 +69,9 @@ export const apiConfig = {
       refresh: '/api/auth/refresh',
       verifyEmail: '/api/auth/verify-email',
       resendVerification: '/api/auth/resend-verification',
+      forgotPassword: '/api/auth/forgot-password',
+      resetPassword: '/api/auth/reset-password',
+      checkEmail: '/api/auth/check-email',
     },
   },
 
