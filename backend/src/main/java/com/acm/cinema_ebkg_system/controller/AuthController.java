@@ -324,6 +324,7 @@ public class AuthController {
         }
     }
 
+
     /**
      * Logout endpoint - primarily for client-side token cleanup
      * 

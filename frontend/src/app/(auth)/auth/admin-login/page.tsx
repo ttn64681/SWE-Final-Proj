@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authAPI } from '@/services/auth';
+import { useAuth } from '@/contexts/AuthContext';
 import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import AuthButtonGroup from '@/components/common/auth/AuthButtonGroup';
 
@@ -13,6 +13,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
 
   const router = useRouter();
+  const { adminLogin } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,18 +21,11 @@ export default function AdminLoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await authAPI.login({
-        email,
-        password,
-        rememberMe: false,
-      });
+      const response = await adminLogin(email, password, false);
 
       if (response.success) {
-        // Store token
-        localStorage.setItem('token', response.token || '');
-        
-        // Redirect to admin dashboard
-        router.push('/admin');
+        // Redirect to admin users page (default admin page)
+        router.push('/admin/users');
       } else {
         setError(response.message);
       }

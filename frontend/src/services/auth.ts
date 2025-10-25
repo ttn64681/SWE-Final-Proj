@@ -169,6 +169,32 @@ export const authAPI = {
         message: 'Network error. Please try again.'
       };
     }
+  },
+
+  async adminLogin(credentials: LoginRequest): Promise<AuthResponse> {
+    try {
+      console.log('🔐 authAPI.adminLogin - Making request to:', `${API_BASE_URL}/admin/login`);
+      console.log('🔐 authAPI.adminLogin - Credentials:', { ...credentials, password: '[HIDDEN]' });
+      
+      const response = await fetch(`${API_BASE_URL}/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      console.log('🔐 authAPI.adminLogin - Response status:', response.status);
+      const data = await response.json();
+      console.log('🔐 authAPI.adminLogin - Response data:', data);
+      return data;
+    } catch (error) {
+      console.error('❌ authAPI.adminLogin - Admin login API error:', error);
+      return {
+        success: false,
+        message: 'Network error. Please try again.'
+      };
+    }
   }
 };
 

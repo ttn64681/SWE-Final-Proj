@@ -499,4 +499,5 @@ public class UserService {
         }
         return generateVerificationToken(user);
     }
+
 }
