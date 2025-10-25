@@ -2,19 +2,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export interface PaymentCard {
-  id: string;
-  cardType: string;
-  cardNumber: string;
-  expirationDate: string;
-  cvv: string;
-  billingStreet: string;
-  billingCity: string;
-  billingState: string;
-  billingZip: string;
-  isDefault: boolean;
-}
-
 export interface RegistrationData {
   // Step 1
   email: string;
@@ -25,18 +12,25 @@ export interface RegistrationData {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  // Address fields (optional)
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  country?: string;
 
-  // Step 3 - Payment Methods (Optional, up to 3 cards)
-  paymentCards: PaymentCard[];
-  defaultCardId?: string;
+  // Step 3
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
 
-  // Step 3 - Preferences
+  // Step 3 - Payment Method (Optional)
+  cardType?: string;
+  cardNumber?: string;
+  expirationDate?: string;
+  cvv?: string;
+  billingStreet?: string;
+  billingCity?: string;
+  billingState?: string;
+  billingZip?: string;
+  
+  // Preferences
   enrollForPromotions?: boolean;
 }
 
@@ -54,30 +48,21 @@ const initialData: RegistrationData = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
-  // Address fields
+
   address: '',
   city: '',
   state: '',
   zipCode: '',
-  country: 'US',
-  // Payment fields - Start with one empty card
-  paymentCards: [
-    {
-      id: 'card_initial',
-      cardType: '',
-      cardNumber: '',
-      expirationDate: '',
-      cvv: '',
-      billingStreet: '',
-      billingCity: '',
-      billingState: '',
-      billingZip: '',
-      isDefault: true,
-    }
-  ],
-  defaultCardId: 'card_initial',
-  // Preferences
-  enrollForPromotions: false,
+  country: '',
+
+  cardType: '',
+  cardNumber: '',
+  expirationDate: '',
+  cvv: '',
+  billingStreet: '',
+  billingCity: '',
+  billingState: '',
+  billingZip: '',
 };
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
@@ -118,8 +103,12 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
       case 2:
         return !!(data.firstName && data.lastName && data.phoneNumber);
       case 3:
+        // return !!(
+        //   data.state &&
+        //   data.country
+        // );
 
-        // Step 3 is optional - payment method can be empty
+        // Step 3 is now optional - payment method can be empty
         return true;
       default:
         return false;
