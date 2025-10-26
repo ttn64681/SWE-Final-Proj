@@ -5,6 +5,7 @@ import com.acm.cinema_ebkg_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +73,7 @@ public class UserService {
      * @return User Saved user object with hashed password
      * @throws RuntimeException if email already exists
      */
+    @Transactional // Ensures user creation and any related operations are atomic
     public User registerUser(User user) {
         // Step 1: Normalize email to lowercase for consistency
         String normalizedEmail = user.getEmail().toLowerCase().trim();
@@ -186,6 +188,7 @@ public class UserService {
      * @return User Updated user object
      * @throws RuntimeException if user not found
      */
+    @Transactional // Ensures all profile updates (user + address + payment card) succeed or fail together
     public User updatePersonalInfo(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
         User user = getUserById(userId);
         

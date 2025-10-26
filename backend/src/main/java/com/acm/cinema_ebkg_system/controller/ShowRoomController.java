@@ -8,81 +8,53 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Show Room Controller - REST API endpoints for show room management
- * 
- * Provides REST endpoints for show room operations including CRUD operations
- * and specialized queries for capacity and name-based searches.
+ * Show Room Controller
  */
 @RestController
 @RequestMapping("/api/show-rooms")
 @CrossOrigin(origins = "*")
 public class ShowRoomController {
     
-    @Autowired
+    @Autowired // Spring automatically provides service instance (dependency injection)
     private ShowRoomService showRoomService;
     
     /**
-     * Get all show rooms
-     * @return list of all show rooms
+     * GET /api/show-rooms
+     * Input: None
+     * Returns: 200 OK with List<ShowRoom> - all show rooms in system
      */
     @GetMapping
-    public ResponseEntity<List<ShowRoom>> getAllShowRooms() {
-        List<ShowRoom> showRooms = showRoomService.getAllShowRooms();
-        return ResponseEntity.ok(showRooms);
+    public List<ShowRoom> getAllShowRooms() {
+        return showRoomService.getAllShowRooms();
     }
     
     /**
-     * Get show rooms with capacity greater than specified amount
-     * @param minCapacity the minimum capacity
-     * @return list of show rooms with capacity greater than specified
-     */
-    @GetMapping("/capacity/{minCapacity}")
-    public ResponseEntity<List<ShowRoom>> getShowRoomsByCapacity(@PathVariable Integer minCapacity) {
-        List<ShowRoom> showRooms = showRoomService.getShowRoomsByCapacity(minCapacity);
-        return ResponseEntity.ok(showRooms);
-    }
-    
-    /**
-     * Search show rooms by name (case insensitive)
-     * @param name the name to search for
-     * @return list of show rooms matching the name criteria
-     */
-    @GetMapping("/search/{name}")
-    public ResponseEntity<List<ShowRoom>> searchShowRoomsByName(@PathVariable String name) {
-        List<ShowRoom> showRooms = showRoomService.searchShowRoomsByName(name);
-        return ResponseEntity.ok(showRooms);
-    }
-    
-    /**
-     * Create a new show room
-     * @param showRoom the show room to create
-     * @return the created show room
+     * POST /api/show-rooms
+     * Input: ShowRoom JSON body with {name, capacity}
+     * Returns: 200 OK with ShowRoom - created show room with ID and timestamps
      */
     @PostMapping
-    public ResponseEntity<ShowRoom> createShowRoom(@RequestBody ShowRoom showRoom) {
-        ShowRoom createdRoom = showRoomService.createShowRoom(showRoom);
-        return ResponseEntity.ok(createdRoom);
+    public ShowRoom createShowRoom(@RequestBody ShowRoom showRoom) {
+        return showRoomService.createShowRoom(showRoom);
     }
     
     /**
-     * Update an existing show room
-     * @param showRoomId the show room ID
-     * @param showRoom the show room data to update
-     * @return the updated show room
+     * PUT /api/show-rooms/{showRoomId}
+     * Input: showRoomId (Long) in URL path, ShowRoom JSON body with updated fields
+     * Returns: 200 OK with ShowRoom - updated show room
      */
     @PutMapping("/{showRoomId}")
-    public ResponseEntity<ShowRoom> updateShowRoom(
+    public ShowRoom updateShowRoom(
             @PathVariable Long showRoomId, 
             @RequestBody ShowRoom showRoom) {
         showRoom.setId(showRoomId);
-        ShowRoom updatedRoom = showRoomService.updateShowRoom(showRoom);
-        return ResponseEntity.ok(updatedRoom);
+        return showRoomService.updateShowRoom(showRoom);
     }
     
     /**
-     * Delete a show room
-     * @param showRoomId the show room ID to delete
-     * @return success response
+     * DELETE /api/show-rooms/{showRoomId}
+     * Input: showRoomId (Long) in URL path
+     * Returns: 200 OK - show room deleted (build() -> no body, just 200 OK)
      */
     @DeleteMapping("/{showRoomId}")
     public ResponseEntity<Void> deleteShowRoom(@PathVariable Long showRoomId) {
