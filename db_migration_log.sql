@@ -101,26 +101,27 @@ ALTER TABLE show_room
 
 CREATE INDEX IF NOT EXISTS idx_show_room_name ON show_room(name);
 
--- ========================================
+
 -- TODO: PHASE 6 - MOVIE_SHOW TABLE
 -- Creates association between movies and show rooms
--- ========================================
--- [TO BE RUN IN FUTURE]
--- CREATE TABLE movie_show (
---     id BIGSERIAL PRIMARY KEY,
---     movie_id BIGINT NOT NULL,
---     show_room_id BIGINT NOT NULL,
---     status VARCHAR(20) NOT NULL CHECK (status IN ('now_playing', 'upcoming')),
---     available_seats INTEGER NOT NULL DEFAULT 0,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE,
---     FOREIGN KEY (show_room_id) REFERENCES show_room(id) ON DELETE CASCADE,
---     UNIQUE (movie_id, show_room_id)
--- );
--- CREATE INDEX idx_movie_show_movie ON movie_show(movie_id);
--- CREATE INDEX idx_movie_show_room ON movie_show(show_room_id);
--- CREATE INDEX idx_movie_show_status ON movie_show(status);
+CREATE TABLE movie_show (
+    id BIGSERIAL PRIMARY KEY,
+    movie_id BIGINT NOT NULL,
+    show_room_id BIGINT NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('now_playing', 'upcoming')),
+    available_seats INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (show_room_id) REFERENCES show_room(id) ON DELETE CASCADE,
+    UNIQUE (movie_id, show_room_id)
+);
+
+-- CREATE INDICES FOR MOVIE_SHOW TABLE
+-- Optimize queries for finding shows by movie, room, and status
+CREATE INDEX idx_movie_show_movie ON movie_show(movie_id);
+CREATE INDEX idx_movie_show_room ON movie_show(show_room_id);
+CREATE INDEX idx_movie_show_status ON movie_show(status);
 
 -- ========================================
 -- TODO: PHASE 7 - DATA MIGRATION
