@@ -24,6 +24,8 @@ public class Address {
     private Long id;
 
     // Foreign key to users table
+    // Many addresses belong to one user 
+    // (a user can have 1 home address and up to 3 billing addresses)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

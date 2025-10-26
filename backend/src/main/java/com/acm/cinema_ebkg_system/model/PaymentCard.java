@@ -30,12 +30,14 @@ public class PaymentCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Foreign key to users table
+    // Foreign key to user table
+    // Many payment cards belong to one user (a user can have up to 3 payment cards)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // One-to-one relationship with billing address
+    // Foreign key to address table
+    // Each payment card has exactly one billing address (1-to-1 relationship)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
@@ -52,17 +54,13 @@ public class PaymentCard {
     @Column(name = "payment_card_type", nullable = false)
     private String paymentCardType;
 
-    // Whether this is the default payment card
+
     @Column(name = "is_default")
     private Boolean isDefault = false;
 
     // Card expiration date in MM/YYYY format
     @Column(name = "expiration_date", nullable = false, length = 7)
     private String expirationDate;
-
-    // Encrypted CVV
-    @Column(name = "cvv", nullable = false, length = 4)
-    private String cvv;
 
     // Timestamp when record was created
     @Column(name = "created_at")

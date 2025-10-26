@@ -13,7 +13,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/ticket-categories")
-@CrossOrigin(origins = "*")
 public class TicketCategoryController {
     
     @Autowired // Spring automatically provides service instance (dependency injection)
