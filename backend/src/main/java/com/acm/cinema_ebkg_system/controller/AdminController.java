@@ -48,6 +48,26 @@ public class AdminController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // ========== UTILITY ENDPOINTS ==========
+    
+    /**
+     * Check if an email belongs to an admin user
+     * Used by frontend to determine if user has admin access
+     */
+    @GetMapping("/check")
+    public ResponseEntity<?> checkAdminAccess(@RequestParam String email) {
+        try {
+            boolean isAdmin = adminService.adminExists(email);
+            return ResponseEntity.ok(new java.util.HashMap<String, Object>() {{
+                put("isAdmin", isAdmin);
+            }});
+        } catch (Exception e) {
+            return ResponseEntity.ok(new java.util.HashMap<String, Object>() {{
+                put("isAdmin", false);
+            }});
+        }
+    }
+
     // ========== AUTHENTICATION ENDPOINTS ==========
     
     /**

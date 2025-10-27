@@ -43,39 +43,39 @@ public class UserController {
         return userService.changePassword(userId, userInfo);
     }
 
-    // GET /api/users/ - Return list of all users (for admin use)
-    @GetMapping("/")
+    // GET /api/users - Return list of all users (for admin use)
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
     // GET /api/users/{userId} - Return user by ID
-    @GetMapping("/{userId}")
+    @GetMapping("/users/{userId}")
     public User getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
 
     // GET /api/users/{userId}/name - Return user's full name by ID
-    @GetMapping("/{userId}/name")
+    @GetMapping("/users/{userId}/name")
     public String getUserName(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         return user.getFirstName() + " " + user.getLastName();
     }
 
     // PUT /api/users/{userId}/info - Update a user's personal information
-    @PutMapping("/{userId}/info")
+    @PutMapping("/users/{userId}/info")
     public User updateUser(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.updatePersonalInfo(userId, user);
     }
 
     // PUT /api/users/{userId}/forgot-password - Reset a user's forgotten password (Login)
-    @PutMapping("/{userId}/forgot-password")
+    @PutMapping("/users/{userId}/forgot-password")
     public User resetPassword(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.resetForgottenPassword(userId, user);
     }
 
     // PUT /api/users/{userId}/change-password - Change a user's password (Edit Profile)
-    @PutMapping("/{userId}/change-password")
+    @PutMapping("/users/{userId}/change-password")
     public User changePassword(@PathVariable Long userId, @RequestBody UserInfo user) {
         return userService.changePassword(userId, user);
     }
