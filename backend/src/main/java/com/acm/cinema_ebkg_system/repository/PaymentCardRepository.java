@@ -9,10 +9,8 @@ import java.util.Optional;
 /**
  * Payment Card Repository - Data access layer for PaymentCard entities
  * 
- * Automatically provides standard CRUD operations:
- * - save(), findById(), findAll(), deleteById(), count(), existsById()
- * 
- * Custom query methods based on property names:
+ * Provides CRUD operations and custom query methods for payment card management.
+ * Supports finding payment cards by user, default status, and card type.
  */
 @Repository
 public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> {
@@ -38,4 +36,11 @@ public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> 
      * @return list of payment cards ordered by default status
      */
     List<PaymentCard> findByUserIdOrderByIsDefaultDesc(Long userId);
+    
+    /**
+     * Find all payment cards by card type
+     * @param paymentCardType the payment card type ('visa', 'mastercard', 'amex', 'discover')
+     * @return list of payment cards matching the type
+     */
+    List<PaymentCard> findByPaymentCardType(String paymentCardType);
 }

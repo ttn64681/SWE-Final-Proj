@@ -10,10 +10,8 @@ import java.util.Optional;
 /**
  * Ticket Category Repository - Data access layer for TicketCategory entities
  * 
- * Automatically provides standard CRUD operations:
- * - save(), findById(), findAll(), deleteById(), count(), existsById()
- * 
- * Custom query methods based on property names:
+ * Provides CRUD operations and custom query methods for ticket category management.
+ * Supports finding ticket categories by name and price ranges.
  */
 @Repository
 public interface TicketCategoryRepository extends JpaRepository<TicketCategory, Long> {
