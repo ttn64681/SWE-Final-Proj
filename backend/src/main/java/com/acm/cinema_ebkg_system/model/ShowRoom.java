@@ -11,6 +11,12 @@ import java.time.LocalDateTime;
  * 
  * This entity maps to the 'show_room' table in the database and contains
  * auditorium information including name and seating capacity.
+ * 
+ * Key Features:
+ * - JPA Entity with automatic table creation
+ * - Auditorium name and capacity tracking
+ * - Automatic timestamp management for created_at and updated_at
+ * - Support for different room types (regular, IMAX, etc.)
  */
 @Data
 @NoArgsConstructor

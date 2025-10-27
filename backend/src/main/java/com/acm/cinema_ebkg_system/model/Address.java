@@ -11,6 +11,12 @@ import java.time.LocalDateTime;
  * 
  * This entity maps to the 'address' table in the database and contains
  * address information for both home and billing addresses.
+ * 
+ * Key Features:
+ * - JPA Entity with automatic table creation
+ * - Support for both home and billing address types
+ * - Automatic timestamp management for created_at and updated_at
+ * - Foreign key relationship to users table
  */
 @Data
 @NoArgsConstructor

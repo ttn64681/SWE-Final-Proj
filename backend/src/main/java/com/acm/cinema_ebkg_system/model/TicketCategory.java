@@ -12,6 +12,12 @@ import java.time.LocalDateTime;
  * 
  * This entity maps to the 'ticket_category' table in the database and contains
  * ticket type information with associated pricing.
+ * 
+ * Key Features:
+ * - JPA Entity with automatic table creation
+ * - Support for different ticket types (child, senior, adult)
+ * - Decimal pricing with precision
+ * - Automatic timestamp management for created_at and updated_at
  */
 @Data
 @NoArgsConstructor

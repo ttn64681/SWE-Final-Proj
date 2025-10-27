@@ -9,42 +9,48 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Address Controller
+ * Address Controller - REST API endpoints for address management
+ * 
+ * Provides REST endpoints for address operations including CRUD operations
+ * and specialized queries for home and billing addresses.
  */
 @RestController
 @RequestMapping("/api/addresses")
 @CrossOrigin(origins = "*")
 public class AddressController {
     
-    @Autowired // Spring automatically provides service instance (dependency injection)
+    @Autowired
     private AddressService addressService;
     
     /**
-     * GET /api/addresses/user/{userId}
-     * Input: userId (Long) in URL path
-     * Returns: List<Address> - all addresses for user
+     * Get all addresses for a specific user
+     * @param userId the user ID
+     * @return list of addresses for the user
      */
     @GetMapping("/user/{userId}")
-    public List<Address> getUserAddresses(@PathVariable Long userId) {
-        return addressService.getUserAddresses(userId);
+    public ResponseEntity<List<Address>> getUserAddresses(@PathVariable Long userId) {
+        List<Address> addresses = addressService.getUserAddresses(userId);
+        return ResponseEntity.ok(addresses);
     }
     
     /**
-     * GET /api/addresses/user/{userId}/type/{addressType}
-     * Input: userId (Long), addressType (String: "home" or "billing") in URL path
-     * Returns: List<Address> - addresses matching type
+     * Get addresses for a user by address type
+     * @param userId the user ID
+     * @param addressType the address type ('home' or 'billing')
+     * @return list of addresses matching the criteria
      */
     @GetMapping("/user/{userId}/type/{addressType}")
-    public List<Address> getUserAddressesByType(
+    public ResponseEntity<List<Address>> getUserAddressesByType(
             @PathVariable Long userId, 
             @PathVariable String addressType) {
-        return addressService.getUserAddressesByType(userId, addressType);
+        List<Address> addresses = addressService.getUserAddressesByType(userId, addressType);
+        return ResponseEntity.ok(addresses);
     }
     
     /**
-     * GET /api/addresses/user/{userId}/home
-     * Input: userId (Long) in URL path
-     * Returns: 404 Not Found if no home address, otherwise Address
+     * Get user's home address
+     * @param userId the user ID
+     * @return home address or 404 if not found
      */
     @GetMapping("/user/{userId}/home")
     public ResponseEntity<Address> getUserHomeAddress(@PathVariable Long userId) {
@@ -54,32 +60,35 @@ public class AddressController {
     }
     
     /**
-     * POST /api/addresses
-     * Input: Address JSON body with {user_id, address_type, street, city, state, zip, country}
-     * Returns: Address - created address with ID and timestamps
+     * Create a new address
+     * @param address the address to create
+     * @return the created address
      */
     @PostMapping
-    public Address createAddress(@RequestBody Address address) {
-        return addressService.createAddress(address);
+    public ResponseEntity<Address> createAddress(@RequestBody Address address) {
+        Address createdAddress = addressService.createAddress(address);
+        return ResponseEntity.ok(createdAddress);
     }
     
     /**
-     * PUT /api/addresses/{addressId}
-     * Input: addressId (Long) in URL path, Address JSON body with updated fields
-     * Returns: Address - updated address
+     * Update an existing address
+     * @param addressId the address ID
+     * @param address the address data to update
+     * @return the updated address
      */
     @PutMapping("/{addressId}")
-    public Address updateAddress(
+    public ResponseEntity<Address> updateAddress(
             @PathVariable Long addressId, 
             @RequestBody Address address) {
         address.setId(addressId);
-        return addressService.updateAddress(address);
+        Address updatedAddress = addressService.updateAddress(address);
+        return ResponseEntity.ok(updatedAddress);
     }
     
     /**
-     * DELETE /api/addresses/{addressId}
-     * Input: addressId (Long) in URL path
-     * Returns: 200 OK - address deleted (no body)
+     * Delete an address
+     * @param addressId the address ID to delete
+     * @return success response
      */
     @DeleteMapping("/{addressId}")
     public ResponseEntity<Void> deleteAddress(@PathVariable Long addressId) {

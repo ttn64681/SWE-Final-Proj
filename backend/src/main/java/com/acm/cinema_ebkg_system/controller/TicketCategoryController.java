@@ -9,30 +9,33 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Ticket Category Controller
+ * Ticket Category Controller - REST API endpoints for ticket category management
+ * 
+ * Provides REST endpoints for ticket category operations including CRUD operations
+ * and specialized queries for pricing and category management.
  */
 @RestController
 @RequestMapping("/api/ticket-categories")
 @CrossOrigin(origins = "*")
 public class TicketCategoryController {
     
-    @Autowired // Spring automatically provides service instance (dependency injection)
+    @Autowired
     private TicketCategoryService ticketCategoryService;
     
     /**
-     * GET /api/ticket-categories
-     * Input: None
-     * Returns: List<TicketCategory> - all categories ordered by price (ascending)
+     * Get all ticket categories ordered by price
+     * @return list of ticket categories ordered by price
      */
     @GetMapping
-    public List<TicketCategory> getAllTicketCategories() {
-        return ticketCategoryService.getAllTicketCategories();
+    public ResponseEntity<List<TicketCategory>> getAllTicketCategories() {
+        List<TicketCategory> ticketCategories = ticketCategoryService.getAllTicketCategories();
+        return ResponseEntity.ok(ticketCategories);
     }
     
     /**
-     * GET /api/ticket-categories/name/{name}
-     * Input: name (String: "child", "senior", or "adult") in URL path
-     * Returns: 404 Not Found if not found, otherwise TicketCategory
+     * Get ticket category by name
+     * @param name the ticket category name ('child', 'senior', 'adult')
+     * @return ticket category or 404 if not found
      */
     @GetMapping("/name/{name}")
     public ResponseEntity<TicketCategory> getTicketCategoryByName(@PathVariable String name) {
@@ -42,32 +45,35 @@ public class TicketCategoryController {
     }
     
     /**
-     * POST /api/ticket-categories (admin only)
-     * Input: TicketCategory JSON body with {name, price}
-     * Returns: TicketCategory - created category with ID and timestamps
+     * Create a new ticket category
+     * @param ticketCategory the ticket category to create
+     * @return the created ticket category
      */
     @PostMapping
-    public TicketCategory createTicketCategory(@RequestBody TicketCategory ticketCategory) {
-        return ticketCategoryService.createTicketCategory(ticketCategory);
+    public ResponseEntity<TicketCategory> createTicketCategory(@RequestBody TicketCategory ticketCategory) {
+        TicketCategory createdCategory = ticketCategoryService.createTicketCategory(ticketCategory);
+        return ResponseEntity.ok(createdCategory);
     }
     
     /**
-     * PUT /api/ticket-categories/{ticketCategoryId} (admin only)
-     * Input: ticketCategoryId (Long) in URL path, TicketCategory JSON body with updated price
-     * Returns: TicketCategory - updated category
+     * Update an existing ticket category
+     * @param ticketCategoryId the ticket category ID
+     * @param ticketCategory the ticket category data to update
+     * @return the updated ticket category
      */
     @PutMapping("/{ticketCategoryId}")
-    public TicketCategory updateTicketCategory(
+    public ResponseEntity<TicketCategory> updateTicketCategory(
             @PathVariable Long ticketCategoryId, 
             @RequestBody TicketCategory ticketCategory) {
         ticketCategory.setId(ticketCategoryId);
-        return ticketCategoryService.updateTicketCategory(ticketCategory);
+        TicketCategory updatedCategory = ticketCategoryService.updateTicketCategory(ticketCategory);
+        return ResponseEntity.ok(updatedCategory);
     }
     
     /**
-     * DELETE /api/ticket-categories/{ticketCategoryId} (admin only)
-     * Input: ticketCategoryId (Long) in URL path
-     * Returns: 200 OK - category deleted (no body)
+     * Delete a ticket category
+     * @param ticketCategoryId the ticket category ID to delete
+     * @return success response
      */
     @DeleteMapping("/{ticketCategoryId}")
     public ResponseEntity<Void> deleteTicketCategory(@PathVariable Long ticketCategoryId) {

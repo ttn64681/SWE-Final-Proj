@@ -9,30 +9,34 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Payment Card Controller
+ * Payment Card Controller - REST API endpoints for payment card management
+ * 
+ * Provides REST endpoints for payment card operations including CRUD operations,
+ * default card management, and user-specific queries.
  */
 @RestController
 @RequestMapping("/api/payment-cards")
 @CrossOrigin(origins = "*")
 public class PaymentCardController {
     
-    @Autowired // Spring automatically provides service instance (dependency injection)
+    @Autowired
     private PaymentCardService paymentCardService;
     
     /**
-     * GET /api/payment-cards/user/{userId}
-     * Input: userId (Long) in URL path
-     * Returns: List<PaymentCard> - all payment cards for user (default first)
+     * Get all payment cards for a specific user
+     * @param userId the user ID
+     * @return list of payment cards for the user
      */
     @GetMapping("/user/{userId}")
-    public List<PaymentCard> getUserPaymentCards(@PathVariable Long userId) {
-        return paymentCardService.getUserPaymentCards(userId);
+    public ResponseEntity<List<PaymentCard>> getUserPaymentCards(@PathVariable Long userId) {
+        List<PaymentCard> paymentCards = paymentCardService.getUserPaymentCards(userId);
+        return ResponseEntity.ok(paymentCards);
     }
     
     /**
-     * GET /api/payment-cards/user/{userId}/default
-     * Input: userId (Long) in URL path
-     * Returns: 404 Not Found if no default card, otherwise PaymentCard
+     * Get user's default payment card
+     * @param userId the user ID
+     * @return default payment card or 404 if not found
      */
     @GetMapping("/user/{userId}/default")
     public ResponseEntity<PaymentCard> getUserDefaultCard(@PathVariable Long userId) {
@@ -42,32 +46,36 @@ public class PaymentCardController {
     }
     
     /**
-     * POST /api/payment-cards
-     * Input: PaymentCard JSON body with {user_id, address_id, card_number, cardholder_name, payment_card_type, expiration_date, cvv}
-     * Returns: PaymentCard - created card with ID and timestamps (auto-sets as default if first card)
+     * Create a new payment card
+     * @param paymentCard the payment card to create
+     * @return the created payment card
      */
     @PostMapping
-    public PaymentCard createPaymentCard(@RequestBody PaymentCard paymentCard) {
-        return paymentCardService.createPaymentCard(paymentCard);
+    public ResponseEntity<PaymentCard> createPaymentCard(@RequestBody PaymentCard paymentCard) {
+        PaymentCard createdCard = paymentCardService.createPaymentCard(paymentCard);
+        return ResponseEntity.ok(createdCard);
     }
     
     /**
-     * PUT /api/payment-cards/{paymentCardId}
-     * Input: paymentCardId (Long) in URL path, PaymentCard JSON body with updated fields
-     * Returns: PaymentCard - updated card
+     * Update an existing payment card
+     * @param paymentCardId the payment card ID
+     * @param paymentCard the payment card data to update
+     * @return the updated payment card
      */
     @PutMapping("/{paymentCardId}")
-    public PaymentCard updatePaymentCard(
+    public ResponseEntity<PaymentCard> updatePaymentCard(
             @PathVariable Long paymentCardId, 
             @RequestBody PaymentCard paymentCard) {
         paymentCard.setId(paymentCardId);
-        return paymentCardService.updatePaymentCard(paymentCard);
+        PaymentCard updatedCard = paymentCardService.updatePaymentCard(paymentCard);
+        return ResponseEntity.ok(updatedCard);
     }
     
     /**
-     * PUT /api/payment-cards/user/{userId}/set-default/{paymentCardId}
-     * Input: userId (Long), paymentCardId (Long) in URL path
-     * Returns: 200 OK - default card changed (no body)
+     * Set a payment card as the default for a user
+     * @param userId the user ID
+     * @param paymentCardId the payment card ID to set as default
+     * @return success response
      */
     @PutMapping("/user/{userId}/set-default/{paymentCardId}")
     public ResponseEntity<Void> setDefaultCard(
@@ -78,9 +86,9 @@ public class PaymentCardController {
     }
     
     /**
-     * DELETE /api/payment-cards/{paymentCardId}
-     * Input: paymentCardId (Long) in URL path
-     * Returns: 200 OK - card deleted (no body)
+     * Delete a payment card
+     * @param paymentCardId the payment card ID to delete
+     * @return success response
      */
     @DeleteMapping("/{paymentCardId}")
     public ResponseEntity<Void> deletePaymentCard(@PathVariable Long paymentCardId) {
