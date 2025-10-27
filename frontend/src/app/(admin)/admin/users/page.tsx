@@ -28,9 +28,6 @@ function AdminUsersPage() {
 
   // load users from storage
   useEffect(() => {
-    // Check if we're on the client side before accessing sessionStorage
-    if (typeof window === 'undefined') return;
-
     const storedUsers = sessionStorage.getItem('adminUsers');
     if (storedUsers) {
       const users: StoredUser[] = JSON.parse(storedUsers);

@@ -1,13 +1,12 @@
 package com.acm.cinema_ebkg_system.model;
 
+
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 /**
  * User Entity - Represents a user in the cinema booking system
@@ -21,12 +20,8 @@ import lombok.AllArgsConstructor;
  * - Automatic timestamp management for created_at and updated_at
  * - Email uniqueness constraint for login purposes
  */
-
 @Entity
 @Table(name = "users")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
     // Primary key - auto-generated unique identifier
     @Id
@@ -92,8 +87,13 @@ public class User {
     @JsonManagedReference
     private List<PaymentInfo> paymentInfos = new ArrayList<>();
 
-    // ========== CUSTOM CONSTRUCTORS ==========
+    // ========== CONSTRUCTORS ==========
     
+    /**
+     * Default constructor required by JPA
+     */
+    public User() {}
+
     /**
      * Constructor for creating a new user with basic required information
      * Automatically sets creation and update timestamps
@@ -103,6 +103,8 @@ public class User {
      * @param firstName User's first name
      * @param lastName User's last name
      */
+
+    // Custom constructor for registration (kept for business logic)
     public User(String email, String password, String firstName, String lastName, PaymentInfo paymentInfo) {
         this.email = email;
         this.password = password;
@@ -132,5 +134,59 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }    
+    }
+
+    // ========== GETTERS AND SETTERS ==========
+    
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+    
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean isActive) { this.isActive = isActive; }
+    
+    public String getVerificationToken() { return verificationToken; }
+    public void setVerificationToken(String verificationToken) { this.verificationToken = verificationToken; }
+    
+    public LocalDateTime getVerificationTokenExpiresAt() { return verificationTokenExpiresAt; }
+    public void setVerificationTokenExpiresAt(LocalDateTime verificationTokenExpiresAt) { this.verificationTokenExpiresAt = verificationTokenExpiresAt; }
+    
+    public String getPasswordResetToken() { return passwordResetToken; }
+    public void setPasswordResetToken(String passwordResetToken) { this.passwordResetToken = passwordResetToken; }
+    
+    public LocalDateTime getPasswordResetTokenExpiresAt() { return passwordResetTokenExpiresAt; }
+    public void setPasswordResetTokenExpiresAt(LocalDateTime passwordResetTokenExpiresAt) { this.passwordResetTokenExpiresAt = passwordResetTokenExpiresAt; }
+
+    public List<PaymentInfo> getPaymentInfos() { return this.paymentInfos; }
+    public void setPaymentInfos(List<PaymentInfo> paymentInfos) { this.paymentInfos = paymentInfos; }
+    
 }

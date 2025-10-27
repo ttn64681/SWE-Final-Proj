@@ -1,61 +1,57 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { MdDelete } from 'react-icons/md';
-import { MdEdit } from 'react-icons/md';
-import { useState, useEffect } from 'react';
-import NavBar from '@/components/common/navBar/NavBar';
-import { useProfile } from '@/contexts/ProfileContext';
-import { usePayments } from '@/hooks/usePayments';
-import { BackendPayment } from '@/types/payment';
+import Link from "next/link";
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import { useState, useEffect } from "react";
+import NavBar from "@/components/common/navBar/NavBar";
+import { useProfile } from "@/contexts/ProfileContext";
+import { usePayments } from "@/hooks/usePayments";
+import { BackendPayment } from "@/types/payment";
 
 export default function PaymentsPage() {
+
+  
   const [paymentMethods, setPaymentMethods] = useState<BackendPayment[]>([]);
 
   const [showAddModal, setShowAddModal] = useState({
     isShown: false,
-    text: '',
+    text: ""
   });
   const [newCardData, setNewCardData] = useState({
     cardId: 0,
-    cardType: '',
-    cardNumber: '',
-    expirationDate: '',
-    cvv: '',
-    cardholderName: '',
-    billingAddress: '',
-    city: '',
-    state: '',
+    cardType: "",
+    cardNumber: "",
+    expirationDate: "",
+    cvv: "",
+    cardholderName: "",
+    billingAddress: "",
+    city: "",
+    state: ""
   });
 
   function decodeJWT(token: string) {
-    const [, payloadBase64] = token.split('.');
-    const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
-
-    return JSON.parse(decodedPayload);
-  }
+  const [, payloadBase64] = token.split('.');
+  const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
+  
+  return JSON.parse(decodedPayload);
+}
 
   function getUserID() {
-    // Check if we're on the client side before accessing sessionStorage
-    if (typeof window === 'undefined') {
-      return 0; // Return default value during SSR
-    }
+  const token = sessionStorage.getItem("token");
+  console.log(token);
 
-    const token = sessionStorage.getItem('token');
-    console.log(token);
-
-    if (token) {
-      const userData = decodeJWT(token);
-      console.log('Decoded User Data:', userData);
-      const userId = userData.userId;
-      console.log('User ID:', userId);
-      return userId;
-    } else {
-      // If the token is somehow not present, return 0 as a failsafe, which is an unused ID
-      return 0;
-    }
+  if (token) {
+    const userData = decodeJWT(token);
+    console.log("Decoded User Data:", userData);
+    const userId = userData.userId;
+    console.log("User ID:", userId);
+    return userId;
+  } else {
+    // If the token is somehow not present, return 0 as a failsafe, which is an unused ID
+    return 0;
   }
+}
 
   const userId = getUserID();
   const { payments, addPayment, updatePayment, deletePayment, fetchPayments } = usePayments(userId);
@@ -66,8 +62,8 @@ export default function PaymentsPage() {
   }, [userId]);
 
   useEffect(() => {
-    console.log('User ID: ' + userId);
-    console.log('Payments: ' + payments);
+    console.log("User ID: " + userId);
+    console.log("Payments: " + payments);
     // console.log("Holder: " + payments)
     if (payments && payments.length > 0) setPaymentMethods(payments);
   }, [payments]);
@@ -96,8 +92,9 @@ export default function PaymentsPage() {
     }
 
     setIsSubmitting(true);
+    
+    try {      
 
-    try {
       // Remove spaces from card number
       const cleanedCardNumber = newCardData.cardNumber.replace(/\s+/g, '');
 
@@ -105,29 +102,35 @@ export default function PaymentsPage() {
       const [expMonth, expYear] = newCardData.expirationDate.split('/');
       const formattedExpDate = `20${expYear}-${expMonth.padStart(2, '0')}-01`;
 
-      if (showAddModal.text === 'Add') {
+      if (showAddModal.text === "Add") {
+
         if (payments.length < 3) {
-          addPayment({
+          addPayment(
+            {
+              card_number: cleanedCardNumber,
+              billing_address: newCardData.billingAddress,
+              expiration_date: formattedExpDate,
+              cardholder_name: newCardData.cardholderName
+            }
+          );
+        } else {
+          console.log("Maximum of 3 payment methods reached.");
+        }
+      } else if (showAddModal.text === "Change") {
+        console.log("EDIT: ", newCardData.cardId);
+        updatePayment(
+          newCardData.cardId,
+          {
             card_number: cleanedCardNumber,
             billing_address: newCardData.billingAddress,
             expiration_date: formattedExpDate,
-            cardholder_name: newCardData.cardholderName,
-          });
-        } else {
-          console.log('Maximum of 3 payment methods reached.');
-        }
-      } else if (showAddModal.text === 'Change') {
-        console.log('EDIT: ', newCardData.cardId);
-        updatePayment(newCardData.cardId, {
-          card_number: cleanedCardNumber,
-          billing_address: newCardData.billingAddress,
-          expiration_date: formattedExpDate,
-          cardholder_name: newCardData.cardholderName,
-        });
+            cardholder_name: newCardData.cardholderName
+          }
+        );
       }
-
+      
       clearForm();
-      setShowAddModal({ isShown: false, text: 'Add' });
+      setShowAddModal({ isShown: false, text: "Add" });
     } catch (error) {
       console.error('Failed to add card:', error);
     } finally {
@@ -147,19 +150,19 @@ export default function PaymentsPage() {
   const clearForm = () => {
     setNewCardData({
       cardId: 0,
-      cardType: '',
-      cardNumber: '',
-      expirationDate: '',
-      cvv: '',
-      cardholderName: '',
-      billingAddress: '',
-      city: '',
-      state: '',
+      cardType: "",
+      cardNumber: "",
+      expirationDate: "",
+      cvv: "",
+      cardholderName: "",
+      billingAddress: "",
+      city: "",
+      state: ""
     });
   };
 
   const closeModal = () => {
-    setShowAddModal({ isShown: false, text: 'Add' });
+    setShowAddModal({ isShown: false, text: "Add" });
     clearForm();
   };
 
@@ -187,7 +190,7 @@ export default function PaymentsPage() {
     const cleaned = value.replace(/\s+/g, '');
     if (cleaned.length !== 16) return value; // return original if not 16 digits
     return '**** **** **** ' + cleaned.slice(12);
-  };
+  }
 
   // format exp date
   const formatExpirationDate = (value: string) => {
@@ -241,14 +244,7 @@ export default function PaymentsPage() {
               }}
             >
               {profilePicUrl ? (
-                <Image 
-                  src={profilePicUrl} 
-                  alt="Profile" 
-                  width={170} 
-                  height={170} 
-                  className="w-full h-full rounded-full object-cover" 
-                  loading="lazy"
-                />
+                <img src={profilePicUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
               ) : (
                 <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" strokeWidth="1.2">
                   <circle cx="12" cy="8" r="4" />
@@ -272,34 +268,18 @@ export default function PaymentsPage() {
                     )}
                   </div> */}
                   <div className="flex items-center flex-1 justify-between px-4">
-                    <span className="text-white font-afacad text-xl w-32 text-left ml-40">
-                      {method.cardholder_name}
-                    </span>
-                    <span className="text-white font-afacad text-xl">
-                      {censorCardNumber(formatCardNumber(method.card_number))}
-                    </span>
+                    <span className="text-white font-afacad text-xl w-32 text-left ml-40">{method.cardholder_name}</span>
+                    <span className="text-white font-afacad text-xl">{censorCardNumber(formatCardNumber(method.card_number))}</span>
                     <div className="flex flex-row text-2xl ml-auto gap-x-4">
                       <button
-                        title="Edit Payment Method"
-                        type="button"
                         onClick={() => {
-                          setShowAddModal({ isShown: true, text: 'Change' });
-                          setNewCardData({
-                            ...newCardData,
-                            cardId: method.payment_info_id,
-                            cardNumber: method.card_number,
-                            expirationDate:
-                              method.expiration_date.slice(5, 7) + '/' + method.expiration_date.slice(2, 4),
-                            cardholderName: method.cardholder_name,
-                            billingAddress: method.billing_address,
-                          });
-                        }}
+                            setShowAddModal({ isShown: true, text: "Change" });
+                            setNewCardData({...newCardData, cardId: method.payment_info_id, cardNumber: method.card_number, expirationDate: method.expiration_date.slice(5,7) + '/' + method.expiration_date.slice(2,4), cardholderName: method.cardholder_name, billingAddress: method.billing_address});
+                          }}
                       >
                         <MdEdit className="text-white hover:text-red-500 cursor-pointer" />
                       </button>
                       <button
-                        title="Delete Payment Method"
-                        type="button"
                         onClick={() => deleteCard(method.payment_info_id)}
                       >
                         <MdDelete className="text-white hover:text-red-500 cursor-pointer" />
@@ -312,9 +292,7 @@ export default function PaymentsPage() {
               {/* Add payment method button */}
               <div className="mt-6">
                 <button
-                  title="Add New Payment Method"
-                  type="button"
-                  onClick={() => setShowAddModal({ isShown: true, text: 'Add' })}
+                  onClick={() => setShowAddModal({ isShown: true, text: "Add" })}
                   className="px-6 py-2 rounded-full font-afacad font-bold text-white border-2 transition-colors hover:bg-[#FF478B] hover:border-[#FF478B]"
                   style={{
                     borderColor: '#FF478B',
@@ -463,7 +441,6 @@ export default function PaymentsPage() {
               {/* Action Buttons */}
               <div className="flex gap-4 pt-4">
                 <button
-                  title="Cancel Adding Payment Method"
                   type="button"
                   onClick={closeModal}
                   className="flex-1 px-6 py-3 rounded-md font-afacad font-bold text-white border-2 border-white/20 hover:border-white/40 transition-colors"
@@ -471,7 +448,6 @@ export default function PaymentsPage() {
                   Cancel
                 </button>
                 <button
-                  title={`${showAddModal.text} Payment Method`}
                   type="button"
                   onClick={() => addCard()}
                   disabled={isSubmitting}

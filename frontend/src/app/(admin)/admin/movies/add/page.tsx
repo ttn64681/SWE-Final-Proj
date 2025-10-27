@@ -56,7 +56,7 @@ export default function AdminAddMoviePage() {
       const editId = urlParams.get('edit');
 
       if (editId) {
-        const existing = typeof window !== 'undefined' ? sessionStorage.getItem('movies') : null;
+        const existing = sessionStorage.getItem('movies');
         if (existing) {
           try {
             const movies = JSON.parse(existing);
@@ -183,10 +183,7 @@ export default function AdminAddMoviePage() {
         updated = [...parsed, movieData];
       }
 
-      // Only set sessionStorage on client side
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('movies', JSON.stringify(updated));
-      }
+      sessionStorage.setItem('movies', JSON.stringify(updated));
       router.push('/admin/movies');
     } catch (error) {
       console.log('save error:', error);

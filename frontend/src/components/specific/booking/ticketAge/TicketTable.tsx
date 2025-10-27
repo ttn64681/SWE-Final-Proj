@@ -1,7 +1,15 @@
 'use client';
 import React, { useState } from 'react';
+<<<<<<< HEAD
+import TicketCounter from '@/components/specific/booking/ticket-age/TicketCounter';
+import CheckoutButton from '@/components/specific/booking/ticket-age/CheckoutButton';
+=======
 import TicketCounter from '@/components/specific/booking/ticketAge/TicketCounter';
 import CheckoutButton from '@/components/specific/booking/ticketAge/CheckoutButton';
+>>>>>>> b9e3f681aaa532e47bb398434db5c135301ac4da
+
+import Link from 'next/link';
+import { format } from 'node:util';
 
 interface props {
   reservedSeats: number;
