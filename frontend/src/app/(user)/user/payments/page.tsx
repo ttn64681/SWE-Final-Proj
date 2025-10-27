@@ -233,24 +233,7 @@ export default function PaymentsPage() {
         }
       } else {
         // Update payment card
-        Console Error
-
-        Failed to fetch user info: 403 ""
-        
-        src/hooks/useUser.ts (21:15) @ getUserInfo
-        
-          19 |
-          20 |     if (!response.ok) {
-        > 21 |       console.error('Failed to fetch user info:', response.status, response.statusText);
-             |               ^
-          22 |       return null;
-          23 |     }
-          24 |
-        
-        Call Stack 4
-        Show 3 ignore-listed frame(s)
-        getUserInfo
-        src/hooks/useUser.ts (21:15)        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         const response = await fetch(buildUrl(`/api/payment-card/${editingCardId}`), {
           method: 'PUT',
           headers: { 

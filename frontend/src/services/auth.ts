@@ -5,20 +5,26 @@ export interface LoginRequest {
   rememberMe?: boolean;
 }
 
+export interface PaymentCardInfo {
+  cardType: string;
+  cardNumber: string;
+  expirationDate: string;
+  cardholderName: string;
+  billingStreet: string;
+  billingCity: string;
+  billingState: string;
+  billingZip: string;
+  isDefault: boolean;
+}
+
 export interface RegisterRequest {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  address?: string;
-  state?: string;
-  country?: string;
-  // Optional payment method fields (CVV excluded for security)
-  cardType?: string;
-  cardNumber?: string;
-  expirationDate?: string;
-  billingCity?: string;
+  enrolledForPromotions?: boolean;
+  paymentCards?: PaymentCardInfo[];
 }
 
 export interface AuthResponse {
@@ -49,8 +55,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/a
 export const authAPI = {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
-      console.log('🔐 authAPI.login - Making request to:', `${API_BASE_URL}/auth/login`);
-      console.log('🔐 authAPI.login - Credentials:', { ...credentials, password: '[HIDDEN]' });
+      console.log('authAPI.login - Making request to:', `${API_BASE_URL}/auth/login`);
+      console.log('authAPI.login - Credentials:', { ...credentials, password: '[HIDDEN]' });
       
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -60,12 +66,12 @@ export const authAPI = {
         body: JSON.stringify(credentials),
       });
 
-      console.log('🔐 authAPI.login - Response status:', response.status);
+      console.log('authAPI.login - Response status:', response.status);
       const data = await response.json();
-      console.log('🔐 authAPI.login - Response data:', data);
+      console.log('authAPI.login - Response data:', data);
       return data;
     } catch (error) {
-      console.error('❌ authAPI.login - Login API error:', error);
+      console.error('authAPI.login - Login API error:', error);
       return {
         success: false,
         message: 'Network error. Please try again.'
@@ -97,19 +103,19 @@ export const authAPI = {
   async refreshToken(): Promise<AuthResponse> {
     try {
       const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
-      console.log('🔄 authAPI.refreshToken - refreshToken found:', refreshToken ? 'exists' : 'null');
-      console.log('🔄 authAPI.refreshToken - localStorage refreshToken:', localStorage.getItem('refreshToken') ? 'exists' : 'null');
-      console.log('🔄 authAPI.refreshToken - sessionStorage refreshToken:', sessionStorage.getItem('refreshToken') ? 'exists' : 'null');
+      console.log('authAPI.refreshToken - refreshToken found:', refreshToken ? 'exists' : 'null');
+      console.log('authAPI.refreshToken - localStorage refreshToken:', localStorage.getItem('refreshToken') ? 'exists' : 'null');
+      console.log('authAPI.refreshToken - sessionStorage refreshToken:', sessionStorage.getItem('refreshToken') ? 'exists' : 'null');
       
       if (!refreshToken) {
-        console.log('❌ authAPI.refreshToken - No refresh token found');
+        console.log('authAPI.refreshToken - No refresh token found');
         return {
           success: false,
           message: 'No refresh token found'
         };
       }
       
-      console.log('🔄 authAPI.refreshToken - Making request to:', `${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`);
+      console.log('authAPI.refreshToken - Making request to:', `${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`);
       const response = await fetch(`${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`, {
         method: 'POST',
         headers: {
@@ -117,12 +123,12 @@ export const authAPI = {
         },
       });
 
-      console.log('🔄 authAPI.refreshToken - Response status:', response.status);
+      console.log('authAPI.refreshToken - Response status:', response.status);
       const data = await response.json();
-      console.log('🔄 authAPI.refreshToken - Response data:', data);
+      console.log('authAPI.refreshToken - Response data:', data);
       return data;
     } catch (error) {
-      console.error('❌ authAPI.refreshToken - Token refresh error:', error);
+      console.error('authAPI.refreshToken - Token refresh error:', error);
       return {
         success: false,
         message: 'Token refresh failed'

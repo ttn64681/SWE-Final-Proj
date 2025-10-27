@@ -48,7 +48,7 @@ export default function AdminRouteProtection({ children }: AdminRouteProtectionP
 
         // Check if there's an admin token or admin flag
         const hasAdminToken = localStorage.getItem('adminToken') || sessionStorage.getItem('adminToken');
-        const isAdminUser = hasAdminToken || false;
+        const isAdminUser = Boolean(hasAdminToken); 
 
         setIsAdmin(isAdminUser);
 

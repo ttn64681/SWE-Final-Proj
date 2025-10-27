@@ -16,9 +16,9 @@ import java.util.Optional;
 @Repository
 public interface PaymentCardRepository extends JpaRepository<PaymentCard, Long> {
     
-    @Query("SELECT pc FROM PaymentCard pc WHERE pc.user.id = :userId ORDER BY pc.isDefault DESC")
+    @Query("SELECT pc FROM PaymentCard pc LEFT JOIN FETCH pc.address WHERE pc.user.id = :userId ORDER BY pc.isDefault DESC")
     List<PaymentCard> findByUserIdOrderByIsDefaultDesc(@Param("userId") Long userId);
     
-    @Query("SELECT pc FROM PaymentCard pc WHERE pc.user.id = :userId AND pc.isDefault = :isDefault")
+    @Query("SELECT pc FROM PaymentCard pc LEFT JOIN FETCH pc.address WHERE pc.user.id = :userId AND pc.isDefault = :isDefault")
     Optional<PaymentCard> findByUserIdAndIsDefault(@Param("userId") Long userId, @Param("isDefault") Boolean isDefault);
 }
