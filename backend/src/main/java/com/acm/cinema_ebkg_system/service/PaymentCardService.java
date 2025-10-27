@@ -70,11 +70,25 @@ public class PaymentCardService {
     }
     
     /**
-     * Delete a payment card
+     * Delete a payment card and its associated billing address
      * @param paymentCardId - Long: Card ID to delete
      */
+    @Transactional
     public void deletePaymentCard(Long paymentCardId) {
+        // Get the payment card to find its address_id
+        PaymentCard paymentCard = paymentCardRepository.findById(paymentCardId)
+            .orElseThrow(() -> new RuntimeException("Payment card not found"));
+        
+        // Get the address ID
+        Long addressId = paymentCard.getAddressId();
+        
+        // Delete the payment card
         paymentCardRepository.deleteById(paymentCardId);
+        
+        // Delete the associated billing address
+        if (addressId != null) {
+            addressRepository.deleteById(addressId);
+        }
     }
     
     /**

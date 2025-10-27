@@ -163,7 +163,7 @@ public class UserService {
      * @throws RuntimeException if user not found
      */
     public User getUserById(Long id) {
-        return userRepository.findById(id)
+        return userRepository.findByIdWithAddresses(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 

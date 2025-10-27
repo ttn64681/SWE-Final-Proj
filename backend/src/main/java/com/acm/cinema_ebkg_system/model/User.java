@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -85,6 +86,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<PaymentInfo> paymentInfos = new ArrayList<>();
+    
+    // One-to-many relationship with Address
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Address> addresses = new ArrayList<>();
 
     // ========== CUSTOM CONSTRUCTORS ==========
     
@@ -126,5 +132,141 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }    
+    }
+    
+    // ========== HOME ADDRESS GETTERS (for JSON serialization) ==========
+    
+    /**
+     * Get home address street
+     * Returns the street from the home address if it exists
+     */
+    public String getHomeStreet() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .map(Address::getStreet)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address city
+     */
+    public String getHomeCity() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .map(Address::getCity)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address state
+     */
+    public String getHomeState() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .map(Address::getState)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address ZIP code
+     */
+    public String getHomeZip() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .map(Address::getZip)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address country
+     */
+    public String getHomeCountry() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .map(Address::getCountry)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    // ========== HOME ADDRESS SETTERS (for frontend updates) ==========
+    
+    /**
+     * Set home address street
+     * Note: This is a convenience method for DTOs. Actual update should be done via AddressService
+     */
+    public void setHomeStreet(String street) {
+        if (addresses != null) {
+            addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .ifPresent(addr -> addr.setStreet(street));
+        }
+    }
+    
+    /**
+     * Set home address city
+     */
+    public void setHomeCity(String city) {
+        if (addresses != null) {
+            addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .ifPresent(addr -> addr.setCity(city));
+        }
+    }
+    
+    /**
+     * Set home address state
+     */
+    public void setHomeState(String state) {
+        if (addresses != null) {
+            addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .ifPresent(addr -> addr.setState(state));
+        }
+    }
+    
+    /**
+     * Set home address ZIP code
+     */
+    public void setHomeZip(String zip) {
+        if (addresses != null) {
+            addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .ifPresent(addr -> addr.setZip(zip));
+        }
+    }
+    
+    /**
+     * Set home address country
+     */
+    public void setHomeCountry(String country) {
+        if (addresses != null) {
+            addresses.stream()
+                .filter(addr -> "home".equals(addr.getAddressType()))
+                .findFirst()
+                .ifPresent(addr -> addr.setCountry(country));
+        }
+    }
 }

@@ -57,7 +57,7 @@ export const authAPI = {
     try {
       console.log('authAPI.login - Making request to:', `${API_BASE_URL}/auth/login`);
       console.log('authAPI.login - Credentials:', { ...credentials, password: '[HIDDEN]' });
-      
+
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -74,7 +74,7 @@ export const authAPI = {
       console.error('authAPI.login - Login API error:', error);
       return {
         success: false,
-        message: 'Network error. Please try again.'
+        message: 'Network error. Please try again.',
       };
     }
   },
@@ -95,7 +95,7 @@ export const authAPI = {
       console.error('Registration API error:', error);
       return {
         success: false,
-        message: 'Network error. Please try again.'
+        message: 'Network error. Please try again.',
       };
     }
   },
@@ -104,18 +104,27 @@ export const authAPI = {
     try {
       const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
       console.log('authAPI.refreshToken - refreshToken found:', refreshToken ? 'exists' : 'null');
-      console.log('authAPI.refreshToken - localStorage refreshToken:', localStorage.getItem('refreshToken') ? 'exists' : 'null');
-      console.log('authAPI.refreshToken - sessionStorage refreshToken:', sessionStorage.getItem('refreshToken') ? 'exists' : 'null');
-      
+      console.log(
+        'authAPI.refreshToken - localStorage refreshToken:',
+        localStorage.getItem('refreshToken') ? 'exists' : 'null'
+      );
+      console.log(
+        'authAPI.refreshToken - sessionStorage refreshToken:',
+        sessionStorage.getItem('refreshToken') ? 'exists' : 'null'
+      );
+
       if (!refreshToken) {
         console.log('authAPI.refreshToken - No refresh token found');
         return {
           success: false,
-          message: 'No refresh token found'
+          message: 'No refresh token found',
         };
       }
-      
-      console.log('authAPI.refreshToken - Making request to:', `${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`);
+
+      console.log(
+        'authAPI.refreshToken - Making request to:',
+        `${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`
+      );
       const response = await fetch(`${API_BASE_URL}/auth/refresh?refreshToken=${encodeURIComponent(refreshToken)}`, {
         method: 'POST',
         headers: {
@@ -131,7 +140,7 @@ export const authAPI = {
       console.error('authAPI.refreshToken - Token refresh error:', error);
       return {
         success: false,
-        message: 'Token refresh failed'
+        message: 'Token refresh failed',
       };
     }
   },
@@ -151,7 +160,7 @@ export const authAPI = {
       console.error('Logout error:', error);
       return {
         success: false,
-        message: 'Logout failed'
+        message: 'Logout failed',
       };
     }
   },
@@ -172,7 +181,7 @@ export const authAPI = {
       console.error('Email check error:', error);
       return {
         success: false,
-        message: 'Network error. Please try again.'
+        message: 'Network error. Please try again.',
       };
     }
   },
@@ -181,7 +190,7 @@ export const authAPI = {
     try {
       console.log('🔐 authAPI.adminLogin - Making request to:', `${API_BASE_URL}/admin/login`);
       console.log('🔐 authAPI.adminLogin - Credentials:', { ...credentials, password: '[HIDDEN]' });
-      
+
       const response = await fetch(`${API_BASE_URL}/admin/login`, {
         method: 'POST',
         headers: {
@@ -198,10 +207,10 @@ export const authAPI = {
       console.error('❌ authAPI.adminLogin - Admin login API error:', error);
       return {
         success: false,
-        message: 'Network error. Please try again.'
+        message: 'Network error. Please try again.',
       };
     }
-  }
+  },
 };
 
 // Validation utilities

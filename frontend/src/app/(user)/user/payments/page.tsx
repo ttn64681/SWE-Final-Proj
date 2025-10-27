@@ -11,26 +11,30 @@ import { buildUrl, endpoints } from '@/config/api';
 
 interface PaymentCard {
   id: number;
-  card_number: string;
-  cardholder_name: string;
-  payment_card_type: string;
-  expiration_date: string;
-  is_default: boolean;
-  billing_street?: string;
-  billing_city?: string;
-  billing_state?: string;
-  billing_zip?: string;
-  billing_country?: string;
+  cardNumber: string;
+  cardholderName: string;
+  paymentCardType: string;
+  expirationDate: string;
+  isDefault: boolean;
+  billingStreet?: string;
+  billingCity?: string;
+  billingState?: string;
+  billingZip?: string;
+  billingCountry?: string;
 }
 
 interface PaymentCardResponse {
   id: number;
-  card_number: string;
-  cardholder_name: string;
-  payment_card_type: string;
-  expiration_date: string;
-  is_default: boolean;
-  address_id?: number;
+  cardNumber: string;
+  cardholderName: string;
+  paymentCardType: string;
+  expirationDate: string;
+  isDefault: boolean;
+  billingStreet?: string;
+  billingCity?: string;
+  billingState?: string;
+  billingZip?: string;
+  billingCountry?: string;
 }
 
 interface BillingAddress {
@@ -47,6 +51,7 @@ export default function PaymentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'Add' | 'Edit'>('Add');
   const [editingCardId, setEditingCardId] = useState<number | null>(null);
+  const [editingCard, setEditingCard] = useState<PaymentCard | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userId, setUserId] = useState<number>(0);
   const { profilePicUrl } = useProfile();
@@ -57,8 +62,8 @@ export default function PaymentsPage() {
       const token = sessionStorage.getItem('token');
       if (token) {
         try {
-    const [, payloadBase64] = token.split('.');
-    const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
+          const [, payloadBase64] = token.split('.');
+          const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
           const userData = JSON.parse(decodedPayload);
           setUserId(userData.userId);
         } catch (error) {
@@ -76,47 +81,16 @@ export default function PaymentsPage() {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch(buildUrl(`/api/payment-card/user/${userId}`), {
         method: 'GET',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : '',
+          Authorization: token ? `Bearer ${token}` : '',
         },
       });
 
       const cards = (await response.json()) as PaymentCardResponse[];
 
-      // Fetch billing addresses for each card
-      const cardsWithAddresses = await Promise.all(
-        cards.map(async (card) => {
-          if (card.address_id) {
-            try {
-              const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-              const addressResponse = await fetch(buildUrl(`/api/address/${card.address_id}`), {
-                method: 'GET',
-                headers: { 
-                  'Content-Type': 'application/json',
-                  'Authorization': token ? `Bearer ${token}` : '',
-                },
-              });
-              if (addressResponse.ok) {
-                const address = (await addressResponse.json()) as BillingAddress;
-                return {
-                  ...card,
-                  billing_street: address.street,
-                  billing_city: address.city,
-                  billing_state: address.state,
-                  billing_zip: address.zip,
-                  billing_country: address.country || 'US',
-                };
-              }
-            } catch {
-              console.log('Error fetching billing address');
-            }
-          }
-          return card;
-        })
-      );
-
-      setPaymentCards(cardsWithAddresses);
+      // Payment cards already include billing address fields from the backend
+      setPaymentCards(cards as PaymentCard[]);
     } catch (error) {
       console.error('Error fetching payment cards:', error);
     }
@@ -151,6 +125,7 @@ export default function PaymentsPage() {
   // Handle add card
   const handleAddCard = () => {
     setEditingCardId(null);
+    setEditingCard(null);
     setModalMode('Add');
     setIsModalOpen(true);
   };
@@ -158,6 +133,7 @@ export default function PaymentsPage() {
   // Handle edit card
   const handleEditCard = (card: PaymentCard) => {
     setEditingCardId(card.id);
+    setEditingCard(card);
     setModalMode('Edit');
     setIsModalOpen(true);
   };
@@ -172,9 +148,9 @@ export default function PaymentsPage() {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch(buildUrl(`/api/payment-card/${cardId}`), {
         method: 'DELETE',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : '',
+          Authorization: token ? `Bearer ${token}` : '',
         },
       });
 
@@ -218,9 +194,9 @@ export default function PaymentsPage() {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         const response = await fetch(buildUrl('/api/payment-card'), {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : '',
+            Authorization: token ? `Bearer ${token}` : '',
           },
           body: JSON.stringify(payload),
         });
@@ -236,9 +212,9 @@ export default function PaymentsPage() {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         const response = await fetch(buildUrl(`/api/payment-card/${editingCardId}`), {
           method: 'PUT',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : '',
+            Authorization: token ? `Bearer ${token}` : '',
           },
           body: JSON.stringify(payload),
         });
@@ -297,12 +273,12 @@ export default function PaymentsPage() {
               style={{ width: '170px', height: '170px', backgroundColor: '#2B2B2B' }}
             >
               {profilePicUrl ? (
-                <Image 
-                  src={profilePicUrl} 
-                  alt="Profile" 
-                  width={170} 
-                  height={170} 
-                  className="w-full h-full rounded-full object-cover" 
+                <Image
+                  src={profilePicUrl}
+                  alt="Profile"
+                  width={170}
+                  height={170}
+                  className="w-full h-full rounded-full object-cover"
                   loading="lazy"
                 />
               ) : (
@@ -329,16 +305,16 @@ export default function PaymentsPage() {
                       <MdCreditCard className="text-3xl text-acm-pink" />
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-white font-afacad text-lg">{card.cardholder_name}</span>
-                          {card.is_default && (
+                          <span className="text-white font-afacad text-lg">{card.cardholderName}</span>
+                          {card.isDefault && (
                             <span className="text-acm-pink text-xs font-bold bg-acm-pink/20 px-2 py-1 rounded">
                               DEFAULT
                             </span>
                           )}
                         </div>
-                        <span className="text-white/70 font-afacad text-sm">{formatCardNumber(card.card_number)}</span>
+                        <span className="text-white/70 font-afacad text-sm">{formatCardNumber(card.cardNumber)}</span>
                         <div className="text-white/60 font-afacad text-xs">
-                          {formatExpirationDate(card.expiration_date)} • {card.payment_card_type.toUpperCase()}
+                          {formatExpirationDate(card.expirationDate)} • {card.paymentCardType.toUpperCase()}
                         </div>
                       </div>
                     </div>
@@ -382,7 +358,7 @@ export default function PaymentsPage() {
             {paymentCards.length >= 3 && (
               <div className="mt-4 text-center text-white/60 text-sm font-afacad">
                 Maximum of 3 payment methods reached.
-            </div>
+              </div>
             )}
           </section>
         </div>
@@ -392,9 +368,29 @@ export default function PaymentsPage() {
       <PaymentCardModal
         isOpen={isModalOpen}
         mode={modalMode}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingCard(null);
+        }}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
+        initialData={
+          editingCard
+            ? {
+                cardId: editingCard.id,
+                cardType: editingCard.paymentCardType,
+                cardNumber: editingCard.cardNumber,
+                expirationDate: editingCard.expirationDate,
+                cardholderName: editingCard.cardholderName,
+                billingStreet: editingCard.billingStreet || '',
+                billingCity: editingCard.billingCity || '',
+                billingState: editingCard.billingState || '',
+                billingZip: editingCard.billingZip || '',
+                billingCountry: editingCard.billingCountry || 'US',
+                isDefault: editingCard.isDefault,
+              }
+            : undefined
+        }
       />
     </div>
   );

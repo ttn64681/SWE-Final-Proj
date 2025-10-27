@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface PaymentCardModalProps {
   isOpen: boolean;
@@ -48,6 +48,41 @@ export default function PaymentCardModal({
     billingCountry: initialData?.billingCountry || 'US',
     isDefault: initialData?.isDefault || false,
   });
+
+  // Update form data when initialData changes (when switching between Add/Edit)
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        cardId: initialData.cardId || 0,
+        cardType: initialData.cardType || '',
+        cardNumber: initialData.cardNumber || '',
+        expirationDate: initialData.expirationDate || '',
+        cvv: initialData.cvv || '',
+        cardholderName: initialData.cardholderName || '',
+        billingStreet: initialData.billingStreet || '',
+        billingCity: initialData.billingCity || '',
+        billingState: initialData.billingState || '',
+        billingZip: initialData.billingZip || '',
+        billingCountry: initialData.billingCountry || 'US',
+        isDefault: initialData.isDefault || false,
+      });
+    } else {
+      setFormData({
+        cardId: 0,
+        cardType: '',
+        cardNumber: '',
+        expirationDate: '',
+        cvv: '',
+        cardholderName: '',
+        billingStreet: '',
+        billingCity: '',
+        billingState: '',
+        billingZip: '',
+        billingCountry: 'US',
+        isDefault: false,
+      });
+    }
+  }, [initialData]);
 
   // Format card number with spaces
   const formatCardNumber = (value: string): string => {
