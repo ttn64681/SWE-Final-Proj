@@ -1,10 +1,6 @@
 package com.acm.cinema_ebkg_system.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import java.time.LocalDateTime;
 
 /**
  * Admin Entity - Represents an admin user in the cinema booking system
@@ -18,9 +14,6 @@ import java.time.LocalDateTime;
  * - Email uniqueness constraint for login purposes
  * - Profile image support
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "admin")
 public class Admin {
@@ -41,12 +34,12 @@ public class Admin {
     @Column(name = "profile_image_link")
     private String profileImageLink;
 
-    // Timestamp fields for audit trail
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    // ========== CONSTRUCTORS ==========
+    
+    /**
+     * Default constructor required by JPA
+     */
+    public Admin() {}
 
     /**
      * Constructor for creating a new admin with basic required information
@@ -72,15 +65,17 @@ public class Admin {
         this.profileImageLink = profileImageLink;
     }
 
-    // ========== JPA LIFECYCLE CALLBACKS ==========
+    // ========== GETTERS AND SETTERS ==========
     
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    
+    public String getProfileImageLink() { return profileImageLink; }
+    public void setProfileImageLink(String profileImageLink) { this.profileImageLink = profileImageLink; }
 }
