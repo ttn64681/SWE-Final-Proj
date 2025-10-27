@@ -46,21 +46,30 @@ export const apiConfig = {
       create: '/api/movies/create',
     },
 
-    // 👤 USER ENDPOINTS
+    // USER ENDPOINTS
     users: {
       getUserById: (userId: number) => `/api/users/${userId}`,
       updateUser: (userId: number) => `/api/users/${userId}/info`,
       changePassword: (userId: number) => `/api/users/${userId}/change-password`,
     },
-    
-    // PAYMENT ENDPOINTS
-    payments: {
-      getPayments: (userId: number) => `/api/users/${userId}/payment/`,
-      addPaymentInfo: (userId: number) => `/api/users/${userId}/payment/`,
-      updatePaymentInfo: (userId: number, paymentId: number) => `/api/users/${userId}/payment/${paymentId}`,
-      deletePaymentInfo: (userId: number, paymentId: number) => `/api/users/${userId}/payment/${paymentId}`
+
+    // ADDRESS ENDPOINTS
+    addresses: {
+      getUserHomeAddress: (userId: number) => `/api/address/user/${userId}/home`,
+      getAddressById: (addressId: number) => `/api/address/${addressId}`,
+      updateUserAddress: (addressId: number) => `/api/address/${addressId}`,
     },
-        
+
+    // PAYMENT CARD ENDPOINTS
+    paymentCards: {
+      getUserPaymentCards: (userId: number) => `/api/payment-card/user/${userId}`,
+      getUserDefaultCard: (userId: number) => `/api/payment-card/user/${userId}/default`,
+      createPaymentCard: () => `/api/payment-card`,
+      updatePaymentCard: (cardId: number) => `/api/payment-card/${cardId}`,
+      deletePaymentCard: (cardId: number) => `/api/payment-card/${cardId}`,
+      setDefaultCard: (userId: number, cardId: number) => `/api/payment-card/user/${userId}/set-default/${cardId}`,
+    },
+
     // 🔐 AUTH ENDPOINTS
     auth: {
       login: '/api/auth/login',

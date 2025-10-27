@@ -1,7 +1,12 @@
 package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.PaymentCard;
+import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.service.PaymentCardService;
+import com.acm.cinema_ebkg_system.service.AddressService;
+import com.acm.cinema_ebkg_system.service.UserService;
+import com.acm.cinema_ebkg_system.dto.payment.PaymentCardDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +17,17 @@ import java.util.Optional;
  * Payment Card Controller
  */
 @RestController
-@RequestMapping("/api/payment-cards")
+@RequestMapping("/api/payment-card")
 public class PaymentCardController {
     
     @Autowired // Spring automatically provides service instance (dependency injection)
     private PaymentCardService paymentCardService;
+    
+    @Autowired
+    private AddressService addressService;
+    
+    @Autowired
+    private UserService userService;
     
     /**
      * GET /api/payment-cards/user/{userId}
@@ -42,12 +53,41 @@ public class PaymentCardController {
     
     /**
      * POST /api/payment-cards
-     * Input: PaymentCard JSON body with {user_id, address_id, card_number, cardholder_name, payment_card_type, expiration_date, cvv}
+     * Input: PaymentCardDTO JSON body with {userId, cardType, cardNumber, expirationDate, cardholderName, billingStreet, billingCity, billingState, billingZip, billingCountry, isDefault}
      * Returns: PaymentCard - created card with ID and timestamps (auto-sets as default if first card)
      */
     @PostMapping
-    public PaymentCard createPaymentCard(@RequestBody PaymentCard paymentCard) {
-        return paymentCardService.createPaymentCard(paymentCard);
+    public ResponseEntity<?> createPaymentCard(@RequestBody PaymentCardDTO dto) {
+        try {
+            // Get user
+            User user = userService.getUserById(dto.getUserId());
+            
+            // Create billing address
+            Address address = new Address();
+            address.setUser(user);
+            address.setAddressType("billing");
+            address.setStreet(dto.getBillingStreet());
+            address.setCity(dto.getBillingCity());
+            address.setState(dto.getBillingState());
+            address.setZip(dto.getBillingZip());
+            address.setCountry(dto.getBillingCountry() != null ? dto.getBillingCountry() : "US");
+            Address savedAddress = addressService.createAddress(address);
+            
+            // Create payment card
+            PaymentCard paymentCard = new PaymentCard();
+            paymentCard.setUser(user);
+            paymentCard.setAddress(savedAddress);
+            paymentCard.setCardNumber(dto.getCardNumber());
+            paymentCard.setCardholderName(dto.getCardholderName());
+            paymentCard.setPaymentCardType(dto.getCardType());
+            paymentCard.setExpirationDate(dto.getExpirationDate());
+            paymentCard.setIsDefault(dto.getIsDefault() != null ? dto.getIsDefault() : false);
+            
+            PaymentCard created = paymentCardService.createPaymentCard(paymentCard);
+            return ResponseEntity.ok(created);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error creating payment card: " + e.getMessage());
+        }
     }
     
     /**

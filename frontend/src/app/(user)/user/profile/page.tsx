@@ -76,9 +76,11 @@ export default function ProfilePage() {
     firstName: '',
     lastName: '',
     phone: '',
-    street: '',
-    state: '',
-    country: '',
+    homeStreet: '',
+    homeCity: '',
+    homeState: '',
+    homeZip: '',
+    homeCountry: '',
   });
 
   useEffect(() => {
@@ -91,9 +93,11 @@ export default function ProfilePage() {
         firstName: user.firstName,
         lastName: user.lastName,
         phone: user.phoneNumber,
-        street: user.address,
-        state: user.state,
-        country: user.country,
+        homeStreet: user.homeStreet || '',
+        homeCity: user.homeCity || '',
+        homeState: user.homeState || '',
+        homeZip: user.homeZip || '',
+        homeCountry: user.homeCountry || '',
       });
       //console.log("User data set");
     }
@@ -106,9 +110,12 @@ export default function ProfilePage() {
         firstName: userData.firstName,
         lastName: userData.lastName,
         phoneNumber: userData.phone,
-        address: userData.street,
-        state: userData.state,
-        country: userData.country,
+        homeStreet: userData.homeStreet,
+        homeCity: userData.homeCity,
+        homeState: userData.homeState,
+        homeZip: userData.homeZip,
+        homeCountry: userData.homeCountry,
+        enrolledForPromotions: subscribeToPromotions,
       });
 
       if (success) {
@@ -274,38 +281,63 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Address */}
-              <label className="self-center text-white font-afacad text-lg font-bold">Address</label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Home Address */}
+              <label className="self-center text-white font-afacad text-lg font-bold">Home Address</label>
+              <div className="space-y-4">
+                {/* Street - Full width */}
                 <div>
                   <div className="text-sm text-gray-400 mb-2 font-afacad">Street</div>
                   <input
                     type="text"
-                    value={userData.street}
+                    value={userData.homeStreet}
                     onChange={(e) => {
                       const newValue = e.target.value;
-                      setUserData((prev) => ({ ...prev, street: newValue }));
+                      setUserData((prev) => ({ ...prev, homeStreet: newValue }));
                     }}
                     className={styles.profileInput}
                     placeholder="Enter street address"
                   />
                 </div>
-                <div>
-                  <div className="text-sm text-gray-400 mb-2 font-afacad">State</div>
-                  <input
-                    type="text"
-                    value={userData.state}
-                    onChange={(e) => setUserData((prev) => ({ ...prev, state: e.target.value }))}
-                    className={styles.profileInput}
-                    placeholder="Enter state"
-                  />
+                {/* City, State, ZIP - 3 columns */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <div className="text-sm text-gray-400 mb-2 font-afacad">City</div>
+                    <input
+                      type="text"
+                      value={userData.homeCity}
+                      onChange={(e) => setUserData((prev) => ({ ...prev, homeCity: e.target.value }))}
+                      className={styles.profileInput}
+                      placeholder="Enter city"
+                    />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-400 mb-2 font-afacad">State</div>
+                    <input
+                      type="text"
+                      value={userData.homeState}
+                      onChange={(e) => setUserData((prev) => ({ ...prev, homeState: e.target.value }))}
+                      className={styles.profileInput}
+                      placeholder="Enter state"
+                    />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-400 mb-2 font-afacad">ZIP Code</div>
+                    <input
+                      type="text"
+                      value={userData.homeZip}
+                      onChange={(e) => setUserData((prev) => ({ ...prev, homeZip: e.target.value }))}
+                      className={styles.profileInput}
+                      placeholder="Enter ZIP code"
+                    />
+                  </div>
                 </div>
+                {/* Country - Full width */}
                 <div>
                   <div className="text-sm text-gray-400 mb-2 font-afacad">Country</div>
                   <input
                     type="text"
-                    value={userData.country}
-                    onChange={(e) => setUserData((prev) => ({ ...prev, country: e.target.value }))}
+                    value={userData.homeCountry}
+                    onChange={(e) => setUserData((prev) => ({ ...prev, homeCountry: e.target.value }))}
                     className={styles.profileInput}
                     placeholder="Enter country"
                   />

@@ -12,7 +12,19 @@ export interface BackendUser {
   phoneNumber: string;
   currentPassword: string;
   newPassword: string;
-  address: string;
-  state: string;
-  country: string;
+
+  // Old deprecated fields (kept for backward compatibility)
+  address?: string;
+  state?: string;
+  country?: string;
+
+  // New home address fields (stored in address table)
+  homeStreet?: string;
+  homeCity?: string;
+  homeState?: string;
+  homeZip?: string;
+  homeCountry?: string;
+
+  // User preferences
+  enrolledForPromotions?: boolean;
 }

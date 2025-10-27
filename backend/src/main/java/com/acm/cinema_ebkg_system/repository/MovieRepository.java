@@ -73,8 +73,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      */
     @Query(value = """
       SELECT m.* FROM movie m
-      JOIN show_date sd ON sd.movie_id = m.movie_id
-      WHERE m.status = 'NOW_PLAYING' AND sd.show_date >= CURRENT_DATE
+      INNER JOIN movie_show ms ON ms.movie_id = m.movie_id
+      INNER JOIN show_date sd ON sd.movie_id = m.movie_id
+      WHERE ms.status = 'now_playing' AND sd.show_date >= CURRENT_DATE
       GROUP BY m.movie_id
       ORDER BY MIN(sd.show_date) ASC
     """, nativeQuery = true)
@@ -87,8 +88,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      */
     @Query(value = """
       SELECT m.* FROM movie m
-      JOIN show_date sd ON sd.movie_id = m.movie_id
-      WHERE m.status = 'UPCOMING' AND sd.show_date > CURRENT_DATE
+      INNER JOIN movie_show ms ON ms.movie_id = m.movie_id
+      INNER JOIN show_date sd ON sd.movie_id = m.movie_id
+      WHERE ms.status = 'upcoming' AND sd.show_date > CURRENT_DATE
       GROUP BY m.movie_id
       ORDER BY MIN(sd.show_date) ASC
     """, nativeQuery = true)
@@ -102,7 +104,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      */
     @Query(value = """
       SELECT m.* FROM movie m
-      WHERE m.status = 'NOW_PLAYING'
+      INNER JOIN movie_show ms ON ms.movie_id = m.movie_id
+      WHERE ms.status = 'now_playing'
         AND (:title IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%')))
         AND (:genresCsv IS NULL OR EXISTS (
              SELECT 1 FROM unnest(string_to_array(:genresCsv, ',')) g
@@ -138,7 +141,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      */
     @Query(value = """
       SELECT m.* FROM movie m
-      WHERE m.status = 'UPCOMING'
+      INNER JOIN movie_show ms ON ms.movie_id = m.movie_id
+      WHERE ms.status = 'upcoming'
         AND (:title IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%')))
         AND (:genresCsv IS NULL OR EXISTS (
              SELECT 1 FROM unnest(string_to_array(:genresCsv, ',')) g

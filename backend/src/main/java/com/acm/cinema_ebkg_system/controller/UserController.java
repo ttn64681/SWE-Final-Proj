@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController // Bean that creates a RESTful controller class that handles HTTP requests
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
     
     // Dependency injection of UserService for business logic
@@ -23,6 +23,24 @@ public class UserController {
     // Constructor injection - Spring automatically provides UserService instance
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+    
+    // GET /api/user/info - Get current user's information (userId from JWT in frontend)
+    @GetMapping("/user/info")
+    public User getCurrentUserInfo(@org.springframework.web.bind.annotation.RequestParam Long userId) {
+        return userService.getUserById(userId);
+    }
+    
+    // PUT /api/user/info - Update current user's personal information
+    @PutMapping("/user/info")
+    public User updateCurrentUserInfo(@org.springframework.web.bind.annotation.RequestParam Long userId, @RequestBody UserInfo userInfo) {
+        return userService.updatePersonalInfo(userId, userInfo);
+    }
+    
+    // PUT /api/user/change-password - Change current user's password
+    @PutMapping("/user/change-password")
+    public User changeCurrentUserPassword(@org.springframework.web.bind.annotation.RequestParam Long userId, @RequestBody UserInfo userInfo) {
+        return userService.changePassword(userId, userInfo);
     }
 
     // GET /api/users/ - Return list of all users (for admin use)

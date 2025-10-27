@@ -4,6 +4,7 @@ import com.acm.cinema_ebkg_system.model.Address;
 import com.acm.cinema_ebkg_system.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,15 @@ public class AddressService {
     }
     
     /**
+     * Get address by ID
+     * @param addressId - Long: Address ID
+     * @return Optional<Address>: Address if exists, empty if not
+     */
+    public Optional<Address> getAddressById(Long addressId) {
+        return addressRepository.findById(addressId);
+    }
+    
+    /**
      * Get user's billing addresses
      * @param userId - Long: User ID
      * @return List<Address>: All billing addresses for the user
@@ -59,6 +69,7 @@ public class AddressService {
      * @param address - Address: Address object with user_id, address_type, street, city, state, zip, country
      * @return Address: Created address with generated ID and timestamps
      */
+    @Transactional
     public Address createAddress(Address address) {
         return addressRepository.save(address);
     }

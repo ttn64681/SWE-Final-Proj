@@ -14,8 +14,22 @@ public class UserInfo {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    
+    // Old deprecated fields (kept for backward compatibility but not used)
+    @Deprecated
     private String address;
+    @Deprecated
     private String state;
+    @Deprecated
     private String country;
+    
+    // New home address fields (stored in address table)
+    private String homeStreet;
+    private String homeCity;
+    private String homeState;
+    private String homeZip;
+    private String homeCountry;
+    
+    // User preferences
     private Boolean enrolledForPromotions;
 }

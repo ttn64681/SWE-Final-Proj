@@ -11,7 +11,7 @@ import PreferencesSection from '@/components/specific/auth/PreferencesSection';
 import { PaymentCard } from '@/contexts/RegistrationContext';
 
 export default function RegisterStep3Page() {
-  const { data, updateData, clearData } = useRegistration();
+  const { data, updateData, clearData, isStepValid } = useRegistration();
   const [isLoading, setIsLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const router = useRouter();
@@ -22,6 +22,12 @@ export default function RegisterStep3Page() {
     setIsLoading(true);
 
     try {
+      // Additional validation: check for partially filled cards before submission
+      if (!isStepValid(3)) {
+        setSubmitError('Please complete all fields for a payment card or leave it completely empty.');
+        setIsLoading(false);
+        return;
+      }
       // Helper: Check if payment card is fully filled
       const isCardComplete = (card: PaymentCard): boolean => {
         return !!(
@@ -97,6 +103,9 @@ export default function RegisterStep3Page() {
     handleSubmit(fakeEvent);
   };
 
+  // Check if step 3 is valid (no partially filled payment cards)
+  const isStep3Valid = isStepValid(3);
+
   return (
     <AuthFormContainer
       stepNumber={3}
@@ -110,6 +119,15 @@ export default function RegisterStep3Page() {
         </div>
       )}
 
+      {/* Show warning if partially filled cards */}
+      {!isStep3Valid && (
+        <div className="mb-6 p-4 bg-yellow-900/50 border border-yellow-500 rounded-md">
+          <p className="text-yellow-200 text-sm">
+            ⚠️ Please complete all fields for a payment card or leave it completely empty.
+          </p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <PaymentSection data={data} updateData={updateData} isLoading={isLoading} />
 
@@ -119,7 +137,7 @@ export default function RegisterStep3Page() {
           primaryText={isLoading ? 'Creating Account...' : 'Create Account'}
           primaryType="submit"
           primaryLoading={isLoading}
-          primaryDisabled={isLoading}
+          primaryDisabled={isLoading || !isStep3Valid}
           secondaryText="Go Back"
           secondaryOnClick={handleGoBack}
           secondaryDisabled={isLoading}

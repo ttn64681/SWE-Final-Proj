@@ -52,16 +52,6 @@ public class User {
     @Column
     private String phoneNumber;
 
-    // Optional address information (collected during registration)
-    @Column
-    private String address;
-
-    @Column
-    private String state;
-
-    @Column
-    private String country;
-
     // User preferences
     @Column(name = "enrolled_for_promotions")
     private boolean enrolledForPromotions = false;

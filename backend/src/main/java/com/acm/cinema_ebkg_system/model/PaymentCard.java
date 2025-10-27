@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
 /**
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "payment_card")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PaymentCard {
     // Primary key - auto-generated unique identifier
     @Id
@@ -34,13 +37,19 @@ public class PaymentCard {
     // Many payment cards belong to one user (a user can have up to 3 payment cards)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     // Foreign key to address table
     // Each payment card has exactly one billing address (1-to-1 relationship)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
+    @JsonIgnore
     private Address address;
+    
+    // Expose address_id for frontend use
+    @Column(name = "address_id", insertable = false, updatable = false)
+    private Long addressId;
 
     // Encrypted card number
     @Column(name = "card_number", nullable = false, length = 19)

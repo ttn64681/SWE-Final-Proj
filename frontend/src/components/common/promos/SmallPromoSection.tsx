@@ -40,8 +40,8 @@ export default function SmallPromoSection({ promotions }: SmallPromoSectionProps
       <div className="text-4xl font-extrabold font-red-rose text-white mb-2 px-20">
         Promotions
       </div>
-      <div className='relative px-20 py-4'>
-        <div className="relative flex flex-row overflow-x-scroll scrollbar-hide gap-x-4" ref={scrollRef}>
+      <div className='relative px-20 py-4 pt-6 pb-4'>
+        <div className="relative flex flex-row overflow-x-scroll scrollbar-hide gap-x-4 px-1" ref={scrollRef}>
           {promotions.map((promotion, index) => (
             <Promotion
               key={index}

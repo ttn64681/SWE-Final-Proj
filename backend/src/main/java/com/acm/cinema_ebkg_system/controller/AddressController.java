@@ -12,7 +12,7 @@ import java.util.Optional;
  * Address Controller
  */
 @RestController
-@RequestMapping("/api/addresses")
+@RequestMapping("/api/address")
 public class AddressController {
     
     @Autowired // Spring automatically provides service instance (dependency injection)
@@ -38,6 +38,18 @@ public class AddressController {
             @PathVariable Long userId, 
             @PathVariable String addressType) {
         return addressService.getUserAddressesByType(userId, addressType);
+    }
+    
+    /**
+     * GET /api/address/{addressId}
+     * Input: addressId (Long) in URL path
+     * Returns: Address - address by ID
+     */
+    @GetMapping("/{addressId}")
+    public ResponseEntity<Address> getAddressById(@PathVariable Long addressId) {
+        return addressService.getAddressById(addressId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
     
     /**

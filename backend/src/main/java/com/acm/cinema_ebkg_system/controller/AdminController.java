@@ -77,11 +77,8 @@ public class AdminController {
                 admin.getId(),
                 admin.getEmail(),
                 "Admin", // firstName - default for admin
-                "User", // lastName - default for admin
-                null, // phoneNumber not applicable for admin
-                null, // address not applicable for admin
-                "admin", // role as state
-                "active" // status as country
+                "Admin", // lastName - default for admin
+                null // phoneNumber not applicable for admin
             );
 
             // Step 4: Return success response with tokens and admin data

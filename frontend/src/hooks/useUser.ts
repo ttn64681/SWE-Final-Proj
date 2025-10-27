@@ -1,20 +1,92 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { buildUrl, endpoints } from '../config/api';
-import { BackendUser } from '../types/user';
+import { BackendUser } from '@/types/user';
+
+// Helper function to get userId from JWT token
+function getUserIdFromToken(): number {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  if (!token) return 0;
+  
+  try {
+    const [, payloadBase64] = token.split('.');
+    const decodedPayload = Buffer.from(payloadBase64, 'base64').toString('utf-8');
+    const userData = JSON.parse(decodedPayload);
+    return userData.userId || 0;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return 0;
+  }
+}
 
 // Function to fetch user information from the backend (Corresponds to getUserById endpoint)
 async function getUserInfo(userId: number) {
   try {
-    const response = await fetch(buildUrl(endpoints.users.getUserById(userId)), {
+    // Get token from storage
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    
+    // Get userId from token if not provided
+    const actualUserId = userId || getUserIdFromToken();
+    if (!actualUserId) {
+      console.error('No user ID available');
+      return null;
+    }
+    
+    const response = await fetch(buildUrl(`/api/user/info?userId=${actualUserId}`), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : '',
       },
     });
-    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Failed to fetch user info:', response.status, response.statusText);
+      return null;
+    }
+
+    const text = await response.text();
+    if (!text || text.trim() === '') {
+      console.error('Empty response from user endpoint');
+      return null;
+    }
+
+    const userData = JSON.parse(text);
+
+    // Fetch home address from address table
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const addressResponse = await fetch(buildUrl(`/api/address/user/${userId}/home`), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      });
+
+      if (addressResponse.ok) {
+        const text = await addressResponse.text();
+        if (text && text.trim() !== '') {
+          const homeAddress = JSON.parse(text) as {
+            street: string;
+            city: string;
+            state: string;
+            zip: string;
+            country?: string;
+          };
+          userData.homeStreet = homeAddress.street;
+          userData.homeCity = homeAddress.city;
+          userData.homeState = homeAddress.state;
+          userData.homeZip = homeAddress.zip;
+          userData.homeCountry = homeAddress.country || 'US';
+        }
+      }
+    } catch (error) {
+      console.log('No home address found for user:', error);
+    }
+
     console.log('Successfully retrieved user data from backend');
-    return data;
+    return userData;
   } catch (error) {
     console.error('Fetch error:', error);
     return null;
@@ -26,10 +98,21 @@ async function updateUserInfo(userId: number, userInfo: Partial<BackendUser>) {
   console.log('ID: ' + userId);
   console.log(userInfo);
   try {
-    const response = await fetch(buildUrl(endpoints.users.updateUser(userId)), {
+    // Get token from storage
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    
+    // Get userId from token if not provided
+    const actualUserId = userId || getUserIdFromToken();
+    if (!actualUserId) {
+      console.error('No user ID available');
+      return null;
+    }
+
+    const response = await fetch(buildUrl(`/api/user/info?userId=${actualUserId}`), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : '',
       },
       body: JSON.stringify(userInfo),
     });
@@ -44,10 +127,21 @@ async function updateUserInfo(userId: number, userInfo: Partial<BackendUser>) {
 // Function to request the backend to change a user's password (Corresponds to changePassword endpoint)
 async function changePassword(userId: number, passwordInfo: Partial<BackendUser>) {
   try {
-    const response = await fetch(buildUrl(endpoints.users.changePassword(userId)), {
+    // Get token from storage
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    
+    // Get userId from token if not provided
+    const actualUserId = userId || getUserIdFromToken();
+    if (!actualUserId) {
+      console.error('No user ID available');
+      return null;
+    }
+
+    const response = await fetch(buildUrl(`/api/user/change-password?userId=${actualUserId}`), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : '',
       },
       body: JSON.stringify(passwordInfo),
     });

@@ -1,7 +1,11 @@
 package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.PaymentCard;
+import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.repository.PaymentCardRepository;
+import com.acm.cinema_ebkg_system.repository.AddressRepository;
+import com.acm.cinema_ebkg_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +20,12 @@ public class PaymentCardService {
     
     @Autowired // Spring automatically provides repository instance (dependency injection)
     private PaymentCardRepository paymentCardRepository;
+    
+    @Autowired
+    private AddressRepository addressRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
     
     /**
      * Get all payment cards for a user (default first)
@@ -40,8 +50,9 @@ public class PaymentCardService {
      * @param paymentCard - PaymentCard: Card object with user_id, address_id, card_number, cardholder_name, payment_card_type, expiration_date, cvv
      * @return PaymentCard: Created card with generated ID and timestamps
      */
+    @Transactional
     public PaymentCard createPaymentCard(PaymentCard paymentCard) {
-        // If this is the first card, make it default
+        // If this is the first card for the user, make it default
         List<PaymentCard> existingCards = getUserPaymentCards(paymentCard.getUser().getId());
         if (existingCards.isEmpty()) {
             paymentCard.setIsDefault(true);

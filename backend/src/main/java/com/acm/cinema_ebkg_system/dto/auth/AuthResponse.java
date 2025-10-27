@@ -127,9 +127,6 @@ public class AuthResponse {
         private String firstName;  // User's first name
         private String lastName;   // User's last name
         private String phoneNumber; // User's phone number
-        private String address;    // User's street address
-        private String state;      // User's state/province
-        private String country;    // User's country
 
         // ========== CONSTRUCTORS ==========
         
@@ -146,20 +143,14 @@ public class AuthResponse {
          * @param firstName User's first name
          * @param lastName User's last name
          * @param phoneNumber User's phone number
-         * @param address User's street address
-         * @param state User's state/province
-         * @param country User's country
          */
         public UserDto(Long id, String email, String firstName, String lastName, 
-                      String phoneNumber, String address, String state, String country) {
+                      String phoneNumber) {
             this.id = id;
             this.email = email;
             this.firstName = firstName;
             this.lastName = lastName;
             this.phoneNumber = phoneNumber;
-            this.address = address;
-            this.state = state;
-            this.country = country;
         }
 
         // ========== GETTERS AND SETTERS ==========
@@ -202,30 +193,6 @@ public class AuthResponse {
 
         public void setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public void setAddress(String address) {
-            this.address = address;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public void setCountry(String country) {
-            this.country = country;
         }
     }
 }

@@ -59,9 +59,9 @@ function VerifyEmailContent() {
             localStorage.setItem('user', JSON.stringify(response.data.user));
           }
 
-          // Redirect to home page after 2 seconds
+          // Redirect to login page after 2 seconds
           setTimeout(() => {
-            router.push('/');
+            router.push('/auth/login');
           }, 2000);
         } else {
           setStatus('error');
@@ -171,7 +171,7 @@ function VerifyEmailContent() {
           }`}>
             <p className="text-lg font-medium">{message}</p>
             {status === 'success' && (
-              <p className="text-sm mt-2 text-white/70">Redirecting to home page...</p>
+              <p className="text-sm mt-2 text-white/70">Redirecting to login...</p>
             )}
             {status === 'registration-success' && (
               <p className="text-sm mt-2 text-white/70">Check your email inbox and spam folder for the verification link.</p>
@@ -255,22 +255,26 @@ function VerifyEmailContent() {
 
           {status === 'success' && (
             <button
-              onClick={() => router.push('/')}
+              onClick={() => router.push('/auth/login')}
               className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
             >
-              Continue to Home
+              Go to Login
             </button>
           )}
 
           {status === 'registration-success' && (
             <div className="space-y-3">
               <button
+                title="Go to Login"
+                type="button"
                 onClick={() => router.push('/auth/login')}
                 className="w-full inline-flex justify-center bg-gradient-to-r from-acm-pink to-acm-orange text-white px-5 py-2.5 rounded-lg font-semibold hover:brightness-110 transition-all"
               >
                 Go to Login
               </button>
               <button
+                title="Resend Verification Email"
+                type="button"
                 onClick={() => router.push('/auth/resend-verification')}
                 className="w-full bg-white/10 text-white py-3 rounded-lg hover:bg-white/20 transition-colors font-medium border border-white/20"
               >

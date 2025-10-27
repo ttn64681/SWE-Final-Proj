@@ -1,7 +1,9 @@
 package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.model.Address;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
+import com.acm.cinema_ebkg_system.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,9 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private AddressRepository addressRepository;
     
     @Autowired
     private EmailService emailService;  // Data access layer for user operations
@@ -182,6 +187,7 @@ public class UserService {
      * Update user's personal information
      * 
      * This method updates a user's personal information based on the provided UserInfo DTO.
+     * It also handles the home address in the address table.
      * 
      * @param userId User ID to update
      * @param userInfo UserInfo DTO containing updated information
@@ -202,14 +208,55 @@ public class UserService {
         if (userInfo.getPhoneNumber() != null) {
             user.setPhoneNumber(userInfo.getPhoneNumber());
         }
-        if (userInfo.getAddress() != null) {
-            user.setAddress(userInfo.getAddress());
+        
+        // Handle enrolled_for_promotions preference
+        if (userInfo.getEnrolledForPromotions() != null) {
+            user.setEnrolledForPromotions(userInfo.getEnrolledForPromotions());
         }
-        if (userInfo.getState() != null) {
-            user.setState(userInfo.getState());
-        }
-        if (userInfo.getCountry() != null) {
-            user.setCountry(userInfo.getCountry());
+        
+        // Handle home address in the address table
+        if (userInfo.getHomeStreet() != null || userInfo.getHomeCity() != null || 
+            userInfo.getHomeState() != null || userInfo.getHomeZip() != null) {
+            
+            // Check if user already has a home address
+            List<Address> homeAddresses = addressRepository.findByUserIdAndAddressType(userId, "home");
+            Address homeAddress;
+            
+            if (!homeAddresses.isEmpty()) {
+                // Update existing home address
+                homeAddress = homeAddresses.get(0);
+                
+                if (userInfo.getHomeStreet() != null) {
+                    homeAddress.setStreet(userInfo.getHomeStreet());
+                }
+                if (userInfo.getHomeCity() != null) {
+                    homeAddress.setCity(userInfo.getHomeCity());
+                }
+                if (userInfo.getHomeState() != null) {
+                    homeAddress.setState(userInfo.getHomeState());
+                }
+                if (userInfo.getHomeZip() != null) {
+                    homeAddress.setZip(userInfo.getHomeZip());
+                }
+                if (userInfo.getHomeCountry() != null) {
+                    homeAddress.setCountry(userInfo.getHomeCountry());
+                } else {
+                    homeAddress.setCountry("US"); // default
+                }
+            } else {
+                // Create new home address
+                homeAddress = new Address();
+                homeAddress.setUser(user);
+                homeAddress.setAddressType("home");
+                
+                homeAddress.setStreet(userInfo.getHomeStreet() != null ? userInfo.getHomeStreet() : "");
+                homeAddress.setCity(userInfo.getHomeCity() != null ? userInfo.getHomeCity() : "");
+                homeAddress.setState(userInfo.getHomeState() != null ? userInfo.getHomeState() : "");
+                homeAddress.setZip(userInfo.getHomeZip() != null ? userInfo.getHomeZip() : "");
+                homeAddress.setCountry(userInfo.getHomeCountry() != null ? userInfo.getHomeCountry() : "US");
+            }
+            
+            addressRepository.save(homeAddress);
         }
 
         // Send confirmation email

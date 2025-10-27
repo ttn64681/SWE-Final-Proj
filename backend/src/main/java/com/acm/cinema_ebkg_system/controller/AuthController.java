@@ -71,7 +71,6 @@ public class AuthController {
      * @return ResponseEntity<AuthResponse> with success status, tokens, and user info
      */
     @PostMapping("/register")
-    @Transactional // Ensures user + addresses + payment cards all succeed or fail together
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         try {
             // Step 1: Create User entity from request data
@@ -177,10 +176,7 @@ public class AuthController {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getPhoneNumber(),
-                user.getAddress(),
-                user.getState(),
-                user.getCountry()
+                user.getPhoneNumber()
             );
 
             // Step 5: Return success response with tokens and user data
@@ -230,10 +226,7 @@ public class AuthController {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getPhoneNumber(),
-                user.getAddress(),
-                user.getState(),
-                user.getCountry()
+                user.getPhoneNumber()
             );
 
             // Step 5: Return new access token with user information (refresh token stays the same)
@@ -269,10 +262,7 @@ public class AuthController {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getPhoneNumber(),
-                user.getAddress(),
-                user.getState(),
-                user.getCountry()
+                user.getPhoneNumber()
             );
             
             // Step 4: Return success response with tokens
