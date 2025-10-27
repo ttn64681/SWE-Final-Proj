@@ -35,4 +35,3 @@ export default function UserRouteProtection({ children }: UserRouteProtectionPro
 
   return <>{children}</>;
 }
-

@@ -1,6 +1,6 @@
 /**
  * Admin Middleware - Checks if user is an admin from database
- * 
+ *
  * Strategy:
  * 1. Check if user has valid JWT token
  * 2. Decode token to get user email
@@ -20,4 +20,3 @@ export async function checkAdminAccess(userEmail: string): Promise<boolean> {
     return false;
   }
 }
-
