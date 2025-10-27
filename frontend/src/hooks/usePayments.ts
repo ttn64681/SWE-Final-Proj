@@ -29,7 +29,7 @@ export function usePayments(userId: number) {
     async function addPayment(newPayment: Omit<BackendPayment, 'payment_info_id' | 'user_id'>) {
         console.log("New payment:", newPayment);
         try {
-            const response = await fetch(buildUrl(endpoints.payments.addPaymentInfo(userId)), {
+            const response = await fetch(apiConfig.buildUrl(endpoints.payments.addPaymentInfo(userId)), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export function usePayments(userId: number) {
 
     async function deletePayment(currentPaymentId: number) {
         try {
-            const response = await fetch(buildUrl(endpoints.payments.deletePaymentInfo(userId, currentPaymentId)), {
+            const response = await fetch(apiConfig.buildUrl(endpoints.payments.deletePaymentInfo(userId, currentPaymentId)), {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
