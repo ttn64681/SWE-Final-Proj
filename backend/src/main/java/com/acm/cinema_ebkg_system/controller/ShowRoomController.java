@@ -12,6 +12,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/show-rooms")
+@CrossOrigin(origins = "*")
 public class ShowRoomController {
     
     @Autowired // Spring automatically provides service instance (dependency injection)

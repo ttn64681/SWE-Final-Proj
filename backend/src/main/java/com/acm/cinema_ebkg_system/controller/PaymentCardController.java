@@ -13,6 +13,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/payment-cards")
+@CrossOrigin(origins = "*")
 public class PaymentCardController {
     
     @Autowired // Spring automatically provides service instance (dependency injection)

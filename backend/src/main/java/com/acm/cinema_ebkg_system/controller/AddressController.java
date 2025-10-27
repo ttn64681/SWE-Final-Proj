@@ -13,6 +13,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/addresses")
+@CrossOrigin(origins = "*")
 public class AddressController {
     
     @Autowired // Spring automatically provides service instance (dependency injection)
