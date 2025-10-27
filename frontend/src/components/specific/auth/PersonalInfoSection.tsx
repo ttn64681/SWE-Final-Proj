@@ -17,8 +17,8 @@ export default function PersonalInfoSection({ data, updateData, errors, isLoadin
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="firstName" className="flex flex-row block text-white text-md mb-2">
-            First Name <p className={`ml-1 text-lg text-red-400`}> * </p>
+          <label htmlFor="firstName" className="block text-white text-sm mb-2">
+            First Name*
           </label>
           <input
             type="text"
@@ -34,8 +34,8 @@ export default function PersonalInfoSection({ data, updateData, errors, isLoadin
         </div>
 
         <div>
-          <label htmlFor="lastName" className="flex flex-row block text-white text-md mb-2">
-            Last Name <p className={`ml-1 text-lg text-red-400`}> * </p>
+          <label htmlFor="lastName" className="block text-white text-sm mb-2">
+            Last Name*
           </label>
           <input
             type="text"
@@ -52,8 +52,8 @@ export default function PersonalInfoSection({ data, updateData, errors, isLoadin
       </div>
 
       <div>
-        <label htmlFor="phoneNumber" className="flex flex-row block text-white text-md mb-2">
-            Phone Number <p className={`ml-1 text-lg text-red-400`}> * </p>
+        <label htmlFor="phoneNumber" className="block text-white text-sm mb-2">
+          Phone Number*
         </label>
         <input
           type="tel"
