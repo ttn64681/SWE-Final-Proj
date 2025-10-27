@@ -17,7 +17,7 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
       </h3>
 
       <div>
-        <label htmlFor="address" className="block text-white text-sm mb-2">
+        <label htmlFor="address" className="block text-white text-md mb-2">
           Street Address
         </label>
         <input
@@ -33,7 +33,7 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label htmlFor="city" className="block text-white text-sm mb-2">
+          <label htmlFor="city" className="block text-white text-md mb-2">
             City
           </label>
           <input
@@ -48,7 +48,7 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
         </div>
 
         <div>
-          <label htmlFor="state" className="block text-white text-sm mb-2">
+          <label htmlFor="state" className="block text-white text-md mb-2">
             State
           </label>
           <input
@@ -63,7 +63,7 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
         </div>
 
         <div>
-          <label htmlFor="zipCode" className="block text-white text-sm mb-2">
+          <label htmlFor="zipCode" className="block text-white text-md mb-2">
             ZIP Code
           </label>
           <input
@@ -79,7 +79,7 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
       </div>
 
       <div>
-        <label htmlFor="country" className="block text-white text-sm mb-2">
+        <label htmlFor="country" className="block text-white text-md mb-2">
           Country
         </label>
         <select

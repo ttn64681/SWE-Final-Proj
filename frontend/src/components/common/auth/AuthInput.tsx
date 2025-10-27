@@ -23,15 +23,15 @@ export default function AuthInput({
   onChange,
   placeholder,
   error,
-  required = false,
+  required,
   disabled = false,
   className = '',
 }: AuthInputProps) {
   return (
     <div className={className}>
-      <label htmlFor={id} className="block text-white text-sm mb-2">
-        {label}
-      </label>
+        <label htmlFor={id} className="flex flex-row block text-white text-md">
+          {label} <p className={`ml-1 text-lg ${required ? 'text-red-400' : 'text-black'} `}> * </p>
+        </label>
       <input
         type={type}
         id={id}
@@ -39,7 +39,7 @@ export default function AuthInput({
         onChange={onChange}
         placeholder={placeholder}
         className={`w-full px-4 py-3 rounded-md bg-white/10 border ${error ? 'border-red-500' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent`}
-        required={required}
+        required={!required}
         disabled={disabled}
       />
       {error && <p className="text-red-400 text-sm mt-1">{error}</p>}

@@ -86,35 +86,35 @@ export default function RegisterPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <AuthInput
           id="email"
-          label="Email Address*"
+          label="Email Address"
           type="email"
           value={data.email}
           onChange={(e) => updateData({ email: e.target.value })}
           placeholder="you@example.com"
           error={errors.email}
-          required
+          required={true}
         />
 
         <AuthInput
           id="password"
-          label="Password*"
+          label="Password"
           type="password"
           value={data.password}
           onChange={(e) => updateData({ password: e.target.value })}
           placeholder="••••••••"
           error={errors.password}
-          required
+          required={true}
         />
 
         <AuthInput
           id="confirmPassword"
-          label="Confirm Password*"
+          label="Confirm Password"
           type="password"
           value={data.confirmPassword}
           onChange={(e) => updateData({ confirmPassword: e.target.value })}
           placeholder="••••••••"
           error={errors.confirmPassword}
-          required
+          required={true}
         />
 
         <AuthButton type="submit" variant="primary" disabled={isCheckingEmail}>
