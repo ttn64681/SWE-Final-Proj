@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
-import TicketCounter from '@/components/specific/booking/ticketAge/TicketCounter';
-import CheckoutButton from '@/components/specific/booking/ticketAge/CheckoutButton';
+import TicketCounter from '@/components/specific/booking/ticket-age/TicketCounter';
+import CheckoutButton from '@/components/specific/booking/ticket-age/CheckoutButton';
 
 import Link from 'next/link';
 import { format } from 'node:util';

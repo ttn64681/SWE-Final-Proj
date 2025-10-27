@@ -1,15 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFilters } from '@/contexts/FiltersContext';
 
 export function useSearchLogic() {
   const router = useRouter();
-  const { selectedGenres, selectedDate } = useFilters();
-  
+  const { selectedGenres, selectedDate, isFiltersOpen, setIsFiltersOpen } = useFilters();
+
   // Search input state
   const [searchQuery, setSearchQuery] = useState('');
-  // Track if the filters popup is open/closed
-  const [isFilterClosed, setIsFilterClosed] = useState(true);
 
   // Prevent duplicate searches
   const lastSearchRef = useRef<string>('');
@@ -18,24 +16,24 @@ export function useSearchLogic() {
   const handleSearch = () => {
     // Build the search parameters
     const params = new URLSearchParams();
-    
+
     // Add movie title if user typed something
     if (searchQuery.trim()) {
       params.set('title', searchQuery.trim());
     }
-    
+
     // Add selected genres (comma-separated) if any are selected (same as navbar)
     if (selectedGenres.size > 0) {
       params.set('genres', Array.from(selectedGenres).join(','));
     }
-    
+
     // Add date filters if user selected a date (same as navbar)
     if (selectedDate.month) params.set('month', selectedDate.month);
     if (selectedDate.day) params.set('day', selectedDate.day);
     if (selectedDate.year) params.set('year', selectedDate.year);
-    
+
     const queryString = params.toString();
-    
+
     // Console log the API request details (same as navbar)
     console.log('=== SEARCH REQUEST ===');
     console.log('Search Query:', searchQuery.trim());
@@ -48,9 +46,9 @@ export function useSearchLogic() {
     if (queryString === lastSearchRef.current) {
       return;
     }
-    
+
     lastSearchRef.current = queryString;
-    
+
     router.push(`/movies${queryString ? `?${queryString}` : ''}`);
   };
 
@@ -61,12 +59,15 @@ export function useSearchLogic() {
     }
   };
 
+  // Return search logic with global filter state integration
+  // Note: isFilterClosed maps to global isFiltersOpen state
+  // This maintains compatibility with existing MoviesPageContent component
   return {
     searchQuery,
     setSearchQuery,
-    isFilterClosed,
-    setIsFilterClosed,
+    isFilterClosed: !isFiltersOpen, // Maps global state to local naming
+    setIsFilterClosed: (closed: boolean) => setIsFiltersOpen(!closed), // Updates global state
     handleSearch,
-    handleKeyPress
+    handleKeyPress,
   };
 }

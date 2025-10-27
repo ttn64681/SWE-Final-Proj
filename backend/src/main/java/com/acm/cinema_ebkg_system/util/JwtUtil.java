@@ -64,20 +64,6 @@ public class JwtUtil {
     @Value("${jwt.refresh-token-expiration}")
     private Long refreshTokenExpiration;
 
-    /**
-     * Remember me access token expiration time in milliseconds (default: 30 days)
-     * Extended expiration for "Remember Me" functionality
-     */
-    @Value("${jwt.remember-me-access-token-expiration:2592000000}")
-    private Long rememberMeAccessTokenExpiration;
-
-    /**
-     * Remember me refresh token expiration time in milliseconds (default: 90 days)
-     * Extended expiration for "Remember Me" functionality
-     */
-    @Value("${jwt.remember-me-refresh-token-expiration:7776000000}")
-    private Long rememberMeRefreshTokenExpiration;
-
     // ========== SECURITY UTILITIES ==========
     
     /**
@@ -99,23 +85,9 @@ public class JwtUtil {
      * @return String JWT access token
      */
     public String generateToken(String email, Long userId) {
-        return generateToken(email, userId, false);
-    }
-
-    /**
-     * Generate an access token for API authentication with configurable expiration
-     * 
-     * @param email User's email address (used as subject)
-     * @param userId User's unique ID (stored in claims)
-     * @param rememberMe If true, uses extended expiration time
-     * @return String JWT access token
-     */
-    public String generateToken(String email, Long userId, boolean rememberMe) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
-        claims.put("rememberMe", rememberMe);  // Store remember me preference in token
-        Long expiration = rememberMe ? rememberMeAccessTokenExpiration : accessTokenExpiration;
-        return createToken(claims, email, expiration);
+        return createToken(claims, email, accessTokenExpiration);
     }
 
     /**
@@ -126,24 +98,10 @@ public class JwtUtil {
      * @return String JWT refresh token
      */
     public String generateRefreshToken(String email, Long userId) {
-        return generateRefreshToken(email, userId, false);
-    }
-
-    /**
-     * Generate a refresh token with configurable expiration
-     * 
-     * @param email User's email address (used as subject)
-     * @param userId User's unique ID (stored in claims)
-     * @param rememberMe If true, uses extended expiration time
-     * @return String JWT refresh token
-     */
-    public String generateRefreshToken(String email, Long userId, boolean rememberMe) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("type", "refresh");  // Mark as refresh token
-        claims.put("rememberMe", rememberMe);  // Store remember me preference in token
-        Long expiration = rememberMe ? rememberMeRefreshTokenExpiration : refreshTokenExpiration;
-        return createToken(claims, email, expiration);
+        return createToken(claims, email, refreshTokenExpiration);
     }
 
     /**
@@ -199,17 +157,6 @@ public class JwtUtil {
     public Long getUserIdFromToken(String token) {
         Claims claims = getAllClaimsFromToken(token);
         return claims.get("userId", Long.class);
-    }
-
-    /**
-     * Extract remember me preference from JWT token claims
-     * 
-     * @param token JWT token
-     * @return Boolean Remember me preference (defaults to false if not present)
-     */
-    public Boolean getRememberMeFromToken(String token) {
-        Claims claims = getAllClaimsFromToken(token);
-        return claims.get("rememberMe", Boolean.class);
     }
 
     /**
