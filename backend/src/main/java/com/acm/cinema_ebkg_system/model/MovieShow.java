@@ -25,7 +25,7 @@ public class MovieShow {
     
     // Many movie shows belong to one movie (a movie can be shown in multiple rooms)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id", nullable = false)
+    @JoinColumn(name = "movie_id", referencedColumnName = "movie_id", nullable = false)
     private Movie movie;
     
     // Many movie shows belong to one show room (a room can show multiple movies)

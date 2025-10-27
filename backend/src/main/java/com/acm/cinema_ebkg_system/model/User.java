@@ -62,6 +62,10 @@ public class User {
     @Column
     private String country;
 
+    // User preferences
+    @Column(name = "enrolled_for_promotions")
+    private boolean enrolledForPromotions = false;
+
     // Audit fields - automatically managed timestamps
     @Column(name = "created_at")
     private LocalDateTime createdAt;

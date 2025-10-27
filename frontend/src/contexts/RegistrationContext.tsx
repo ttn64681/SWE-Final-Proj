@@ -2,33 +2,39 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+// Payment card with billing address
+export interface PaymentCard {
+  id: string; // temporary ID for frontend
+  cardType: string;
+  cardNumber: string;
+  expirationDate: string;
+  cvv: string;
+  billingStreet: string;
+  billingCity: string;
+  billingState: string;
+  billingZip: string;
+  isDefault: boolean;
+}
+
 export interface RegistrationData {
   // Step 1
   email: string;
   password: string;
   confirmPassword: string;
 
-  // Step 2
+  // Step 2 - Optional home address
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  homeAddress?: string; // Optional home address
+  homeCity?: string;
+  homeState?: string;
+  homeZip?: string;
+  homeCountry?: string;
 
-  // Step 3
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-
-  // Step 3 - Payment Method (Optional)
-  cardType?: string;
-  cardNumber?: string;
-  expirationDate?: string;
-  cvv?: string;
-  billingStreet?: string;
-  billingCity?: string;
-  billingState?: string;
-  billingZip?: string;
+  // Step 3 - Payment cards (up to 3)
+  paymentCards: PaymentCard[];
+  defaultCardId?: string;
   
   // Preferences
   enrollForPromotions?: boolean;
@@ -48,21 +54,22 @@ const initialData: RegistrationData = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
-
-  address: '',
-  city: '',
-  state: '',
-  zipCode: '',
-  country: '',
-
-  cardType: '',
-  cardNumber: '',
-  expirationDate: '',
-  cvv: '',
-  billingStreet: '',
-  billingCity: '',
-  billingState: '',
-  billingZip: '',
+  paymentCards: [
+    {
+      id: 'card_1',
+      cardType: '',
+      cardNumber: '',
+      expirationDate: '',
+      cvv: '',
+      billingStreet: '',
+      billingCity: '',
+      billingState: '',
+      billingZip: '',
+      isDefault: true,
+    },
+  ],
+  defaultCardId: 'card_1',
+  enrollForPromotions: false,
 };
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);
@@ -90,6 +97,41 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
     setData(initialData);
   };
 
+  // Helper: Check if a payment card is fully filled
+  const isPaymentCardComplete = (card: PaymentCard): boolean => {
+    return !!(
+      card.cardType &&
+      card.cardNumber &&
+      card.expirationDate &&
+      card.cvv &&
+      card.billingStreet &&
+      card.billingCity &&
+      card.billingState &&
+      card.billingZip
+    );
+  };
+
+  // Helper: Check if a payment card is completely empty
+  const isPaymentCardEmpty = (card: PaymentCard): boolean => {
+    return !(
+      card.cardType ||
+      card.cardNumber ||
+      card.expirationDate ||
+      card.cvv ||
+      card.billingStreet ||
+      card.billingCity ||
+      card.billingState ||
+      card.billingZip
+    );
+  };
+
+  // Helper: Check if any card is partially filled (invalid state)
+  const hasPartialPaymentCard = (): boolean => {
+    return data.paymentCards.some(
+      (card) => !isPaymentCardComplete(card) && !isPaymentCardEmpty(card)
+    );
+  };
+
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1:
@@ -103,13 +145,9 @@ export const RegistrationProvider: React.FC<RegistrationProviderProps> = ({ chil
       case 2:
         return !!(data.firstName && data.lastName && data.phoneNumber);
       case 3:
-        // return !!(
-        //   data.state &&
-        //   data.country
-        // );
-
-        // Step 3 is now optional - payment method can be empty
-        return true;
+        // All payment cards must be either fully complete or completely empty
+        // Cannot have any partially filled cards
+        return !hasPartialPaymentCard();
       default:
         return false;
     }

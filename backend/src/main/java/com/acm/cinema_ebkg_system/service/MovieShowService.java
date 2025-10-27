@@ -29,7 +29,7 @@ public class MovieShowService {
      * @return List<MovieShow> - All shows for this movie
      */
     public List<MovieShow> getMovieShowsByMovieId(Long movieId) {
-        return movieShowRepository.findByMovieId(movieId);
+        return movieShowRepository.findByMovie_MovieId(movieId);
     }
     
     /**

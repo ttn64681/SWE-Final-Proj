@@ -123,6 +123,13 @@ CREATE INDEX idx_movie_show_movie ON movie_show(movie_id);
 CREATE INDEX idx_movie_show_room ON movie_show(show_room_id);
 CREATE INDEX idx_movie_show_status ON movie_show(status);
 
+-- Add enrolled_for_promotions column to users table
+-- This field tracks whether user has opted into promotional emails
+ALTER TABLE users 
+    ADD COLUMN IF NOT EXISTS enrolled_for_promotions BOOLEAN DEFAULT FALSE;
+-- Add index for marketing queries
+CREATE INDEX IF NOT EXISTS idx_users_enrolled_promotions ON users(enrolled_for_promotions);
+
 -- ========================================
 -- TODO: PHASE 7 - DATA MIGRATION
 -- ========================================

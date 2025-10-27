@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface MovieShowRepository extends JpaRepository<MovieShow, Long> {
     
-    // Find movie shows by movie
-    List<MovieShow> findByMovieId(Long movieId);
+    // Find movie shows by movie (Movie entity uses 'movie_id' as its primary key)
+    List<MovieShow> findByMovie_MovieId(Long movieId);
     
     // Find movie shows by show room
     List<MovieShow> findByShowRoomId(Long showRoomId);
@@ -22,7 +22,7 @@ public interface MovieShowRepository extends JpaRepository<MovieShow, Long> {
     // Find movie shows by status
     List<MovieShow> findByStatus(String status);
     
-    // Find movie shows by movie and status
-    List<MovieShow> findByMovieIdAndStatus(Long movieId, String status);
+    // Find movie shows by movie and status (Movie entity uses 'movie_id' as its primary key)
+    List<MovieShow> findByMovie_MovieIdAndStatus(Long movieId, String status);
 }
 

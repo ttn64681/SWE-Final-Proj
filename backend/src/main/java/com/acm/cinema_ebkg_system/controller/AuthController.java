@@ -5,10 +5,15 @@ import com.acm.cinema_ebkg_system.dto.auth.LoginRequest;
 import com.acm.cinema_ebkg_system.dto.auth.RegisterRequest;
 import com.acm.cinema_ebkg_system.dto.auth.ResetPasswordRequest;
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.service.UserService;
+import com.acm.cinema_ebkg_system.service.AddressService;
+import com.acm.cinema_ebkg_system.service.PaymentCardService;
 import com.acm.cinema_ebkg_system.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -41,6 +46,12 @@ public class AuthController {
     
     @Autowired
     private UserService userService;  // Service layer for user business logic
+    
+    @Autowired
+    private AddressService addressService;  // Service for address operations
+    
+    @Autowired
+    private PaymentCardService paymentCardService;  // Service for payment card operations
 
     @Autowired
     private JwtUtil jwtUtil;  // Utility for JWT token operations
@@ -60,6 +71,7 @@ public class AuthController {
      * @return ResponseEntity<AuthResponse> with success status, tokens, and user info
      */
     @PostMapping("/register")
+    @Transactional // Ensures user + addresses + payment cards all succeed or fail together
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         try {
             // Step 1: Create User entity from request data
@@ -69,17 +81,58 @@ public class AuthController {
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
             user.setPhoneNumber(request.getPhoneNumber());
-            user.setAddress(request.getAddress());
-            user.setState(request.getState());
-            user.setCountry(request.getCountry());
+            
+            // Set enrollment preference
+            if (request.getEnrolledForPromotions() != null) {
+                user.setEnrolledForPromotions(request.getEnrolledForPromotions());
+            }
 
             // Step 2: Register user (validates email uniqueness, hashes password, saves to DB)
             User savedUser = userService.registerUser(user);
             
-            // Step 3: Generate verification token and send email
+            // Step 3: Create home address if provided (from step 2 registration)
+            // Note: Home address would come from RegistrationContext home fields if provided
+            // For now, this is left as optional for future implementation
+            
+            // Step 4: Create payment cards and billing addresses if provided
+            if (request.getPaymentCards() != null && !request.getPaymentCards().isEmpty()) {
+                for (RegisterRequest.PaymentCardInfo cardInfo : request.getPaymentCards()) {
+                    // Create billing address for this payment card
+                    Address billingAddress = new Address();
+                    billingAddress.setUser(savedUser);
+                    billingAddress.setAddressType("billing");
+                    billingAddress.setStreet(cardInfo.getBillingStreet());
+                    billingAddress.setCity(cardInfo.getBillingCity());
+                    billingAddress.setState(cardInfo.getBillingState());
+                    billingAddress.setZip(cardInfo.getBillingZip());
+                    billingAddress.setCountry("US"); // Default to US
+                    
+                    Address savedAddress = addressService.createAddress(billingAddress);
+                    
+                    // Create payment card
+                    PaymentCard paymentCard = new PaymentCard();
+                    paymentCard.setUser(savedUser);
+                    paymentCard.setAddress(savedAddress);
+                    paymentCard.setCardNumber(cardInfo.getCardNumber()); // Should be encrypted in production
+                    paymentCard.setCardholderName(cardInfo.getCardholderName());
+                    paymentCard.setPaymentCardType(cardInfo.getCardType());
+                    paymentCard.setExpirationDate(cardInfo.getExpirationDate());
+                    
+                    // Set is_default flag
+                    if (cardInfo.getIsDefault() != null) {
+                        paymentCard.setIsDefault(cardInfo.getIsDefault());
+                    } else {
+                        paymentCard.setIsDefault(false);
+                    }
+                    
+                    paymentCardService.createPaymentCard(paymentCard);
+                }
+            }
+            
+            // Step 5: Generate verification token and send email
             userService.generateVerificationToken(savedUser);
 
-            // Step 4: Return success response (no tokens until email is verified)
+            // Step 6: Return success response (no tokens until email is verified)
             AuthResponse response = new AuthResponse(true, "Registration successful! Please check your email to verify your account.");
             return ResponseEntity.ok(response);
 

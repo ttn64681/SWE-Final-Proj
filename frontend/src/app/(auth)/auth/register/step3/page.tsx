@@ -8,6 +8,7 @@ import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import AuthButtonGroup from '@/components/common/auth/AuthButtonGroup';
 import PaymentSection from '@/components/specific/auth/PaymentSection';
 import PreferencesSection from '@/components/specific/auth/PreferencesSection';
+import { PaymentCard } from '@/contexts/RegistrationContext';
 
 export default function RegisterStep3Page() {
   const { data, updateData, clearData } = useRegistration();
@@ -21,18 +22,48 @@ export default function RegisterStep3Page() {
     setIsLoading(true);
 
     try {
+      // Helper: Check if payment card is fully filled
+      const isCardComplete = (card: PaymentCard): boolean => {
+        return !!(
+          card.cardType &&
+          card.cardNumber &&
+          card.expirationDate &&
+          card.cvv &&
+          card.billingStreet &&
+          card.billingCity &&
+          card.billingState &&
+          card.billingZip
+        );
+      };
+
+      // Filter out empty payment cards - only send fully filled ones
+      const completePaymentCards = data.paymentCards.filter(isCardComplete);
+
       // Prepare registration data for backend
+      // Transform payment cards to match backend DTO structure
+      const paymentCardsForBackend =
+        completePaymentCards.length > 0
+          ? completePaymentCards.map((card) => ({
+              cardType: card.cardType,
+              cardNumber: card.cardNumber,
+              expirationDate: card.expirationDate,
+              cardholderName: `${data.firstName} ${data.lastName}`, // Use user's name as cardholder
+              billingStreet: card.billingStreet,
+              billingCity: card.billingCity,
+              billingState: card.billingState,
+              billingZip: card.billingZip,
+              isDefault: card.isDefault,
+            }))
+          : undefined;
+
       const registrationData = {
         email: data.email,
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
         phoneNumber: data.phoneNumber,
-        address: data.address || '',
-        state: data.state || '',
-        country: data.country || 'US',
-        // Note: Payment info and promotions preference are not sent to backend yet
-        // as the backend doesn't currently support these fields
+        enrolledForPromotions: data.enrollForPromotions || false,
+        paymentCards: paymentCardsForBackend,
       };
 
       // Call registration API

@@ -23,8 +23,8 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
         <input
           type="text"
           id="address"
-          value={data.address || ''}
-          onChange={(e) => updateData({ address: e.target.value })}
+          value={data.homeAddress || ''}
+          onChange={(e) => updateData({ homeAddress: e.target.value })}
           placeholder="123 Main Street"
           className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
           disabled={isLoading}
@@ -39,8 +39,8 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
           <input
             type="text"
             id="city"
-            value={data.city || ''}
-            onChange={(e) => updateData({ city: e.target.value })}
+            value={data.homeCity || ''}
+            onChange={(e) => updateData({ homeCity: e.target.value })}
             placeholder="New York"
             className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
             disabled={isLoading}
@@ -54,8 +54,8 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
           <input
             type="text"
             id="state"
-            value={data.state || ''}
-            onChange={(e) => updateData({ state: e.target.value })}
+            value={data.homeState || ''}
+            onChange={(e) => updateData({ homeState: e.target.value })}
             placeholder="NY"
             className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
             disabled={isLoading}
@@ -69,8 +69,8 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
           <input
             type="text"
             id="zipCode"
-            value={data.zipCode || ''}
-            onChange={(e) => updateData({ zipCode: e.target.value })}
+            value={data.homeZip || ''}
+            onChange={(e) => updateData({ homeZip: e.target.value })}
             placeholder="10001"
             className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
             disabled={isLoading}
@@ -84,8 +84,8 @@ export default function AddressSection({ data, updateData, isLoading = false }: 
         </label>
         <select
           id="country"
-          value={data.country || 'US'}
-          onChange={(e) => updateData({ country: e.target.value })}
+          value={data.homeCountry || 'US'}
+          onChange={(e) => updateData({ homeCountry: e.target.value })}
           className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent cursor-pointer"
           disabled={isLoading}
         >
