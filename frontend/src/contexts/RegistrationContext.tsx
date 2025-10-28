@@ -12,12 +12,11 @@ export interface RegistrationData {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  // Address fields (optional)
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  country?: string;
+
+  // // Step 3
+  // address: string;
+  // state: string;
+  // country: string;
 
   // Step 3 - Payment Method (Optional)
   cardType?: string;
@@ -28,9 +27,6 @@ export interface RegistrationData {
   billingCity?: string;
   billingState?: string;
   billingZip?: string;
-  
-  // Step 3 - Preferences
-  enrollForPromotions?: boolean;
 }
 
 interface RegistrationContextType {
@@ -47,13 +43,11 @@ const initialData: RegistrationData = {
   firstName: '',
   lastName: '',
   phoneNumber: '',
-  // Address fields
-  address: '',
-  city: '',
-  state: '',
-  zipCode: '',
-  country: 'US',
-  // Payment fields
+
+  // address: '',
+  // state: '',
+  // country: '',
+
   cardType: '',
   cardNumber: '',
   expirationDate: '',
@@ -62,8 +56,6 @@ const initialData: RegistrationData = {
   billingCity: '',
   billingState: '',
   billingZip: '',
-  // Preferences
-  enrollForPromotions: false,
 };
 
 const RegistrationContext = createContext<RegistrationContextType | undefined>(undefined);

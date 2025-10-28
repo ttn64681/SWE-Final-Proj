@@ -4,7 +4,6 @@ import Link from 'next/link';
 import NavBar from '@/components/common/navBar/NavBar';
 import { PiPencilSimple, PiX, PiPlus } from 'react-icons/pi';
 import { useState } from 'react';
-
 export default function AdminPricingPage() {
   // modals
   const [showPromotionModal, setShowPromotionModal] = useState(false);
@@ -454,5 +453,3 @@ export default function AdminPricingPage() {
     </div>
   );
 }
-
-

@@ -1,7 +1,6 @@
 import React from 'react';
 import Genre from './Genre';
 import WhiteSeparator from '@/components/common/WhiteSeparator';
-import Spinner from '@/components/common/Spinner';
 
 interface GenresSectionProps {
   genres: string[];
@@ -19,8 +18,8 @@ export default function GenresSection({ genres, isLoading = false }: GenresSecti
           className="flex flex-row overflow-x-scroll scrollbar-hide py-4 gap-x-4 px-24"
         >
           {isLoading ? (
-            <div className="px-4 py-8">
-              <Spinner size="md" color="gray" text="Loading genres..." />
+            <div className="text-white/60 text-lg px-4 py-8">
+              Loading genres...
             </div>
           ) : genres.length > 0 ? (
             genres.map((genreName, index) => (

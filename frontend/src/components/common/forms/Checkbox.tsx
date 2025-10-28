@@ -46,4 +46,3 @@ export default function Checkbox({ id, label, checked, onChange, disabled = fals
   );
 }
 
-

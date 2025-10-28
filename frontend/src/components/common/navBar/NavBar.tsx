@@ -4,14 +4,15 @@ import Link from 'next/link';
 import { PiMagnifyingGlass } from "react-icons/pi";
 import { IoFilterOutline } from "react-icons/io5";
 import UserMenu from './UserMenu';
+import FiltersPopUp from '@/components/specific/movies/FiltersPopUp';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFilters } from '@/contexts/FiltersContext';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function NavBar() {
-  // Get global filter state from context
-  const { isFiltersOpen, setIsFiltersOpen } = useFilters();
+  // Track if the filters popup is open/closed
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   // Track what the user typed in the search box
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function NavBar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Section: Logo and Search */}
-          <div className="flex items-center space-x-4 sm:space-x-6 flex-1">
+          <div className="flex items-center space-x-2 sm:space-x-4 flex-1">
             {/* Brand Logo */}
             <div className="flex-shrink-0 flex items-center">
               <Link
@@ -83,7 +84,7 @@ export default function NavBar() {
                 <button
                   onClick={handleSearch}
                   title="Search"
-                  className="absolute left-2 top-2 transform w-3 h-3 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                  className="absolute left-2 top-2 transform w-3 h-3 text-gray-400 hover:text-white transition-colors"
                 >
                   <PiMagnifyingGlass className="text-2xl"/>
                 </button>
@@ -95,7 +96,7 @@ export default function NavBar() {
               <button 
                 title="Filter"
                 type="button"
-                className="text-white hover:text-acm-pink transition-colors duration-200 p-1.5 sm:p-2 cursor-pointer" 
+                className="text-white hover:text-red-500 transition-colors p-1.5 sm:p-2" 
                 aria-label="filter"
                 onClick={() => setIsFiltersOpen(true)}
               >
@@ -108,10 +109,10 @@ export default function NavBar() {
           <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
             {/* Navigation Links - Hidden on small screens */}
             <div className="hidden lg:flex items-center space-x-6">
-              <Link href="/promos" className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer">
+              <Link href="/promos" className="text-white hover:text-red-500 transition-colors duration-200 font-medium">
                 Promotions
               </Link>
-              <Link href="/movies" className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer">
+              <Link href="/movies" className="text-white hover:text-red-500 transition-colors duration-200 font-medium">
                 Movies
               </Link>
             </div>
@@ -123,7 +124,7 @@ export default function NavBar() {
             {!isAuthenticated ? (
               <Link
                 href="/auth/register"
-                className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1 sm:px-4 rounded-md transition-all duration-200 font-medium text-sm sm:text-base cursor-pointer"
+                className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1 sm:px-4 rounded-md transition-all duration-200 font-medium text-sm sm:text-base"
               >
                 Join
               </Link>
@@ -139,7 +140,11 @@ export default function NavBar() {
         </div>
       </div>
       
-      {/* Filters Popup - Now rendered globally via Context Portal */}
+      {/* Filters Popup */}
+      <FiltersPopUp 
+        isClosed={!isFiltersOpen} 
+        setIsClosed={(closed) => setIsFiltersOpen(!closed)}
+      />
     </nav>
   );
 }

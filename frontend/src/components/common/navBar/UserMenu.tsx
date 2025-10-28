@@ -89,6 +89,9 @@ export default function UserMenu({ onMenuToggle }: UserMenuProps) {
               Order History
             </MenuItem>
             <MenuItem href="/user/profile" onClick={handleMenuItemClick}>
+              My Profile
+            </MenuItem>
+            <MenuItem href="/user" onClick={handleMenuItemClick}>
               Account Settings
             </MenuItem>
             <div className="border-t border-white/10 my-1"></div>

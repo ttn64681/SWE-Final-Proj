@@ -10,19 +10,11 @@ import MovieTabsSection from '@/components/specific/home/MovieTabsSection';
 
 // Only lazy load components that are below the fold or not immediately needed
 const GenresSection = dynamic(() => import('@/components/common/genres/GenresSection'), {
-  loading: () => (
-    <div className="px-4 py-8">
-      <Spinner size="md" color="white" text="Loading genres..." />
-    </div>
-  )
+  loading: () => <div className="text-white/60 text-center py-8">Loading genres...</div>
 });
 
 const SmallPromoSection = dynamic(() => import('@/components/common/promos/SmallPromoSection'), {
-  loading: () => (
-    <div className="px-4 py-8">
-      <Spinner size="md" color="white" text="Loading promotions..." />
-    </div>
-  )
+  loading: () => <div className="text-white/60 text-center py-8">Loading promotions...</div>
 });
 
 const Footer = dynamic(() => import('@/components/common/Footer'), {
@@ -32,7 +24,6 @@ const Footer = dynamic(() => import('@/components/common/Footer'), {
 import { sampleMovies, promotions } from '@/constants/movieData';
 import { useMovies } from '@/hooks/useMovies';
 import { useGenres } from '@/hooks/useGenres';
-import Spinner from '@/components/common/Spinner';
 
 function Home() {
   // Tabs state
@@ -56,7 +47,6 @@ function Home() {
         sampleMovies={sampleMovies}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        isLoading={isLoadingMovies}
       />
 
       <div className='px-16 opacity-30 my-8'>
