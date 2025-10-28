@@ -34,11 +34,13 @@ export default function OrderDetails() {
         <h2 className="text-2xl font-extrabold mb-4">Order Details</h2>
 
         <div className="flex items-start mb-4">
-          <Image src={''} alt={'movie title'} className="w-20 h-28 object-cover rounded-md border-1 border-white" />
+          <div className="w-20 h-28 bg-gray-800 rounded-md border border-white flex items-center justify-center">
+            <span className="text-gray-400 text-xs">No Image</span>
+          </div>
           <div className="ml-4">
-            <h3 className="text-lg font-semibold">{'movie.title'}</h3>
-            <p className="text-sm">{'movie.date'}</p>
-            <p className="text-sm">Rated: {'movie.rating'}</p>
+            <h3 className="text-lg font-semibold">Sample Movie</h3>
+            <p className="text-sm">Sample Date</p>
+            <p className="text-sm">Rated: PG-13</p>
           </div>
         </div>
         {/* Divider */}

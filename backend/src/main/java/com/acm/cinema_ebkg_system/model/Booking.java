@@ -1,49 +1,85 @@
-// package com.acm.cinema_ebkg_system.model;
+package com.acm.cinema_ebkg_system.model;
 
-// import com.fasterxml.jackson.annotation.JsonBackReference;
-
-// import jakarta.persistence.Entity;
-// import jakarta.persistence.FetchType;
-// import jakarta.persistence.GeneratedValue;
-// import jakarta.persistence.GenerationType;
-// import jakarta.persistence.Id;
-// import jakarta.persistence.JoinColumn;
-// import jakarta.persistence.ManyToOne;
-// import jakarta.persistence.OneToOne;
-// import jakarta.persistence.Table;
-// import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 // import lombok.Data;
 // import lombok.NoArgsConstructor;
+// import lombok.AllArgsConstructor;
+// import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+// import java.time.LocalDateTime;
+// import java.util.List;
 
+/**
+ * Booking Entity - Represents a user's booking for a movie show
+ * 
+ * TODO: Uncomment when fully implementing the booking system
+ * This entity maps to the 'booking' table in the database and contains
+ * booking information including user, payment, and associated tickets.
+ * 
+ * Key Features:
+ * - Links to User (many bookings belong to one user)
+ * - Links to Promotion (optional promotional discount)
+ * - Has many tickets (one booking can have multiple tickets)
+ * - Tracks total amount and booking status
+ */
 // @Data
 // @NoArgsConstructor
+// @AllArgsConstructor
 // @Entity
-// @Table(name = "bookings")
-// public class Booking {
-
-//     @Id // identifies below 'movie_id' as primary key
-//     @GeneratedValue(strategy = GenerationType.IDENTITY) // generates unique val for primary key
-//     private Long booking_id;
-
-//     @ManyToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "user_id", nullable = false)
-//     @JsonBackReference
-//     private User user;
-
-//     @OneToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "payment_info_id", nullable = false)
-//     private PaymentInfo paymentInfo;
-
-//     // @OneToMany
-//     // @JoinColumn(name = "")
-
-//     @ManyToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "promotions_id", nullable = true)
-//     private Promotion promotion;
-
-//     @NotNull    
-//     // @Column(nullable = false)
-//     private Integer tickets;
-
-
-// }
+// @Table(name = "booking")
+// @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+// TODO: Uncomment entire class when implementing the booking system
+public class Booking {
+    // TODO: Uncomment all fields when implementing the booking system
+    
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @Column(name = "booking_id")
+    // private Long bookingId;
+    
+    // Many-to-one relationship with User
+    // Many bookings belong to one user
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "user_id", nullable = false)
+    // @JsonIgnoreProperties({"bookings", "createdAt", "updatedAt"})
+    // private User user;
+    
+    // Many-to-one relationship with Promotion (optional)
+    // Many bookings can use one promotion
+    // @ManyToOne(fetch = FetchType.LAZY)
+    // @JoinColumn(name = "promotion_id", nullable = true)
+    // @JsonIgnoreProperties({"bookings"})
+    // private Promotion promotion;
+    
+    // Total amount for this booking
+    // @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
+    // private java.math.BigDecimal totalAmount;
+    
+    // Booking status
+    // @Column(name = "status", nullable = false, length = 20)
+    // private String status = "pending"; // pending, confirmed, cancelled
+    
+    // One-to-many relationship with Ticket
+    // One booking has many tickets
+    // @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // @JsonIgnoreProperties({"booking"})
+    // private List<Ticket> tickets;
+    
+    // Timestamp when record was created
+    // @Column(name = "created_at")
+    // private LocalDateTime createdAt;
+    
+    // Timestamp when record was last updated
+    // @Column(name = "updated_at")
+    // private LocalDateTime updatedAt;
+    
+    // @PrePersist
+    // protected void onCreate() {
+    //     createdAt = LocalDateTime.now();
+    //     updatedAt = LocalDateTime.now();
+    // }
+    
+    // @PreUpdate
+    // protected void onUpdate() {
+    //     updatedAt = LocalDateTime.now();
+    // }
+}

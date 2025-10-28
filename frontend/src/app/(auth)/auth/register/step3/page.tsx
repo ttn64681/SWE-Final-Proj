@@ -69,6 +69,11 @@ export default function RegisterStep3Page() {
         lastName: data.lastName,
         phoneNumber: data.phoneNumber,
         enrolledForPromotions: data.enrollForPromotions || false,
+        homeAddress: data.homeAddress,
+        homeCity: data.homeCity,
+        homeState: data.homeState,
+        homeZip: data.homeZip,
+        homeCountry: data.homeCountry || 'US',
         paymentCards: paymentCardsForBackend,
       };
 

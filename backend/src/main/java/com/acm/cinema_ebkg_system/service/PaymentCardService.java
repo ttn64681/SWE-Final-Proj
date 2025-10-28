@@ -1,11 +1,8 @@
 package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.PaymentCard;
-import com.acm.cinema_ebkg_system.model.Address;
-import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.repository.PaymentCardRepository;
 import com.acm.cinema_ebkg_system.repository.AddressRepository;
-import com.acm.cinema_ebkg_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +20,6 @@ public class PaymentCardService {
     
     @Autowired
     private AddressRepository addressRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
     
     /**
      * Get all payment cards for a user (default first)
@@ -46,17 +40,40 @@ public class PaymentCardService {
     }
     
     /**
-     * Create a new payment card (auto-sets as default if first card)
+     * Get payment card by ID
+     * @param cardId - Long: Payment card ID
+     * @return Optional<PaymentCard>: Card if exists, empty if not
+     */
+    public Optional<PaymentCard> getPaymentCardById(Long cardId) {
+        return paymentCardRepository.findById(cardId);
+    }
+    
+    /**
+     * Create a new payment card (auto-sets as default if first card, ensures only one default)
      * @param paymentCard - PaymentCard: Card object with user_id, address_id, card_number, cardholder_name, payment_card_type, expiration_date, cvv
      * @return PaymentCard: Created card with generated ID and timestamps
      */
     @Transactional
     public PaymentCard createPaymentCard(PaymentCard paymentCard) {
-        // If this is the first card for the user, make it default
         List<PaymentCard> existingCards = getUserPaymentCards(paymentCard.getUser().getId());
+        
+        // If this is the first card for the user, make it default
         if (existingCards.isEmpty()) {
             paymentCard.setIsDefault(true);
+        } else {
+            // Ensure only one default card exists
+            // If new card is marked as default, unset all other defaults
+            if (paymentCard.getIsDefault() != null && paymentCard.getIsDefault()) {
+                for (PaymentCard card : existingCards) {
+                    card.setIsDefault(false);
+                    paymentCardRepository.save(card);
+                }
+            } else {
+                // If not marked as default, explicitly set to false
+                paymentCard.setIsDefault(false);
+            }
         }
+        
         return paymentCardRepository.save(paymentCard);
     }
     

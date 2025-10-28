@@ -88,9 +88,9 @@ public class AdminController {
             // Step 1: Authenticate admin credentials
             Admin admin = adminService.authenticateAdmin(request.getEmail(), request.getPassword());
             
-            // Step 2: Generate new JWT tokens for authenticated admin session
-            String token = jwtUtil.generateToken(admin.getEmail(), admin.getId(), request.isRememberMe());
-            String refreshToken = jwtUtil.generateRefreshToken(admin.getEmail(), admin.getId(), request.isRememberMe());
+            // Step 2: Generate new JWT tokens for authenticated admin session with ADMIN role
+            String token = jwtUtil.generateToken(admin.getEmail(), admin.getId(), "ADMIN", request.isRememberMe());
+            String refreshToken = jwtUtil.generateRefreshToken(admin.getEmail(), admin.getId(), "ADMIN", request.isRememberMe());
 
             // Step 3: Create admin DTO (excludes sensitive data like password)
             AuthResponse.UserDto adminDto = new AuthResponse.UserDto(

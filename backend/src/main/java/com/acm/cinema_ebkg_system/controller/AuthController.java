@@ -10,10 +10,10 @@ import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.service.AddressService;
 import com.acm.cinema_ebkg_system.service.PaymentCardService;
+import com.acm.cinema_ebkg_system.service.EmailService;
 import com.acm.cinema_ebkg_system.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -55,6 +55,9 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;  // Utility for JWT token operations
+    
+    @Autowired
+    private EmailService emailService;  // Service for sending emails
 
     // ========== API ENDPOINTS ==========
     
@@ -89,9 +92,18 @@ public class AuthController {
             // Step 2: Register user (validates email uniqueness, hashes password, saves to DB)
             User savedUser = userService.registerUser(user);
             
-            // Step 3: Create home address if provided (from step 2 registration)
-            // Note: Home address would come from RegistrationContext home fields if provided
-            // For now, this is left as optional for future implementation
+            // Step 3: Create home address if provided
+            if (request.getHomeAddress() != null && !request.getHomeAddress().trim().isEmpty()) {
+                Address homeAddr = new Address();
+                homeAddr.setUser(savedUser);
+                homeAddr.setAddressType("home");
+                homeAddr.setStreet(request.getHomeAddress());
+                homeAddr.setCity(request.getHomeCity() != null ? request.getHomeCity() : "");
+                homeAddr.setState(request.getHomeState() != null ? request.getHomeState() : "");
+                homeAddr.setZip(request.getHomeZip() != null ? request.getHomeZip() : "");
+                homeAddr.setCountry(request.getHomeCountry() != null ? request.getHomeCountry() : "US");
+                addressService.createAddress(homeAddr);
+            }
             
             // Step 4: Create payment cards and billing addresses if provided
             if (request.getPaymentCards() != null && !request.getPaymentCards().isEmpty()) {
@@ -129,10 +141,16 @@ public class AuthController {
             }
             
             // Step 5: Generate verification token and send email
-            userService.generateVerificationToken(savedUser);
+            String verificationToken = userService.generateVerificationToken(savedUser);
+            
+            // Step 6: If user enrolled for promotions, send welcome email
+            // Note: We send this regardless of email verification status because they explicitly opted in
+            if (savedUser.isEnrolledForPromotions()) {
+                emailService.sendPromotionEnrollmentEmail(savedUser.getEmail(), savedUser.getFirstName());
+            }
 
-            // Step 6: Return success response (no tokens until email is verified)
-            AuthResponse response = new AuthResponse(true, "Registration successful! Please check your email to verify your account.");
+            // Step 7: Return success response with verification token for testing
+            AuthResponse response = new AuthResponse(true, "Registration successful! Verification token: " + verificationToken);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {

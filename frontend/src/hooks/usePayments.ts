@@ -12,11 +12,13 @@ export function usePayments(userId: number) {
   async function fetchPayments() {
     try {
       setLoading(true);
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       // Fetch payment cards from new endpoint
       const response = await fetch(buildUrl(endpoints.paymentCards.getUserPaymentCards(userId)), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
       });
       const data = (await response.json()) as BackendPayment[];
@@ -31,6 +33,7 @@ export function usePayments(userId: number) {
                 method: 'GET',
                 headers: {
                   'Content-Type': 'application/json',
+                  Authorization: token ? `Bearer ${token}` : '',
                 },
               });
               if (addressResponse.ok) {
@@ -70,10 +73,12 @@ export function usePayments(userId: number) {
   async function addPayment(newPayment: Omit<BackendPayment, 'id' | 'user_id'>) {
     console.log('New payment:', newPayment);
     try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch(buildUrl(endpoints.paymentCards.createPaymentCard()), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
         body: JSON.stringify(newPayment),
       });
@@ -90,10 +95,12 @@ export function usePayments(userId: number) {
 
   async function updatePayment(currentPaymentId: number, updatedPayment: Partial<BackendPayment>) {
     try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch(buildUrl(endpoints.paymentCards.updatePaymentCard(currentPaymentId)), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
         body: JSON.stringify(updatedPayment),
       });
@@ -110,10 +117,12 @@ export function usePayments(userId: number) {
 
   async function deletePayment(currentPaymentId: number) {
     try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch(buildUrl(endpoints.paymentCards.deletePaymentCard(currentPaymentId)), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
       });
       await fetchPayments(); // refresh list

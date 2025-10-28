@@ -210,6 +210,7 @@ public class UserService {
         }
         
         // Handle enrolled_for_promotions preference
+        boolean wasEnrolledForPromotions = user.isEnrolledForPromotions();
         if (userInfo.getEnrolledForPromotions() != null) {
             user.setEnrolledForPromotions(userInfo.getEnrolledForPromotions());
         }
@@ -259,8 +260,15 @@ public class UserService {
             addressRepository.save(homeAddress);
         }
 
-        // Send confirmation email
+        // Send confirmation email for profile update
         emailService.sendEditProfileConfirmationEmail(user.getEmail(), user.getFirstName());
+        
+        // Send promotion enrollment email if user just opted in
+        if (userInfo.getEnrolledForPromotions() != null && 
+            !wasEnrolledForPromotions && 
+            userInfo.getEnrolledForPromotions()) {
+            emailService.sendPromotionEnrollmentEmail(user.getEmail(), user.getFirstName());
+        }
 
         // Save user to database
         return userRepository.save(user);

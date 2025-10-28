@@ -1,5 +1,7 @@
 package com.acm.cinema_ebkg_system.config;
 
+import com.acm.cinema_ebkg_system.filter.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,6 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,6 +27,9 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /**
      * CORS Configuration for Spring Security
@@ -63,11 +69,33 @@ public class SecurityConfig {
             // Disable CSRF protection because we are using JWT tokens
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            
+            // Add JWT authentication filter BEFORE UsernamePasswordAuthenticationFilter
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            
             .authorizeHttpRequests(authz -> authz
+                // Public endpoints - no authentication required
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/**").permitAll()
+                .requestMatchers("/api/admin/create").permitAll() // this is for testing...
+                .requestMatchers("/api/admin/login").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated()
+                
+                // Movie browsing endpoints - PUBLIC (anyone can browse movies)
+                .requestMatchers("/api/movies/**").permitAll()
+                
+                // Admin endpoints - require ADMIN role
+                .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+                
+                // User profile/payment/booking endpoints - require USER or ADMIN role (admins can access all APIs)
+                .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .requestMatchers("/api/payment-card/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .requestMatchers("/api/payment/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .requestMatchers("/api/booking/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                
+                // All other API endpoints require authentication
+                .requestMatchers("/api/**").authenticated()
+                
+                .anyRequest().permitAll()
             )
             .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())); // Updated for H2 console (for database management)
 

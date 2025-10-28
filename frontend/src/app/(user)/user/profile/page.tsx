@@ -20,12 +20,13 @@ function decodeJWT(token: string) {
 
 // Get the ID of the logged in user using the token
 function getUserID() {
-  // Check if we're on the client side before accessing sessionStorage
+  // Check if we're on the client side before accessing storage
   if (typeof window === 'undefined') {
     return 0; // Return default value during SSR
   }
 
-  const token = sessionStorage.getItem('token');
+  // Check localStorage first, then sessionStorage
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   //console.log(token);
 
   if (token) {
@@ -67,7 +68,7 @@ function checkPasswordSecurity(currentPwd: string, newPwd: string) {
 export default function ProfilePage() {
   // Initialize user profile data
   // Get the user profile data from the backend
-  const { user, updateUser, updatePassword } = useUser(getUserID());
+  const { user, isLoading, error, updateUser, updatePassword } = useUser(getUserID());
 
   const [userData, setUserData] = useState({
     email: '',
@@ -99,6 +100,10 @@ export default function ProfilePage() {
         homeZip: user.homeZip || '',
         homeCountry: user.homeCountry || '',
       });
+
+      // Set the initial promotion enrollment state from user data
+      setSubscribeToPromotions(user.enrolledForPromotions || false);
+
       //console.log("User data set");
     }
   }, [user]);
@@ -165,26 +170,38 @@ export default function ProfilePage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="text-white min-h-screen bg-[#1C1C1C]">
+        <NavBar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+          <div className="text-white text-xl">Loading profile...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !user) {
+    return (
+      <div className="text-white min-h-screen bg-[#1C1C1C]">
+        <NavBar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+          <div className="text-red-400 text-xl">Failed to load profile: {error || 'Unknown error'}</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="text-white min-h-screen bg-[#1C1C1C]">
       <NavBar />
       <div className="h-30" />
 
       {/* Navigation */}
-      <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose" style={{ fontSize: '30px' }}>
-        <Link href="/user/profile" className="relative font-bold" style={{ color: '#FF478B' }}>
+      <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose text-[30px]">
+        <Link href="/user/profile" className="relative font-bold text-acm-pink">
           Account Info
-          <span
-            className="absolute rounded-full"
-            style={{
-              bottom: '-8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '32px',
-              height: '2px',
-              backgroundColor: '#FF478B',
-            }}
-          />
+          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
         </Link>
         <Link href="/user/payments" className="font-bold text-gray-300 hover:text-white transition-colors">
           Payment
@@ -195,8 +212,8 @@ export default function ProfilePage() {
       </div>
 
       {/* Main content area */}
-      <div className="max-w-6xl mx-auto px-6 pb-16 ml-20">
-        <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10 items-start">
+      <div className="max-w-7xl mx-auto px-8 pb-16 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           {/* Profile sidebar */}
           <aside className="flex flex-col items-center gap-6 -mt-2 md:-mt-20">
             <div className="relative group">
@@ -207,14 +224,7 @@ export default function ProfilePage() {
                 onChange={onImageUpload}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full z-10"
               />
-              <div
-                className="rounded-full flex items-center justify-center transition-colors"
-                style={{
-                  width: '170px',
-                  height: '170px',
-                  backgroundColor: '#2B2B2B',
-                }}
-              >
+              <div className="rounded-full flex items-center justify-center transition-colors w-[170px] h-[170px] bg-[#2B2B2B]">
                 {profilePicUrl ? (
                   <img src={profilePicUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
                 ) : (
@@ -229,35 +239,38 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-            <button className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg" type="button">
+            <button className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg cursor-pointer" type="button">
               Log Out
             </button>
           </aside>
 
           {/* Form */}
-
           <section className="p-0">
-            <h1 className="text-2xl text-acm-pink font-red-rose mb-10"> Edit Personal Info </h1>
+            <div className="mb-8 pb-4 border-b border-white/10">
+              <h1 className="text-3xl text-acm-pink font-red-rose mb-2">Edit Personal Info</h1>
+              <p className="text-white/60 text-sm">Update your profile information</p>
+            </div>
 
             {/* Email (read only) */}
-            <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-y-6 gap-x-6">
+            <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-y-6 gap-x-8">
               <label className="self-center text-white font-afacad text-lg font-bold">Email</label>
-              <input
-                type="email"
-                value={userData.email}
-                readOnly
-                className={styles.emailInput}
-                placeholder="Email address"
-                style={{
-                  cursor: 'not-allowed',
-                }}
-              />
+              <div>
+                <input
+                  type="email"
+                  value={userData.email}
+                  readOnly
+                  disabled
+                  placeholder={userData.email}
+                  className={`${styles.emailInput} cursor-not-allowed opacity-60`}
+                />
+                <p className="text-xs text-gray-500 mt-1 font-afacad">Email cannot be changed</p>
+              </div>
 
               {/* Name */}
               <label className="self-center text-white font-afacad text-lg font-bold">Name</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <div className="text-sm text-gray-400 mb-2 font-afacad">First</div>
+                  <label className="text-sm text-gray-400 mb-2 block font-afacad">First Name</label>
                   <input
                     type="text"
                     value={userData.firstName}
@@ -266,93 +279,100 @@ export default function ProfilePage() {
                       setUserData((prev) => ({ ...prev, firstName: newValue }));
                     }}
                     className={styles.profileInput}
-                    placeholder="Enter first name"
+                    placeholder="John"
                   />
                 </div>
                 <div>
-                  <div className="text-sm text-gray-400 mb-2 font-afacad">Last</div>
+                  <label className="text-sm text-gray-400 mb-2 block font-afacad">Last Name</label>
                   <input
                     type="text"
                     value={userData.lastName}
                     onChange={(e) => setUserData((prev) => ({ ...prev, lastName: e.target.value }))}
                     className={styles.profileInput}
-                    placeholder="Enter last name"
+                    placeholder="Doe"
                   />
                 </div>
               </div>
 
               {/* Home Address */}
-              <label className="self-center text-white font-afacad text-lg font-bold">Home Address</label>
-              <div className="space-y-4">
-                {/* Street - Full width */}
-                <div>
-                  <div className="text-sm text-gray-400 mb-2 font-afacad">Street</div>
-                  <input
-                    type="text"
-                    value={userData.homeStreet}
-                    onChange={(e) => {
-                      const newValue = e.target.value;
-                      setUserData((prev) => ({ ...prev, homeStreet: newValue }));
-                    }}
-                    className={styles.profileInput}
-                    placeholder="Enter street address"
-                  />
+              <div className="md:col-span-2">
+                <div className="flex items-center justify-between mb-4">
+                  <label className="text-white font-afacad text-lg font-bold">Home Address</label>
                 </div>
-                {/* City, State, ZIP - 3 columns */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-4">
+                  {/* Street - Full width */}
                   <div>
-                    <div className="text-sm text-gray-400 mb-2 font-afacad">City</div>
+                    <label className="text-sm text-gray-400 mb-2 block font-afacad">Street Address</label>
                     <input
                       type="text"
-                      value={userData.homeCity}
-                      onChange={(e) => setUserData((prev) => ({ ...prev, homeCity: e.target.value }))}
+                      value={userData.homeStreet}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        setUserData((prev) => ({ ...prev, homeStreet: newValue }));
+                      }}
                       className={styles.profileInput}
-                      placeholder="Enter city"
+                      placeholder="123 Main Street, Apt 4B"
                     />
                   </div>
+                  {/* City, State, ZIP - 3 columns */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="text-sm text-gray-400 mb-2 block font-afacad">City</label>
+                      <input
+                        type="text"
+                        value={userData.homeCity}
+                        onChange={(e) => setUserData((prev) => ({ ...prev, homeCity: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="New York"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-400 mb-2 block font-afacad">State</label>
+                      <input
+                        type="text"
+                        value={userData.homeState}
+                        onChange={(e) => setUserData((prev) => ({ ...prev, homeState: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="NY"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-400 mb-2 block font-afacad">ZIP Code</label>
+                      <input
+                        type="text"
+                        value={userData.homeZip}
+                        onChange={(e) => setUserData((prev) => ({ ...prev, homeZip: e.target.value }))}
+                        className={styles.profileInput}
+                        placeholder="10001"
+                      />
+                    </div>
+                  </div>
+                  {/* Country - Full width */}
                   <div>
-                    <div className="text-sm text-gray-400 mb-2 font-afacad">State</div>
+                    <label className="text-sm text-gray-400 mb-2 block font-afacad">Country</label>
                     <input
                       type="text"
-                      value={userData.homeState}
-                      onChange={(e) => setUserData((prev) => ({ ...prev, homeState: e.target.value }))}
+                      value={userData.homeCountry}
+                      onChange={(e) => setUserData((prev) => ({ ...prev, homeCountry: e.target.value }))}
                       className={styles.profileInput}
-                      placeholder="Enter state"
+                      placeholder="United States"
                     />
                   </div>
-                  <div>
-                    <div className="text-sm text-gray-400 mb-2 font-afacad">ZIP Code</div>
-                    <input
-                      type="text"
-                      value={userData.homeZip}
-                      onChange={(e) => setUserData((prev) => ({ ...prev, homeZip: e.target.value }))}
-                      className={styles.profileInput}
-                      placeholder="Enter ZIP code"
-                    />
-                  </div>
-                </div>
-                {/* Country - Full width */}
-                <div>
-                  <div className="text-sm text-gray-400 mb-2 font-afacad">Country</div>
-                  <input
-                    type="text"
-                    value={userData.homeCountry}
-                    onChange={(e) => setUserData((prev) => ({ ...prev, homeCountry: e.target.value }))}
-                    className={styles.profileInput}
-                    placeholder="Enter country"
-                  />
                 </div>
               </div>
 
               {/* Phone number */}
               <label className="self-center text-white font-afacad text-lg font-bold">Phone Number</label>
-              <input
-                type="text"
-                value={userData.phone}
-                onChange={(e) => setUserData((prev) => ({ ...prev, phone: e.target.value }))}
-                className={styles.profileInput}
-                placeholder="Enter phone number"
-              />
+              <div>
+                <input
+                  type="tel"
+                  value={userData.phone}
+                  onChange={(e) => setUserData((prev) => ({ ...prev, phone: e.target.value }))}
+                  className={styles.profileInput}
+                  placeholder="+1 (555) 123-4567"
+                />
+                <p className="text-xs text-gray-500 mt-1 font-afacad">Include country code if outside US</p>
+              </div>
             </div>
 
             {/* Promotions checkbox */}
@@ -371,54 +391,60 @@ export default function ProfilePage() {
                 title="Save Changes"
                 type="button"
                 onClick={saveProfileChanges}
-                className="px-8 py-3 rounded-full font-afacad font-bold text-black"
-                style={{
-                  background: 'linear-gradient(to right, #FF478B, #FF5C33)',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
+                className="px-8 py-3 rounded-full font-afacad font-bold text-black cursor-pointer hover:opacity-90 transition-opacity bg-gradient-to-r from-acm-pink to-acm-orange border-none"
               >
                 Save Changes
               </button>
             </div>
 
             {/* Change Password */}
-            <h1 className="text-2xl text-acm-pink font-red-rose mt-10"> Change Password </h1>
-            <div className="grid grid-cols-1 md:grid-cols-[160px_1fr] gap-y-6 gap-x-6 mt-10">
-              <label className="self-center text-white font-afacad text-lg font-bold">Current Password </label>
-              <input
-                type="password"
-                value={userData.currentPassword}
-                onChange={(e) => setUserData((prev) => ({ ...prev, currentPassword: e.target.value }))}
-                className={styles.profileInput}
-                placeholder="Enter current password"
-              />
+            <div className="mt-16 pt-6 border-t border-white/10">
+              <div className="mb-6 pb-2 border-b border-white/10">
+                <h1 className="text-3xl text-acm-pink font-red-rose mb-2">Change Password</h1>
+                <p className="text-white/60 text-sm">Update your account password</p>
+              </div>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-y-6 gap-x-8">
+                  <label className="self-center text-white font-afacad text-lg font-bold">Current Password</label>
+                  <div>
+                    <input
+                      type="password"
+                      value={userData.currentPassword}
+                      onChange={(e) => setUserData((prev) => ({ ...prev, currentPassword: e.target.value }))}
+                      className={styles.profileInput}
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
 
-              <label className="self-center text-white font-afacad text-lg font-bold">New Password </label>
-              <input
-                type="password"
-                value={userData.newPassword}
-                onChange={(e) => setUserData((prev) => ({ ...prev, newPassword: e.target.value }))}
-                className={styles.profileInput}
-                placeholder="Enter new password"
-              />
-            </div>
+                <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-y-6 gap-x-8">
+                  <label className="self-center text-white font-afacad text-lg font-bold">New Password</label>
+                  <div>
+                    <input
+                      type="password"
+                      value={userData.newPassword}
+                      onChange={(e) => setUserData((prev) => ({ ...prev, newPassword: e.target.value }))}
+                      className={styles.profileInput}
+                      placeholder="Must be at least 8 characters with uppercase, lowercase, and number"
+                    />
+                    <p className="text-xs text-gray-500 mt-1 font-afacad">
+                      Must contain: 8+ characters, uppercase, lowercase, and number
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            {/* Change password button */}
-            <div className="flex justify-center mt-10">
-              <button
-                title="Change Password"
-                type="button"
-                onClick={savePasswordChange}
-                className="px-8 py-3 rounded-full font-afacad font-bold text-black"
-                style={{
-                  background: 'linear-gradient(to right, #FF478B, #FF5C33)',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                Change Password
-              </button>
+              {/* Change password button */}
+              <div className="flex justify-center mt-10">
+                <button
+                  title="Change Password"
+                  type="button"
+                  onClick={savePasswordChange}
+                  className="px-8 py-3 rounded-full font-afacad font-bold text-black cursor-pointer hover:opacity-90 transition-opacity bg-gradient-to-r from-acm-pink to-acm-orange border-none"
+                >
+                  Change Password
+                </button>
+              </div>
             </div>
           </section>
         </div>

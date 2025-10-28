@@ -190,5 +190,44 @@ public class EmailService {
             throw new RuntimeException("Failed to send confirmation email: " + e.getMessage());
         }
     }
+
+    /**
+     * Send promotion enrollment email to user
+     * 
+     * This method sends an email notifying users about promotions they've enrolled for.
+     * It includes information about current promotions and special offers.
+     * 
+     * @param toEmail Recipient's email address
+     * @param name Recipient's first name
+     */
+    public void sendPromotionEnrollmentEmail(String toEmail, String name) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("ACM Cinemas - Welcome to Promotions!");
+
+            String emailBody = "Hello " + name + ", \n\n"
+                + "Thank you for enrolling in our promotional notifications!\n\n"
+                + "As a valued subscriber, you will receive:\n"
+                + "• Exclusive movie ticket discounts\n"
+                + "• Special promotions and offers\n"
+                + "• Early access to new releases\n"
+                + "• Birthday specials and rewards\n\n"
+                + "Stay tuned for our latest offers and watch amazing movies at great prices!\n\n"
+                + "If you have any questions or concerns, please don't hesitate to contact us.\n\n"
+                + "Best regards,\n"
+                + "ACM Cinema Team";
+            
+            message.setText(emailBody);
+            mailSender.send(message);
+            
+            System.out.println("Promotion enrollment email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send promotion enrollment email to: " + toEmail);
+            // Don't throw exception - promotion enrollment failure shouldn't block user registration/profile update
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
 }
 

@@ -59,7 +59,7 @@ export default function PaymentsPage() {
   // Get user ID from token
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = sessionStorage.getItem('token');
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       if (token) {
         try {
           const [, payloadBase64] = token.split('.');
@@ -79,7 +79,7 @@ export default function PaymentsPage() {
 
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const response = await fetch(buildUrl(`/api/payment-card/user/${userId}`), {
+      const response = await fetch(buildUrl(endpoints.paymentCards.getUserPaymentCards(userId)), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ export default function PaymentsPage() {
 
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const response = await fetch(buildUrl(`/api/payment-card/${cardId}`), {
+      const response = await fetch(buildUrl(endpoints.paymentCards.deletePaymentCard(cardId)), {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ export default function PaymentsPage() {
       if (modalMode === 'Add') {
         // Create payment card with billing address
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-        const response = await fetch(buildUrl('/api/payment-card'), {
+        const response = await fetch(buildUrl(endpoints.paymentCards.createPaymentCard()), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -209,8 +209,9 @@ export default function PaymentsPage() {
         }
       } else {
         // Update payment card
+        if (!editingCardId) return; // Prevent null access
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-        const response = await fetch(buildUrl(`/api/payment-card/${editingCardId}`), {
+        const response = await fetch(buildUrl(endpoints.paymentCards.updatePaymentCard(editingCardId)), {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -240,23 +241,13 @@ export default function PaymentsPage() {
       <div className="h-30" />
 
       {/* Navigation */}
-      <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose" style={{ fontSize: '30px' }}>
+      <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose text-[30px]">
         <Link href="/user/profile" className="font-bold text-gray-300 hover:text-white transition-colors">
           Account Info
         </Link>
-        <Link href="/user/payments" className="relative font-bold" style={{ color: '#FF478B' }}>
+        <Link href="/user/payments" className="relative font-bold text-acm-pink">
           Payment
-          <span
-            className="absolute rounded-full"
-            style={{
-              bottom: '-8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '32px',
-              height: '2px',
-              backgroundColor: '#FF478B',
-            }}
-          />
+          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
         </Link>
         <Link href="/user/orders" className="font-bold text-gray-300 hover:text-white transition-colors">
           Order History
@@ -264,14 +255,11 @@ export default function PaymentsPage() {
       </div>
 
       {/* Main content */}
-      <div className="max-w-6xl mx-auto px-6 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10 items-start">
+      <div className="max-w-7xl mx-auto px-8 pb-16 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 items-start">
           {/* Profile sidebar */}
           <aside className="flex flex-col items-center gap-6 -mt-2 md:-mt-20">
-            <div
-              className="rounded-full flex items-center justify-center"
-              style={{ width: '170px', height: '170px', backgroundColor: '#2B2B2B' }}
-            >
+            <div className="rounded-full flex items-center justify-center w-[170px] h-[170px] bg-[#2B2B2B]">
               {profilePicUrl ? (
                 <Image
                   src={profilePicUrl}
@@ -288,14 +276,17 @@ export default function PaymentsPage() {
                 </svg>
               )}
             </div>
-            <button className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg" type="button">
+            <button className="text-[#FF478B] hover:text-[#FF3290] font-afacad text-lg cursor-pointer" type="button">
               Log Out
             </button>
           </aside>
 
           {/* Payment methods */}
           <section className="p-0">
-            <h1 className="text-2xl text-acm-pink font-red-rose mb-6">Payment Methods</h1>
+            <div className="mb-8 pb-4 border-b border-white/10">
+              <h1 className="text-3xl text-acm-pink font-red-rose mb-2">Payment Methods</h1>
+              <p className="text-white/60 text-sm">Manage your payment information</p>
+            </div>
 
             <div className="space-y-4">
               {paymentCards.map((card) => (
@@ -321,14 +312,14 @@ export default function PaymentsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditCard(card)}
-                        className="p-2 text-white hover:text-acm-pink transition-colors"
+                        className="p-2 text-white hover:text-acm-pink transition-colors cursor-pointer"
                         title="Edit"
                       >
                         <MdEdit className="text-2xl" />
                       </button>
                       <button
                         onClick={() => handleDeleteCard(card.id)}
-                        className="p-2 text-white hover:text-red-500 transition-colors"
+                        className="p-2 text-white hover:text-red-500 transition-colors cursor-pointer"
                         title="Delete"
                       >
                         <MdDelete className="text-2xl" />
@@ -348,7 +339,7 @@ export default function PaymentsPage() {
               <div className="mt-6">
                 <button
                   onClick={handleAddCard}
-                  className="px-6 py-3 rounded-full font-afacad font-bold text-white border-2 border-acm-pink hover:bg-acm-pink transition-colors"
+                  className="px-6 py-3 rounded-full font-afacad font-bold text-white border-2 border-acm-pink hover:bg-acm-pink transition-colors cursor-pointer"
                 >
                   Add Payment Method +
                 </button>

@@ -49,6 +49,8 @@ export const apiConfig = {
     // USER ENDPOINTS
     users: {
       getUserById: (userId: number) => `/api/users/${userId}`,
+      getUserProfile: (userId: number) => `/api/user/profile?userId=${userId}`, // Consolidated endpoint
+      getUserInfo: (userId: number) => `/api/user/info?userId=${userId}`,
       updateUser: (userId: number) => `/api/users/${userId}/info`,
       changePassword: (userId: number) => `/api/users/${userId}/change-password`,
     },

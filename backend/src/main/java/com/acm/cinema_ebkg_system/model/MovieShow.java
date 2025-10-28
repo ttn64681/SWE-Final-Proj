@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Movie Show Entity - Represents a movie showing in a specific room
@@ -40,6 +42,12 @@ public class MovieShow {
     // Available seats count
     @Column(name = "available_seats", nullable = false)
     private Integer availableSeats = 0;
+    
+    // One-to-many relationship with ShowSeat
+    // One show has many seats
+    @OneToMany(mappedBy = "movieShow", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"movieShow"})
+    private List<ShowSeat> seats;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;

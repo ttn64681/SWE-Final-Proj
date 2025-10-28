@@ -1,8 +1,13 @@
 package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.service.UserService;
+import com.acm.cinema_ebkg_system.service.AddressService;
+import com.acm.cinema_ebkg_system.service.PaymentCardService;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
+import com.acm.cinema_ebkg_system.dto.user.UserProfileDTO;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,23 +17,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController // Bean that creates a RESTful controller class that handles HTTP requests
 @RequestMapping("/api")
 public class UserController {
     
-    // Dependency injection of UserService for business logic
+    // Dependency injection of services for business logic
     private final UserService userService;
+    private final AddressService addressService;
+    private final PaymentCardService paymentCardService;
 
-    // Constructor injection - Spring automatically provides UserService instance
-    public UserController(UserService userService) {
+    // Constructor injection - Spring automatically provides service instances
+    public UserController(UserService userService, AddressService addressService, PaymentCardService paymentCardService) {
         this.userService = userService;
+        this.addressService = addressService;
+        this.paymentCardService = paymentCardService;
     }
     
     // GET /api/user/info - Get current user's information (userId from JWT in frontend)
     @GetMapping("/user/info")
     public User getCurrentUserInfo(@org.springframework.web.bind.annotation.RequestParam Long userId) {
         return userService.getUserById(userId);
+    }
+    
+    // GET /api/user/profile - Get complete user profile (user info + home address + payment cards)
+    @GetMapping("/user/profile")
+    public UserProfileDTO getUserProfile(@org.springframework.web.bind.annotation.RequestParam Long userId) {
+        User user = userService.getUserById(userId);
+        Optional<Address> homeAddress = addressService.getUserHomeAddress(userId);
+        List<PaymentCard> paymentCards = paymentCardService.getUserPaymentCards(userId);
+        
+        UserProfileDTO dto = new UserProfileDTO();
+        dto.setUser(user);
+        dto.setHomeAddress(homeAddress.orElse(null));
+        dto.setPaymentCards(paymentCards);
+        
+        return dto;
     }
     
     // PUT /api/user/info - Update current user's personal information

@@ -15,6 +15,14 @@ public class RegisterRequest {
     private String lastName;
     private String phoneNumber;
     private Boolean enrolledForPromotions;
+    
+    // Home address fields (optional)
+    private String homeAddress;
+    private String homeCity;
+    private String homeState;
+    private String homeZip;
+    private String homeCountry;
+    
     private List<PaymentCardInfo> paymentCards; // Up to 3 payment cards
     
     // Nested class for payment card information

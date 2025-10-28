@@ -35,8 +35,16 @@ public class PaymentCardController {
      * Returns: List<PaymentCard> - all payment cards for user (default first)
      */
     @GetMapping("/user/{userId}")
-    public List<PaymentCard> getUserPaymentCards(@PathVariable Long userId) {
-        return paymentCardService.getUserPaymentCards(userId);
+    public ResponseEntity<List<PaymentCard>> getUserPaymentCards(@PathVariable Long userId) {
+        List<PaymentCard> cards = paymentCardService.getUserPaymentCards(userId);
+        // Load billing address for each card
+        for (PaymentCard card : cards) {
+            if (card.getAddressId() != null) {
+                Optional<Address> address = addressService.getAddressById(card.getAddressId());
+                address.ifPresent(card::setAddress);
+            }
+        }
+        return ResponseEntity.ok(cards);
     }
     
     /**
@@ -96,11 +104,37 @@ public class PaymentCardController {
      * Returns: PaymentCard - updated card
      */
     @PutMapping("/{paymentCardId}")
-    public PaymentCard updatePaymentCard(
+    public ResponseEntity<?> updatePaymentCard(
             @PathVariable Long paymentCardId, 
-            @RequestBody PaymentCard paymentCard) {
-        paymentCard.setId(paymentCardId);
-        return paymentCardService.updatePaymentCard(paymentCard);
+            @RequestBody PaymentCardDTO dto) {
+        try {
+            // Get existing payment card
+            PaymentCard existingCard = paymentCardService.getPaymentCardById(paymentCardId)
+                .orElseThrow(() -> new RuntimeException("Payment card not found"));
+            
+            // Update card fields
+            existingCard.setPaymentCardType(dto.getCardType());
+            existingCard.setCardNumber(dto.getCardNumber());
+            existingCard.setCardholderName(dto.getCardholderName());
+            existingCard.setExpirationDate(dto.getExpirationDate());
+            existingCard.setIsDefault(dto.getIsDefault() != null ? dto.getIsDefault() : false);
+            
+            // Update billing address
+            if (existingCard.getAddress() != null) {
+                Address address = existingCard.getAddress();
+                address.setStreet(dto.getBillingStreet());
+                address.setCity(dto.getBillingCity());
+                address.setState(dto.getBillingState());
+                address.setZip(dto.getBillingZip());
+                address.setCountry(dto.getBillingCountry() != null ? dto.getBillingCountry() : "US");
+                addressService.updateAddress(address);
+            }
+            
+            PaymentCard updated = paymentCardService.updatePaymentCard(existingCard);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
     
     /**

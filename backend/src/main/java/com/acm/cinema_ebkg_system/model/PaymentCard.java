@@ -42,7 +42,7 @@ public class PaymentCard {
 
     // Foreign key to address table
     // Each payment card has exactly one billing address (1-to-1 relationship)
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER) // Changed to EAGER to load address with card
     @JoinColumn(name = "address_id", nullable = false)
     @JsonIgnoreProperties({"user"}) // Avoid circular reference with User
     private Address address;

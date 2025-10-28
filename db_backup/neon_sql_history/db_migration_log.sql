@@ -131,6 +131,67 @@ ALTER TABLE users
 CREATE INDEX IF NOT EXISTS idx_users_enrolled_promotions ON users(enrolled_for_promotions);
 
 -- ========================================
+-- DATABASE MIGRATION V2
+-- Add show_seats and ticket_seat tables
+-- ========================================
+
+-- SHOW_SEATS TABLE
+-- Stores individual seats for each show (movie + room)
+-- Each seat belongs to one show and can be booked or available
+CREATE TABLE IF NOT EXISTS show_seats (
+    id BIGSERIAL PRIMARY KEY,
+    show_id BIGINT NOT NULL,
+    seat_number VARCHAR(10) NOT NULL,
+    seat_row VARCHAR(10) NOT NULL,
+    seat_type VARCHAR(20) DEFAULT 'standard' CHECK (seat_type IN ('standard', 'premium', 'luxury')),
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (show_id) REFERENCES movie_show(id) ON DELETE CASCADE,
+    UNIQUE (show_id, seat_row, seat_number)
+);
+
+-- TICKET TABLE
+-- Stores individual tickets for movie bookings
+-- Each ticket belongs to one booking and has one ticket category
+CREATE TABLE IF NOT EXISTS ticket (
+    ticket_id BIGSERIAL PRIMARY KEY,
+    booking_id BIGINT,
+    ticket_category_id BIGINT NOT NULL,
+    price_at_purchase DECIMAL(8,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_category_id) REFERENCES ticket_category(id) ON DELETE CASCADE
+);
+
+-- INDICES FOR TICKET TABLE
+CREATE INDEX IF NOT EXISTS idx_ticket_booking ON ticket(booking_id);
+CREATE INDEX IF NOT EXISTS idx_ticket_category ON ticket(ticket_category_id);
+
+-- TICKET_SEAT TABLE
+-- Association table linking tickets to seats (many-to-many with additional info)
+-- One ticket can have multiple seats, one seat can belong to multiple tickets
+CREATE TABLE IF NOT EXISTS ticket_seat (
+    id BIGSERIAL PRIMARY KEY,
+    ticket_id BIGINT NOT NULL,
+    show_seat_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES ticket(ticket_id) ON DELETE CASCADE,
+    FOREIGN KEY (show_seat_id) REFERENCES show_seats(id) ON DELETE CASCADE,
+    UNIQUE (ticket_id, show_seat_id)
+);
+
+-- INDICES FOR SHOW_SEATS TABLE
+CREATE INDEX IF NOT EXISTS idx_show_seats_show ON show_seats(show_id);
+CREATE INDEX IF NOT EXISTS idx_show_seats_availability ON show_seats(show_id, is_available);
+CREATE INDEX IF NOT EXISTS idx_show_seats_position ON show_seats(seat_row, seat_number);
+
+-- INDICES FOR TICKET_SEAT TABLE
+CREATE INDEX IF NOT EXISTS idx_ticket_seat_ticket ON ticket_seat(ticket_id);
+CREATE INDEX IF NOT EXISTS idx_ticket_seat_seat ON ticket_seat(show_seat_id);
+
+-- ========================================
 -- TODO: PHASE 7 - DATA MIGRATION
 -- ========================================
 -- [Future steps to migrate existing data to new tables]

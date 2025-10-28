@@ -208,7 +208,7 @@ export default function PaymentCardModal({
               type="text"
               value={formData.billingStreet}
               onChange={(e) => setFormData({ ...formData, billingStreet: e.target.value })}
-              placeholder="123 Main St"
+              placeholder="123 Main Street, Apt 4B"
               className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
               required
             />
@@ -222,7 +222,7 @@ export default function PaymentCardModal({
                 type="text"
                 value={formData.billingCity}
                 onChange={(e) => setFormData({ ...formData, billingCity: e.target.value })}
-                placeholder="New York"
+                placeholder="Los Angeles"
                 className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
                 required
               />
@@ -233,7 +233,7 @@ export default function PaymentCardModal({
                 type="text"
                 value={formData.billingState}
                 onChange={(e) => setFormData({ ...formData, billingState: e.target.value })}
-                placeholder="NY"
+                placeholder="CA"
                 className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
                 required
               />
@@ -248,7 +248,7 @@ export default function PaymentCardModal({
                 type="text"
                 value={formData.billingZip}
                 onChange={(e) => setFormData({ ...formData, billingZip: e.target.value })}
-                placeholder="10001"
+                placeholder="90001"
                 className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
                 required
               />
@@ -259,7 +259,7 @@ export default function PaymentCardModal({
                 type="text"
                 value={formData.billingCountry}
                 onChange={(e) => setFormData({ ...formData, billingCountry: e.target.value })}
-                placeholder="US"
+                placeholder="United States"
                 className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-acm-pink focus:border-transparent"
                 required
               />
