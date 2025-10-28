@@ -245,16 +245,16 @@ export default function ProfilePage() {
           </aside>
 
           {/* Form */}
-          <section className="p-0">
+          <section className="max-w-3xl">
             <div className="mb-8 pb-4 border-b border-white/10">
               <h1 className="text-3xl text-acm-pink font-red-rose mb-2">Edit Personal Info</h1>
               <p className="text-white/60 text-sm">Update your profile information</p>
             </div>
 
-            {/* Email (read only) */}
-            <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-y-6 gap-x-8">
-              <label className="self-center text-white font-afacad text-lg font-bold">Email</label>
+            <div className="space-y-6">
+              {/* Email (read only) */}
               <div>
+                <label className="block text-white font-afacad text-lg font-bold mb-2">Email</label>
                 <input
                   type="email"
                   value={userData.email}
@@ -267,38 +267,38 @@ export default function ProfilePage() {
               </div>
 
               {/* Name */}
-              <label className="self-center text-white font-afacad text-lg font-bold">Name</label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm text-gray-400 mb-2 block font-afacad">First Name</label>
-                  <input
-                    type="text"
-                    value={userData.firstName}
-                    onChange={(e) => {
-                      const newValue = e.target.value;
-                      setUserData((prev) => ({ ...prev, firstName: newValue }));
-                    }}
-                    className={styles.profileInput}
-                    placeholder="John"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-400 mb-2 block font-afacad">Last Name</label>
-                  <input
-                    type="text"
-                    value={userData.lastName}
-                    onChange={(e) => setUserData((prev) => ({ ...prev, lastName: e.target.value }))}
-                    className={styles.profileInput}
-                    placeholder="Doe"
-                  />
+              <div>
+                <label className="block text-white font-afacad text-lg font-bold mb-2">Name</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-gray-400 mb-2 block font-afacad">First Name</label>
+                    <input
+                      type="text"
+                      value={userData.firstName}
+                      onChange={(e) => {
+                        const newValue = e.target.value;
+                        setUserData((prev) => ({ ...prev, firstName: newValue }));
+                      }}
+                      className={styles.profileInput}
+                      placeholder="John"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-400 mb-2 block font-afacad">Last Name</label>
+                    <input
+                      type="text"
+                      value={userData.lastName}
+                      onChange={(e) => setUserData((prev) => ({ ...prev, lastName: e.target.value }))}
+                      className={styles.profileInput}
+                      placeholder="Doe"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Home Address */}
-              <div className="md:col-span-2">
-                <div className="flex items-center justify-between mb-4">
-                  <label className="text-white font-afacad text-lg font-bold">Home Address</label>
-                </div>
+              <div>
+                <label className="block text-white font-afacad text-lg font-bold mb-2">Home Address</label>
                 <div className="space-y-4">
                   {/* Street - Full width */}
                   <div>
@@ -362,8 +362,8 @@ export default function ProfilePage() {
               </div>
 
               {/* Phone number */}
-              <label className="self-center text-white font-afacad text-lg font-bold">Phone Number</label>
               <div>
+                <label className="block text-white font-afacad text-lg font-bold mb-2">Phone Number</label>
                 <input
                   type="tel"
                   value={userData.phone}
@@ -386,12 +386,12 @@ export default function ProfilePage() {
             </div>
 
             {/* Save button */}
-            <div className="flex justify-center mt-10">
+            <div className="flex justify-center mt-8">
               <button
                 title="Save Changes"
                 type="button"
                 onClick={saveProfileChanges}
-                className="px-8 py-3 rounded-full font-afacad font-bold text-black cursor-pointer hover:opacity-90 transition-opacity bg-gradient-to-r from-acm-pink to-acm-orange border-none"
+                className="px-10 py-3 rounded-full font-afacad font-bold text-white cursor-pointer hover:shadow-lg hover:shadow-acm-pink/50 transition-all bg-gradient-to-r from-acm-pink to-acm-orange border-none"
               >
                 Save Changes
               </button>
@@ -404,43 +404,39 @@ export default function ProfilePage() {
                 <p className="text-white/60 text-sm">Update your account password</p>
               </div>
               <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-y-6 gap-x-8">
-                  <label className="self-center text-white font-afacad text-lg font-bold">Current Password</label>
-                  <div>
-                    <input
-                      type="password"
-                      value={userData.currentPassword}
-                      onChange={(e) => setUserData((prev) => ({ ...prev, currentPassword: e.target.value }))}
-                      className={styles.profileInput}
-                      placeholder="••••••••"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-white font-afacad text-lg font-bold mb-2">Current Password</label>
+                  <input
+                    type="password"
+                    value={userData.currentPassword}
+                    onChange={(e) => setUserData((prev) => ({ ...prev, currentPassword: e.target.value }))}
+                    className={styles.profileInput}
+                    placeholder="••••••••"
+                  />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-y-6 gap-x-8">
-                  <label className="self-center text-white font-afacad text-lg font-bold">New Password</label>
-                  <div>
-                    <input
-                      type="password"
-                      value={userData.newPassword}
-                      onChange={(e) => setUserData((prev) => ({ ...prev, newPassword: e.target.value }))}
-                      className={styles.profileInput}
-                      placeholder="Must be at least 8 characters with uppercase, lowercase, and number"
-                    />
-                    <p className="text-xs text-gray-500 mt-1 font-afacad">
-                      Must contain: 8+ characters, uppercase, lowercase, and number
-                    </p>
-                  </div>
+                <div>
+                  <label className="block text-white font-afacad text-lg font-bold mb-2">New Password</label>
+                  <input
+                    type="password"
+                    value={userData.newPassword}
+                    onChange={(e) => setUserData((prev) => ({ ...prev, newPassword: e.target.value }))}
+                    className={styles.profileInput}
+                    placeholder="Must be at least 8 characters with uppercase, lowercase, and number"
+                  />
+                  <p className="text-xs text-gray-500 mt-1 font-afacad">
+                    Must contain: 8+ characters, uppercase, lowercase, and number
+                  </p>
                 </div>
               </div>
 
               {/* Change password button */}
-              <div className="flex justify-center mt-10">
+              <div className="flex justify-center mt-8">
                 <button
                   title="Change Password"
                   type="button"
                   onClick={savePasswordChange}
-                  className="px-8 py-3 rounded-full font-afacad font-bold text-black cursor-pointer hover:opacity-90 transition-opacity bg-gradient-to-r from-acm-pink to-acm-orange border-none"
+                  className="px-10 py-3 rounded-full font-afacad font-bold text-white cursor-pointer hover:shadow-lg hover:shadow-acm-pink/50 transition-all bg-gradient-to-r from-acm-pink to-acm-orange border-none"
                 >
                   Change Password
                 </button>
