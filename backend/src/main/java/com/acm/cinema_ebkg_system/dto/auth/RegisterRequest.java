@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.util.List;
 
+import com.acm.cinema_ebkg_system.enums.*;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +32,7 @@ public class RegisterRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PaymentCardInfo {
-        private String cardType;
+        private PaymentCardType cardType;
         private String cardNumber; // Note: CVV is NOT sent to backend for security
         private String expirationDate;
         private String cardholderName;
