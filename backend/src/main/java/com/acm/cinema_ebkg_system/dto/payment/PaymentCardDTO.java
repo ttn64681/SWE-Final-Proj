@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import com.acm.cinema_ebkg_system.enums.*;
+
 /**
  * Payment Card DTO for frontend requests
  */
@@ -12,7 +14,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PaymentCardDTO {
     private Long userId;
-    private String cardType;
+    private PaymentCardType cardType;
     private String cardNumber;
     private String expirationDate;
     private String cardholderName;

@@ -71,9 +71,9 @@ public class User {
     @Column(name = "is_active")
     private boolean isActive = false;
 
-    @Enumerated(EnumType.STRING)
+  /*@Enumerated(EnumType.STRING)
     @Column(name = "user_status", nullable = false)
-    private UserStatus userStatus;
+    private UserStatus userStatus; */
     
     @Column(name = "verification_token")
     private String verificationToken;
