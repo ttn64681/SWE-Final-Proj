@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
@@ -35,8 +37,9 @@ public class Address {
     private User user;
 
     // Address type: 'home' or 'billing'
-    @Column(name = "address_type", nullable = false)
-    private String addressType;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AddressType addressType;
 
     // Street address
     @Column(name = "street", nullable = false, length = 255)

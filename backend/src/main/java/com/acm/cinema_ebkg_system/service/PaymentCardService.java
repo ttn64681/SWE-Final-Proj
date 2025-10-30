@@ -3,6 +3,7 @@ package com.acm.cinema_ebkg_system.service;
 import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.repository.PaymentCardRepository;
 import com.acm.cinema_ebkg_system.repository.AddressRepository;
+import com.acm.cinema_ebkg_system.util.PaymentEncryptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,30 +23,68 @@ public class PaymentCardService {
     private AddressRepository addressRepository;
     
     /**
-     * Get all payment cards for a user (default first)
+     * Get all payment cards for a user (default first) with decrypted card numbers
      * @param userId - Long: User ID
-     * @return List<PaymentCard>: Payment cards ordered by default status
+     * @return List<PaymentCard>: Payment cards ordered by default status with decrypted card numbers
      */
     public List<PaymentCard> getUserPaymentCards(Long userId) {
-        return paymentCardRepository.findByUserIdOrderByIsDefaultDesc(userId);
+        List<PaymentCard> cards = paymentCardRepository.findByUserIdOrderByIsDefaultDesc(userId);
+        // Decrypt card numbers
+        for (PaymentCard card : cards) {
+            try {
+                if (card.getCardNumber() != null) {
+                    String decrypted = PaymentEncryptionUtil.decryptCardNumber(card.getCardNumber());
+                    card.setCardNumber(decrypted);
+                }
+            } catch (Exception e) {
+                // Card number might already be decrypted (from old data)
+                // Just keep the original value
+                System.out.println("Warning: Could not decrypt card number for card " + card.getId() + ", assuming already decrypted");
+            }
+        }
+        return cards;
     }
     
     /**
-     * Get user's default payment card
+     * Get user's default payment card with decrypted card number
      * @param userId - Long: User ID
      * @return Optional<PaymentCard>: Default card if exists, empty if not
      */
     public Optional<PaymentCard> getUserDefaultCard(Long userId) {
-        return paymentCardRepository.findByUserIdAndIsDefault(userId, true);
+        Optional<PaymentCard> card = paymentCardRepository.findByUserIdAndIsDefault(userId, true);
+        if (card.isPresent()) {
+            try {
+                if (card.get().getCardNumber() != null) {
+                    String decrypted = PaymentEncryptionUtil.decryptCardNumber(card.get().getCardNumber());
+                    card.get().setCardNumber(decrypted);
+                }
+            } catch (Exception e) {
+                // Card number might already be decrypted (from old data)
+                System.out.println("Warning: Could not decrypt card number for card " + card.get().getId() + ", assuming already decrypted");
+            }
+        }
+        return card;
     }
     
     /**
-     * Get payment card by ID
+     * Get payment card by ID with decrypted card number
      * @param cardId - Long: Payment card ID
      * @return Optional<PaymentCard>: Card if exists, empty if not
      */
     public Optional<PaymentCard> getPaymentCardById(Long cardId) {
-        return paymentCardRepository.findById(cardId);
+        Optional<PaymentCard> card = paymentCardRepository.findById(cardId);
+        if (card.isPresent()) {
+            try {
+                if (card.get().getCardNumber() != null) {
+                    String decrypted = PaymentEncryptionUtil.decryptCardNumber(card.get().getCardNumber());
+                    card.get().setCardNumber(decrypted);
+                }
+            } catch (Exception e) {
+                // Card number might already be decrypted (from old data)
+                System.out.println("Warning: Could not decrypt card number for card " + cardId + ", assuming already decrypted");
+            }
+        }
+        return card;
     }
     
     /**
@@ -55,7 +94,17 @@ public class PaymentCardService {
      */
     @Transactional
     public PaymentCard createPaymentCard(PaymentCard paymentCard) {
-        List<PaymentCard> existingCards = getUserPaymentCards(paymentCard.getUser().getId());
+        // Encrypt card number before saving
+        try {
+            if (paymentCard.getCardNumber() != null) {
+                String encrypted = PaymentEncryptionUtil.encryptCardNumber(paymentCard.getCardNumber());
+                paymentCard.setCardNumber(encrypted);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error encrypting card number", e);
+        }
+        
+        List<PaymentCard> existingCards = paymentCardRepository.findByUserIdOrderByIsDefaultDesc(paymentCard.getUser().getId());
         
         // If this is the first card for the user, make it default
         if (existingCards.isEmpty()) {
@@ -74,7 +123,20 @@ public class PaymentCardService {
             }
         }
         
-        return paymentCardRepository.save(paymentCard);
+        PaymentCard saved = paymentCardRepository.save(paymentCard);
+        
+        // Decrypt for return
+        try {
+            if (saved.getCardNumber() != null) {
+                String decrypted = PaymentEncryptionUtil.decryptCardNumber(saved.getCardNumber());
+                saved.setCardNumber(decrypted);
+            }
+        } catch (Exception e) {
+            // Shouldn't happen since we just encrypted it, but handle gracefully
+            System.out.println("Warning: Could not decrypt newly saved card number");
+        }
+        
+        return saved;
     }
     
     /**
@@ -83,7 +145,30 @@ public class PaymentCardService {
      * @return PaymentCard: Updated card
      */
     public PaymentCard updatePaymentCard(PaymentCard paymentCard) {
-        return paymentCardRepository.save(paymentCard);
+        // Encrypt card number before saving
+        try {
+            if (paymentCard.getCardNumber() != null) {
+                String encrypted = PaymentEncryptionUtil.encryptCardNumber(paymentCard.getCardNumber());
+                paymentCard.setCardNumber(encrypted);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error encrypting card number", e);
+        }
+        
+        PaymentCard saved = paymentCardRepository.save(paymentCard);
+        
+        // Decrypt for return
+        try {
+            if (saved.getCardNumber() != null) {
+                String decrypted = PaymentEncryptionUtil.decryptCardNumber(saved.getCardNumber());
+                saved.setCardNumber(decrypted);
+            }
+        } catch (Exception e) {
+            // Shouldn't happen since we just encrypted it, but handle gracefully
+            System.out.println("Warning: Could not decrypt newly saved card number");
+        }
+        
+        return saved;
     }
     
     /**

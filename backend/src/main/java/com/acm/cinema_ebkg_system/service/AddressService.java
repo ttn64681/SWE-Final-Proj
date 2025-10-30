@@ -1,6 +1,7 @@
 package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import com.acm.cinema_ebkg_system.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,12 @@ public class AddressService {
      * @param addressType - String: "home" or "billing"
      * @return List<Address>: Addresses matching the type
      */
-    public List<Address> getUserAddressesByType(Long userId, String addressType) {
+    public List<Address> getUserAddressesByType(Long userId, AddressType addressType) {
         return addressRepository.findByUserIdAndAddressType(userId, addressType);
+    }
+    
+    public List<Address> getUserAddressesByType(Long userId, String addressType) {
+        return getUserAddressesByType(userId, AddressType.valueOf(addressType));
     }
     
     /**
@@ -42,7 +47,7 @@ public class AddressService {
      * @return Optional<Address>: Home address if exists, empty if not
      */
     public Optional<Address> getUserHomeAddress(Long userId) {
-        List<Address> homeAddresses = addressRepository.findByUserIdAndAddressType(userId, "home");
+        List<Address> homeAddresses = addressRepository.findByUserIdAndAddressType(userId, AddressType.home);
         return homeAddresses.isEmpty() ? Optional.empty() : Optional.of(homeAddresses.get(0));
     }
     
@@ -61,7 +66,7 @@ public class AddressService {
      * @return List<Address>: All billing addresses for the user
      */
     public List<Address> getUserBillingAddresses(Long userId) {
-        return addressRepository.findByUserIdAndAddressType(userId, "billing");
+        return addressRepository.findByUserIdAndAddressType(userId, AddressType.billing);
     }
     
     /**

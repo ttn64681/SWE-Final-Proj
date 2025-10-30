@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -57,6 +58,10 @@ public class User {
     @Column(name = "enrolled_for_promotions")
     private boolean enrolledForPromotions = false;
 
+    // Profile picture link
+    @Column(name = "profile_image_link")
+    private String profileImageLink;
+
     // Audit fields - automatically managed timestamps
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -92,27 +97,6 @@ public class User {
     @JsonIgnore
     private List<Address> addresses = new ArrayList<>();
 
-    // ========== CUSTOM CONSTRUCTORS ==========
-    
-    /**
-     * Constructor for creating a new user with basic required information
-     * Automatically sets creation and update timestamps
-     * 
-     * @param email User's email address (used for login)
-     * @param password User's password (will be hashed before saving)
-     * @param firstName User's first name
-     * @param lastName User's last name
-     */
-    public User(String email, String password, String firstName, String lastName, PaymentInfo paymentInfo) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.paymentInfos.add(paymentInfo);
-    }
-
     // ========== JPA LIFECYCLE CALLBACKS ==========
     
     /**
@@ -143,7 +127,7 @@ public class User {
     public String getHomeStreet() {
         if (addresses != null) {
             return addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
                 .findFirst()
                 .map(Address::getStreet)
                 .orElse(null);
@@ -157,7 +141,7 @@ public class User {
     public String getHomeCity() {
         if (addresses != null) {
             return addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
                 .findFirst()
                 .map(Address::getCity)
                 .orElse(null);
@@ -171,7 +155,7 @@ public class User {
     public String getHomeState() {
         if (addresses != null) {
             return addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
                 .findFirst()
                 .map(Address::getState)
                 .orElse(null);
@@ -185,7 +169,7 @@ public class User {
     public String getHomeZip() {
         if (addresses != null) {
             return addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
                 .findFirst()
                 .map(Address::getZip)
                 .orElse(null);
@@ -199,74 +183,11 @@ public class User {
     public String getHomeCountry() {
         if (addresses != null) {
             return addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
                 .findFirst()
                 .map(Address::getCountry)
                 .orElse(null);
         }
         return null;
-    }
-    
-    // ========== HOME ADDRESS SETTERS (for frontend updates) ==========
-    
-    /**
-     * Set home address street
-     * Note: This is a convenience method for DTOs. Actual update should be done via AddressService
-     */
-    public void setHomeStreet(String street) {
-        if (addresses != null) {
-            addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
-                .findFirst()
-                .ifPresent(addr -> addr.setStreet(street));
-        }
-    }
-    
-    /**
-     * Set home address city
-     */
-    public void setHomeCity(String city) {
-        if (addresses != null) {
-            addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
-                .findFirst()
-                .ifPresent(addr -> addr.setCity(city));
-        }
-    }
-    
-    /**
-     * Set home address state
-     */
-    public void setHomeState(String state) {
-        if (addresses != null) {
-            addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
-                .findFirst()
-                .ifPresent(addr -> addr.setState(state));
-        }
-    }
-    
-    /**
-     * Set home address ZIP code
-     */
-    public void setHomeZip(String zip) {
-        if (addresses != null) {
-            addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
-                .findFirst()
-                .ifPresent(addr -> addr.setZip(zip));
-        }
-    }
-    
-    /**
-     * Set home address country
-     */
-    public void setHomeCountry(String country) {
-        if (addresses != null) {
-            addresses.stream()
-                .filter(addr -> "home".equals(addr.getAddressType()))
-                .findFirst()
-                .ifPresent(addr -> addr.setCountry(country));
-        }
     }
 }

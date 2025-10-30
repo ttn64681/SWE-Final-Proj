@@ -51,12 +51,22 @@ export default function PaymentsPage() {
         },
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to fetch payment cards');
+      }
+
       const cards = (await response.json()) as PaymentCard[];
 
-      // Payment cards already include billing address fields from the backend
-      setPaymentCards(cards);
+      // Ensure cards is an array
+      if (Array.isArray(cards)) {
+        setPaymentCards(cards);
+      } else {
+        console.error('Expected array but got:', cards);
+        setPaymentCards([]);
+      }
     } catch (error) {
       console.error('Error fetching payment cards:', error);
+      setPaymentCards([]);
     }
   };
 
@@ -64,6 +74,7 @@ export default function PaymentsPage() {
     if (userId) {
       fetchPaymentCards();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   // Format card number for display
@@ -275,6 +286,7 @@ export default function PaymentsPage() {
                     </div>
                     <div className="flex gap-2">
                       <button
+                        type="button"
                         onClick={() => handleEditCard(card)}
                         className="p-2 text-white hover:text-acm-pink transition-colors cursor-pointer"
                         title="Edit"
@@ -282,6 +294,7 @@ export default function PaymentsPage() {
                         <MdEdit className="text-2xl" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleDeleteCard(card.id)}
                         className="p-2 text-white hover:text-red-500 transition-colors cursor-pointer"
                         title="Delete"

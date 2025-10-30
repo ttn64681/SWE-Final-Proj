@@ -32,4 +32,7 @@ public class UserInfo {
     
     // User preferences
     private Boolean enrolledForPromotions;
+    
+    // Profile picture (base64 encoded image)
+    private String profileImageLink;
 }

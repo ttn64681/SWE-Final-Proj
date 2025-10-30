@@ -49,7 +49,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
      */
     @Query(value =
         "SELECT DISTINCT m.* FROM movie m " +
-        "LEFT JOIN show_date sd ON sd.movie_id = m.movie_id " +
+        "LEFT JOIN movie_show ms ON ms.movie_id = m.movie_id " +
+        "LEFT JOIN show_date sd ON sd.movie_show_id = ms.id " +
         "WHERE " +
         "(:title IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
         "(:genresCsv IS NULL OR EXISTS ( " +
@@ -74,7 +75,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query(value = """
       SELECT m.* FROM movie m
       INNER JOIN movie_show ms ON ms.movie_id = m.movie_id
-      INNER JOIN show_date sd ON sd.movie_id = m.movie_id
+      INNER JOIN show_date sd ON sd.movie_show_id = ms.id
       WHERE ms.status = 'now_playing' AND sd.show_date >= CURRENT_DATE
       GROUP BY m.movie_id
       ORDER BY MIN(sd.show_date) ASC
@@ -89,7 +90,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query(value = """
       SELECT m.* FROM movie m
       INNER JOIN movie_show ms ON ms.movie_id = m.movie_id
-      INNER JOIN show_date sd ON sd.movie_id = m.movie_id
+      INNER JOIN show_date sd ON sd.movie_show_id = ms.id
       WHERE ms.status = 'upcoming' AND sd.show_date > CURRENT_DATE
       GROUP BY m.movie_id
       ORDER BY MIN(sd.show_date) ASC
@@ -115,7 +116,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
           (:month IS NULL AND :day IS NULL AND :year IS NULL) OR
           EXISTS (
             SELECT 1 FROM show_date sd 
-            WHERE sd.movie_id = m.movie_id 
+            INNER JOIN movie_show ms2 ON sd.movie_show_id = ms2.id
+            WHERE ms2.movie_id = m.movie_id 
               AND (:month IS NULL OR EXTRACT(MONTH FROM sd.show_date) = :month)
               AND (:day IS NULL OR EXTRACT(DAY FROM sd.show_date) = :day)
               AND (:year IS NULL OR EXTRACT(YEAR FROM sd.show_date) = :year)
@@ -124,7 +126,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
       ORDER BY (
         SELECT MIN(sd.show_date) 
         FROM show_date sd 
-        WHERE sd.movie_id = m.movie_id
+        INNER JOIN movie_show ms3 ON sd.movie_show_id = ms3.id
+        WHERE ms3.movie_id = m.movie_id
       ) ASC
     """, nativeQuery = true)
     List<Movie> searchNowPlayingOrdered(@Param("title") String title,
@@ -152,7 +155,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
           (:month IS NULL AND :day IS NULL AND :year IS NULL) OR
           EXISTS (
             SELECT 1 FROM show_date sd 
-            WHERE sd.movie_id = m.movie_id 
+            INNER JOIN movie_show ms2 ON sd.movie_show_id = ms2.id
+            WHERE ms2.movie_id = m.movie_id 
               AND (:month IS NULL OR EXTRACT(MONTH FROM sd.show_date) = :month)
               AND (:day IS NULL OR EXTRACT(DAY FROM sd.show_date) = :day)
               AND (:year IS NULL OR EXTRACT(YEAR FROM sd.show_date) = :year)
@@ -161,7 +165,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
       ORDER BY (
         SELECT MIN(sd.show_date) 
         FROM show_date sd 
-        WHERE sd.movie_id = m.movie_id
+        INNER JOIN movie_show ms3 ON sd.movie_show_id = ms3.id
+        WHERE ms3.movie_id = m.movie_id
       ) ASC
     """, nativeQuery = true)
     List<Movie> searchUpcomingOrdered(@Param("title") String title,

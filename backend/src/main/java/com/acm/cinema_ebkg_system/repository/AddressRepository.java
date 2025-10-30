@@ -1,6 +1,7 @@
 package com.acm.cinema_ebkg_system.repository;
 
 import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +20,5 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> findByUserId(@Param("userId") Long userId);
     
     @Query("SELECT a FROM Address a WHERE a.user.id = :userId AND a.addressType = :addressType")
-    List<Address> findByUserIdAndAddressType(@Param("userId") Long userId, @Param("addressType") String addressType);
+    List<Address> findByUserIdAndAddressType(@Param("userId") Long userId, @Param("addressType") AddressType addressType);
 }

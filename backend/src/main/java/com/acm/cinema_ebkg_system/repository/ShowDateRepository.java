@@ -14,7 +14,7 @@ public interface ShowDateRepository extends JpaRepository<ShowDate, Long> {
 
     /**
      * Returns distinct calendar dates that have show entries for a given movie.
-     * Updated to use movie_show relationship - handles both old (movie_id) and new (movie_show_id) data.
+     * Uses movie_show relationship only.
      *
      * @param movieId movie primary key (used to find corresponding movie_show)
      * @return ordered list of LocalDate values (no duplicates), ascending
@@ -22,31 +22,31 @@ public interface ShowDateRepository extends JpaRepository<ShowDate, Long> {
     @Query(value = """
         SELECT DISTINCT sd.show_date 
         FROM show_date sd
-        LEFT JOIN movie_show ms ON sd.movie_show_id = ms.id
-        WHERE (ms.movie_id = :movieId OR sd.movie_id = :movieId)
+        INNER JOIN movie_show ms ON sd.movie_show_id = ms.id
+        WHERE ms.movie_id = :movieId
         ORDER BY sd.show_date
     """, nativeQuery = true)
     List<java.sql.Date> findAvailableDatesByMovieId(@Param("movieId") Long movieId);
 
     /**
      * Returns the ShowDate row for a specific movie on a specific date.
-     * Updated to use movie_show relationship - handles both old and new data.
+     * Uses movie_show relationship only.
      */
     @Query(value = """
         SELECT sd.* FROM show_date sd 
-        LEFT JOIN movie_show ms ON sd.movie_show_id = ms.id
-        WHERE (ms.movie_id = :movieId OR sd.movie_id = :movieId) AND sd.show_date = :showDate
+        INNER JOIN movie_show ms ON sd.movie_show_id = ms.id
+        WHERE ms.movie_id = :movieId AND sd.show_date = :showDate
     """, nativeQuery = true)
     Optional<ShowDate> findByMovieIdAndDate(@Param("movieId") Long movieId, @Param("showDate") LocalDate showDate);
 
     /**
      * Returns all ShowDate rows for a movie, ordered by date ascending.
-     * Updated to use movie_show relationship - handles both old and new data.
+     * Uses movie_show relationship only.
      */
     @Query(value = """
         SELECT sd.* FROM show_date sd 
-        LEFT JOIN movie_show ms ON sd.movie_show_id = ms.id
-        WHERE ms.movie_id = :movieId OR sd.movie_id = :movieId
+        INNER JOIN movie_show ms ON sd.movie_show_id = ms.id
+        WHERE ms.movie_id = :movieId
         ORDER BY sd.show_date
     """, nativeQuery = true)
     List<ShowDate> findByMovieId(@Param("movieId") Long movieId);

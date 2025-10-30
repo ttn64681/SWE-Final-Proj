@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Checkbox from '@/components/common/forms/Checkbox';
 import NavBar from '@/components/common/navBar/NavBar';
@@ -70,6 +71,11 @@ export default function ProfilePage() {
   // Get the user profile data from the backend
   const { user, isLoading, error, updateUser, updatePassword } = useUser(getUserID());
 
+  // Promotions subscription state
+  const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
+
+  const { setProfilePic, profilePicUrl, setProfilePicUrl } = useProfile();
+
   const [userData, setUserData] = useState({
     email: '',
     currentPassword: '',
@@ -82,31 +88,38 @@ export default function ProfilePage() {
     homeState: '',
     homeZip: '',
     homeCountry: '',
+    profileImageLink: '',
   });
 
   useEffect(() => {
     //console.log(user);
     if (user) {
       setUserData({
-        email: user.email,
+        email: user.email || '',
         currentPassword: '',
         newPassword: '',
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phone: user.phoneNumber,
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        phone: user.phoneNumber || '',
         homeStreet: user.homeStreet || '',
         homeCity: user.homeCity || '',
         homeState: user.homeState || '',
         homeZip: user.homeZip || '',
         homeCountry: user.homeCountry || '',
+        profileImageLink: user.profileImageLink || '',
       });
 
       // Set the initial promotion enrollment state from user data
       setSubscribeToPromotions(user.enrolledForPromotions || false);
 
+      // Set profile picture URL if user has one
+      if (user.profileImageLink) {
+        setProfilePicUrl(user.profileImageLink);
+      }
+
       //console.log("User data set");
     }
-  }, [user]);
+  }, [user, setProfilePicUrl]);
 
   // Send updated user data to the backend
   const saveProfileChanges = async () => {
@@ -121,6 +134,7 @@ export default function ProfilePage() {
         homeZip: userData.homeZip,
         homeCountry: userData.homeCountry,
         enrolledForPromotions: subscribeToPromotions,
+        profileImageLink: userData.profileImageLink,
       });
 
       if (success) {
@@ -157,16 +171,20 @@ export default function ProfilePage() {
       alert(message);
     }
   };
-  // Promotions subscription state
-  const [subscribeToPromotions, setSubscribeToPromotions] = useState(false);
-
-  const { profilePic, setProfilePic, profilePicUrl, setProfilePicUrl } = useProfile();
 
   const onImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setProfilePic(file);
       setProfilePicUrl(URL.createObjectURL(file));
+
+      // Convert file to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setUserData((prev) => ({ ...prev, profileImageLink: base64String }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -225,8 +243,15 @@ export default function ProfilePage() {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full z-10"
               />
               <div className="rounded-full flex items-center justify-center transition-colors w-[170px] h-[170px] bg-[#2B2B2B]">
-                {profilePicUrl ? (
-                  <img src={profilePicUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                {profilePicUrl || user?.profileImageLink ? (
+                  <Image
+                    src={profilePicUrl || (user?.profileImageLink as string)}
+                    alt="Profile"
+                    width={170}
+                    height={170}
+                    className="w-full h-full rounded-full object-cover"
+                    loading="lazy"
+                  />
                 ) : (
                   <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" strokeWidth="1.2">
                     <circle cx="12" cy="8" r="4" />

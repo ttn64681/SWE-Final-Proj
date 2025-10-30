@@ -21,4 +21,5 @@ export interface BackendUser {
   homeZip?: string;
   homeCountry?: string;
   enrolledForPromotions?: boolean;
+  profileImageLink?: string;
 }

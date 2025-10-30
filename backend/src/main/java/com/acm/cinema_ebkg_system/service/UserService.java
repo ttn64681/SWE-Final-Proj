@@ -2,6 +2,7 @@ package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
 import com.acm.cinema_ebkg_system.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,6 +209,10 @@ public class UserService {
         if (userInfo.getPhoneNumber() != null) {
             user.setPhoneNumber(userInfo.getPhoneNumber());
         }
+        // Handle profile picture
+        if (userInfo.getProfileImageLink() != null) {
+            user.setProfileImageLink(userInfo.getProfileImageLink());
+        }
         
         // Handle enrolled_for_promotions preference
         boolean wasEnrolledForPromotions = user.isEnrolledForPromotions();
@@ -220,7 +225,7 @@ public class UserService {
             userInfo.getHomeState() != null || userInfo.getHomeZip() != null) {
             
             // Check if user already has a home address
-            List<Address> homeAddresses = addressRepository.findByUserIdAndAddressType(userId, "home");
+            List<Address> homeAddresses = addressRepository.findByUserIdAndAddressType(userId, AddressType.home);
             Address homeAddress;
             
             if (!homeAddresses.isEmpty()) {
@@ -248,7 +253,7 @@ public class UserService {
                 // Create new home address
                 homeAddress = new Address();
                 homeAddress.setUser(user);
-                homeAddress.setAddressType("home");
+                homeAddress.setAddressType(AddressType.home);
                 
                 homeAddress.setStreet(userInfo.getHomeStreet() != null ? userInfo.getHomeStreet() : "");
                 homeAddress.setCity(userInfo.getHomeCity() != null ? userInfo.getHomeCity() : "");

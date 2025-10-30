@@ -7,6 +7,7 @@ import com.acm.cinema_ebkg_system.dto.auth.ResetPasswordRequest;
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.model.Address;
 import com.acm.cinema_ebkg_system.model.PaymentCard;
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.service.AddressService;
 import com.acm.cinema_ebkg_system.service.PaymentCardService;
@@ -96,7 +97,7 @@ public class AuthController {
             if (request.getHomeAddress() != null && !request.getHomeAddress().trim().isEmpty()) {
                 Address homeAddr = new Address();
                 homeAddr.setUser(savedUser);
-                homeAddr.setAddressType("home");
+                homeAddr.setAddressType(AddressType.home);
                 homeAddr.setStreet(request.getHomeAddress());
                 homeAddr.setCity(request.getHomeCity() != null ? request.getHomeCity() : "");
                 homeAddr.setState(request.getHomeState() != null ? request.getHomeState() : "");
@@ -111,7 +112,7 @@ public class AuthController {
                     // Create billing address for this payment card
                     Address billingAddress = new Address();
                     billingAddress.setUser(savedUser);
-                    billingAddress.setAddressType("billing");
+                    billingAddress.setAddressType(AddressType.billing);
                     billingAddress.setStreet(cardInfo.getBillingStreet());
                     billingAddress.setCity(cardInfo.getBillingCity());
                     billingAddress.setState(cardInfo.getBillingState());

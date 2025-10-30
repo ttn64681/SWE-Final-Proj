@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // WITHOUT useCallback: New reference every AuthProvider re-render → useMemo recreates context → all auth consumers re-render
   // WHY MATTERS: Prevents context recreation cascade
   const checkAuthStatus = useCallback(() => {
-    console.log('🚀 checkAuthStatus called');
+    console.log('checkAuthStatus called');
     setIsLoading(true);
 
     // Check localStorage first, then sessionStorage
@@ -46,29 +46,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const sessionRefreshToken = sessionStorage.getItem('refreshToken');
     const refreshToken = localRefreshToken || sessionRefreshToken;
 
-    console.log('🔍 checkAuthStatus - localToken:', localToken ? 'exists' : 'null');
-    console.log('🔍 checkAuthStatus - sessionToken:', sessionToken ? 'exists' : 'null');
-    console.log('🔍 checkAuthStatus - localRefreshToken:', localRefreshToken ? 'exists' : 'null');
-    console.log('🔍 checkAuthStatus - sessionRefreshToken:', sessionRefreshToken ? 'exists' : 'null');
+    console.log('checkAuthStatus - localToken:', localToken ? 'exists' : 'null');
+    console.log('checkAuthStatus - sessionToken:', sessionToken ? 'exists' : 'null');
+    console.log('checkAuthStatus - localRefreshToken:', localRefreshToken ? 'exists' : 'null');
+    console.log('checkAuthStatus - sessionRefreshToken:', sessionRefreshToken ? 'exists' : 'null');
     console.log(
-      '🔍 checkAuthStatus - token found:',
+      'checkAuthStatus - token found:',
       !!token,
       'refreshToken found:',
       !!refreshToken,
       'rememberMe:',
       rememberMe
     );
-    console.log('🔍 checkAuthStatus - localStorage rememberMe:', localStorage.getItem('rememberMe'));
+    console.log('checkAuthStatus - localStorage rememberMe:', localStorage.getItem('rememberMe'));
 
     if (token && refreshToken) {
-      console.log('🔄 Attempting to refresh token...');
+      console.log('Attempting to refresh token...');
       // Try to refresh token to validate it
       authAPI
         .refreshToken()
         .then((response) => {
-          console.log('🔄 refreshToken response:', response);
+          console.log('refreshToken response:', response);
           if (response.success && response.user) {
-            console.log('✅ Token refresh successful, setting user:', response.user.email);
+            console.log('Token refresh successful, setting user:', response.user.email);
             setUser(response.user);
             // Update tokens if refresh was successful
             if (response.token) {
@@ -77,13 +77,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (response.refreshToken) {
                   localStorage.setItem('refreshToken', response.refreshToken);
                 }
-                console.log('✅ Updated tokens in localStorage');
+                console.log('Updated tokens in localStorage');
               } else {
                 sessionStorage.setItem('token', response.token);
                 if (response.refreshToken) {
                   sessionStorage.setItem('refreshToken', response.refreshToken);
                 }
-                console.log('✅ Updated tokens in sessionStorage');
+                console.log('Updated tokens in sessionStorage');
               }
 
               // Trigger custom event to notify other tabs about token refresh
@@ -94,8 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               );
             }
           } else {
-            console.log('❌ Token refresh failed, clearing tokens');
-            console.log('❌ Refresh failed reason:', response.message);
+            console.log('Token refresh failed, clearing tokens');
+            console.log('Refresh failed reason:', response.message);
             // Token is invalid, clear it
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
@@ -108,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error('❌ refreshToken error:', error);
+          console.error('refreshToken error:', error);
           localStorage.removeItem('token');
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('rememberMe');
@@ -119,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsLoading(false);
         });
     } else if (token && !refreshToken) {
-      console.log('⚠️ Access token found but no refresh token, clearing all tokens');
+      console.log('Access token found but no refresh token, clearing all tokens');
       // Clear all tokens if we have access token but no refresh token
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       setIsLoading(false);
     } else {
-      console.log('❌ No tokens found, user not authenticated');
+      console.log('No tokens found, user not authenticated');
       setIsLoading(false);
     }
   }, []);
@@ -146,12 +146,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // WITHOUT useCallback: New reference every AuthProvider re-render → useMemo recreates context → all auth consumers re-render
   // WHY MATTERS: Prevents context recreation cascade
   const login = useCallback(async (email: string, password: string, rememberMe = false): Promise<AuthResponse> => {
-    console.log('🔐 Login attempt - rememberMe:', rememberMe);
+    console.log('Login attempt - rememberMe:', rememberMe);
     const response = await authAPI.login({ email, password, rememberMe });
-    console.log('🔐 Login response:', response);
+    console.log('Login response:', response);
 
     if (response.success && response.user && response.token) {
-      console.log('✅ Login successful, storing tokens...');
+      console.log('Login successful, storing tokens...');
       setUser(response.user);
       // Store JWT tokens client-side only (stateless - server doesn't store sessions)
       // Remember me = localStorage (persistent), otherwise = sessionStorage (session-only)
@@ -161,9 +161,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (response.refreshToken) {
           localStorage.setItem('refreshToken', response.refreshToken);
         }
-        console.log('✅ Stored tokens in localStorage for remember me');
-        console.log('🔍 localStorage token after storage:', localStorage.getItem('token') ? 'exists' : 'null');
-        console.log('🔍 localStorage rememberMe after storage:', localStorage.getItem('rememberMe'));
+        console.log('Stored tokens in localStorage for remember me');
+        console.log('localStorage token after storage:', localStorage.getItem('token') ? 'exists' : 'null');
+        console.log('localStorage rememberMe after storage:', localStorage.getItem('rememberMe'));
 
         // Removed cross-tab communication
       } else {
@@ -172,26 +172,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (response.refreshToken) {
           sessionStorage.setItem('refreshToken', response.refreshToken);
         }
-        console.log('✅ Stored tokens in sessionStorage for session only');
-        console.log('🔍 sessionStorage token after storage:', sessionStorage.getItem('token') ? 'exists' : 'null');
-        console.log('🔍 sessionStorage rememberMe after storage:', sessionStorage.getItem('rememberMe'));
+        console.log('Stored tokens in sessionStorage for session only');
+        console.log('sessionStorage token after storage:', sessionStorage.getItem('token') ? 'exists' : 'null');
+        console.log('sessionStorage rememberMe after storage:', sessionStorage.getItem('rememberMe'));
 
         // Removed cross-tab communication
       }
     } else {
-      console.log('❌ Login failed:', response.message);
+      console.log('Login failed:', response.message);
     }
 
     return response;
   }, []);
 
   const adminLogin = useCallback(async (email: string, password: string, rememberMe = false): Promise<AuthResponse> => {
-    console.log('🔐 Admin login attempt - rememberMe:', rememberMe);
+    console.log('Admin login attempt - rememberMe:', rememberMe);
     const response = await authAPI.adminLogin({ email, password, rememberMe });
-    console.log('🔐 Admin login response:', response);
+    console.log('Admin login response:', response);
 
     if (response.success && response.user && response.token) {
-      console.log('✅ Admin login successful, storing tokens...');
+      console.log('Admin login successful, storing tokens...');
       setUser(response.user);
       // Store JWT tokens client-side only (stateless - server doesn't store sessions)
       // Remember me = localStorage (persistent), otherwise = sessionStorage (session-only)
@@ -202,7 +202,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (response.refreshToken) {
           localStorage.setItem('refreshToken', response.refreshToken);
         }
-        console.log('✅ Stored admin tokens in localStorage for remember me');
+        console.log('Stored admin tokens in localStorage for remember me');
       } else {
         sessionStorage.setItem('token', response.token);
         sessionStorage.setItem('adminToken', response.token); // Mark as admin
@@ -210,10 +210,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (response.refreshToken) {
           sessionStorage.setItem('refreshToken', response.refreshToken);
         }
-        console.log('✅ Stored admin tokens in sessionStorage for session only');
+        console.log('Stored admin tokens in sessionStorage for session only');
       }
     } else {
-      console.log('❌ Admin login failed:', response.message);
+      console.log('Admin login failed:', response.message);
     }
 
     return response;
@@ -224,7 +224,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // WITHOUT useCallback: New reference every AuthProvider re-render → useMemo recreates context → all auth consumers re-render
   // WHY MATTERS: Prevents context recreation cascade
   const logout = useCallback(async (): Promise<void> => {
-    console.log('🚪 Logout initiated - INSTANT LOGOUT');
+    console.log('Logout initiated - INSTANT LOGOUT');
 
     // Clear everything immediately - no delays, no complex logic
     setUser(null);
@@ -236,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
     });
 
-    console.log('✅ Logout completed - user logged out instantly');
+    console.log('Logout completed - user logged out instantly');
   }, []);
 
   // CACHES: Context value object { user, isAuthenticated, isLoading, login, logout, checkAuthStatus } - persists across AuthProvider re-renders

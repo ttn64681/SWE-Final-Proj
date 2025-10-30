@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { buildUrl } from '../config/api';
 import { BackendUser } from '@/types/user';
-import { BackendPayment } from '@/types/payment';
 
 // Helper function to get userId from JWT token
 function getUserIdFromToken(): number {
@@ -55,6 +54,7 @@ async function getUserInfo(userId: number) {
         lastName: string;
         phoneNumber: string;
         enrolledForPromotions: boolean;
+        profileImageLink?: string;
       };
       homeAddress: {
         street: string;
@@ -63,7 +63,6 @@ async function getUserInfo(userId: number) {
         zip: string;
         country: string;
       } | null;
-      paymentCards: BackendPayment[];
     };
 
     // Combine user data with home address
@@ -79,6 +78,7 @@ async function getUserInfo(userId: number) {
       homeState?: string;
       homeZip?: string;
       homeCountry?: string;
+      profileImageLink?: string;
     } = { ...profileData.user };
     if (profileData.homeAddress) {
       userData.homeStreet = profileData.homeAddress.street;

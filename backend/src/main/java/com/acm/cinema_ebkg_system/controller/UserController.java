@@ -2,10 +2,8 @@ package com.acm.cinema_ebkg_system.controller;
 
 import com.acm.cinema_ebkg_system.model.User;
 import com.acm.cinema_ebkg_system.model.Address;
-import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.service.UserService;
 import com.acm.cinema_ebkg_system.service.AddressService;
-import com.acm.cinema_ebkg_system.service.PaymentCardService;
 import com.acm.cinema_ebkg_system.dto.user.UserInfo;
 import com.acm.cinema_ebkg_system.dto.user.UserProfileDTO;
 
@@ -26,13 +24,11 @@ public class UserController {
     // Dependency injection of services for business logic
     private final UserService userService;
     private final AddressService addressService;
-    private final PaymentCardService paymentCardService;
 
     // Constructor injection - Spring automatically provides service instances
-    public UserController(UserService userService, AddressService addressService, PaymentCardService paymentCardService) {
+    public UserController(UserService userService, AddressService addressService) {
         this.userService = userService;
         this.addressService = addressService;
-        this.paymentCardService = paymentCardService;
     }
     
     // GET /api/user/info - Get current user's information (userId from JWT in frontend)
@@ -41,17 +37,15 @@ public class UserController {
         return userService.getUserById(userId);
     }
     
-    // GET /api/user/profile - Get complete user profile (user info + home address + payment cards)
+    // GET /api/user/profile - Get user profile (user info + home address)
     @GetMapping("/user/profile")
     public UserProfileDTO getUserProfile(@org.springframework.web.bind.annotation.RequestParam Long userId) {
         User user = userService.getUserById(userId);
         Optional<Address> homeAddress = addressService.getUserHomeAddress(userId);
-        List<PaymentCard> paymentCards = paymentCardService.getUserPaymentCards(userId);
         
         UserProfileDTO dto = new UserProfileDTO();
         dto.setUser(user);
         dto.setHomeAddress(homeAddress.orElse(null));
-        dto.setPaymentCards(paymentCards);
         
         return dto;
     }

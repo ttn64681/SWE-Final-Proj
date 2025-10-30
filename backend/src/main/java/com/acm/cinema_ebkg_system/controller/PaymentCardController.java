@@ -3,6 +3,7 @@ package com.acm.cinema_ebkg_system.controller;
 import com.acm.cinema_ebkg_system.model.PaymentCard;
 import com.acm.cinema_ebkg_system.model.Address;
 import com.acm.cinema_ebkg_system.model.User;
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import com.acm.cinema_ebkg_system.service.PaymentCardService;
 import com.acm.cinema_ebkg_system.service.AddressService;
 import com.acm.cinema_ebkg_system.service.UserService;
@@ -35,16 +36,20 @@ public class PaymentCardController {
      * Returns: List<PaymentCard> - all payment cards for user (default first)
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PaymentCard>> getUserPaymentCards(@PathVariable Long userId) {
-        List<PaymentCard> cards = paymentCardService.getUserPaymentCards(userId);
-        // Load billing address for each card
-        for (PaymentCard card : cards) {
-            if (card.getAddressId() != null) {
-                Optional<Address> address = addressService.getAddressById(card.getAddressId());
-                address.ifPresent(card::setAddress);
+    public ResponseEntity<?> getUserPaymentCards(@PathVariable Long userId) {
+        try {
+            List<PaymentCard> cards = paymentCardService.getUserPaymentCards(userId);
+            // Load billing address for each card
+            for (PaymentCard card : cards) {
+                if (card.getAddressId() != null) {
+                    Optional<Address> address = addressService.getAddressById(card.getAddressId());
+                    address.ifPresent(card::setAddress);
+                }
             }
+            return ResponseEntity.ok(cards);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching payment cards: " + e.getMessage());
         }
-        return ResponseEntity.ok(cards);
     }
     
     /**
@@ -73,7 +78,7 @@ public class PaymentCardController {
             // Create billing address
             Address address = new Address();
             address.setUser(user);
-            address.setAddressType("billing");
+            address.setAddressType(AddressType.billing);
             address.setStreet(dto.getBillingStreet());
             address.setCity(dto.getBillingCity());
             address.setState(dto.getBillingState());
