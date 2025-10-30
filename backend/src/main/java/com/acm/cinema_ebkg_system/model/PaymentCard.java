@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
+import com.acm.cinema_ebkg_system.enums.PaymentCardType;
+
 /**
  * Payment Card Entity - Represents user payment cards in the cinema booking system
  * 
@@ -60,8 +62,9 @@ public class PaymentCard {
     private String cardholderName;
 
     // Payment card type: 'visa', 'mastercard', 'amex', 'discover'
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_card_type", nullable = false)
-    private String paymentCardType;
+    private PaymentCardType paymentCardType;
 
 
     @Column(name = "is_default")

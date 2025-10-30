@@ -49,8 +49,6 @@ public class Ticket {
     // Many-to-one relationship with TicketCategory
     // Many tickets belong to one ticket category (one category applies to many tickets)
     @Enumerated(EnumType.STRING)
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "ticket_category_id", nullable = false)
     @Column(name = "ticket_category_id", nullable = false)
     @JsonIgnoreProperties({"tickets"})
     private TicketType ticketType;
@@ -61,10 +59,6 @@ public class Ticket {
     
     // One-to-many relationship with TicketSeat (junction table)
     // One ticket can be associated with many seats via TicketSeat
-    
-    /*@OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"ticket"})
-    private List<TicketSeat> ticketSeats;*/
     
     // Reference to booking ID (for future use when Booking is implemented)
     @Column(name = "booking_id", insertable = false, updatable = false)

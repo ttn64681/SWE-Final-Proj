@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.acm.cinema_ebkg_system.enums.PaymentCardType;
+import com.acm.cinema_ebkg_system.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -68,6 +70,10 @@ public class User {
     
     @Column(name = "is_active")
     private boolean isActive = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
+    private UserStatus userStatus;
     
     @Column(name = "verification_token")
     private String verificationToken;
