@@ -1,6 +1,6 @@
 package com.acm.cinema_ebkg_system.model;
 
-import jakarta.persistence.*;
+// import jakarta.persistence.*;
 // import lombok.Data;
 // import lombok.NoArgsConstructor;
 // import lombok.AllArgsConstructor;

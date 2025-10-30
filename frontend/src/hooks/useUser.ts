@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { buildUrl, endpoints } from '../config/api';
+import { buildUrl } from '../config/api';
 import { BackendUser } from '@/types/user';
+import { BackendPayment } from '@/types/payment';
 
 // Helper function to get userId from JWT token
 function getUserIdFromToken(): number {
@@ -62,11 +63,23 @@ async function getUserInfo(userId: number) {
         zip: string;
         country: string;
       } | null;
-      paymentCards: any[];
+      paymentCards: BackendPayment[];
     };
 
     // Combine user data with home address
-    const userData: any = { ...profileData.user };
+    const userData: Partial<BackendUser> & {
+      id: number;
+      email: string;
+      firstName: string;
+      lastName: string;
+      phoneNumber: string;
+      enrolledForPromotions: boolean;
+      homeStreet?: string;
+      homeCity?: string;
+      homeState?: string;
+      homeZip?: string;
+      homeCountry?: string;
+    } = { ...profileData.user };
     if (profileData.homeAddress) {
       userData.homeStreet = profileData.homeAddress.street;
       userData.homeCity = profileData.homeAddress.city;
@@ -144,7 +157,7 @@ async function changePassword(userId: number, passwordInfo: Partial<BackendUser>
 }
 
 export function useUser(userId: number) {
-  const [user, setUser] = useState<BackendUser | null>(null);
+  const [user, setUser] = useState<Partial<BackendUser> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

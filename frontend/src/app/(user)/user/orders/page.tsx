@@ -1,28 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import NavBar from '@/components/common/navBar/NavBar';
 import { useProfile } from '@/contexts/ProfileContext';
-
-interface OrderRow {
-  id: string;
-  date: string;
-  time: string;
-  movie: string;
-  bookingNumber: string;
-  ticketNumbers: string;
-  showtime: string;
-  orderDate: string;
-  posterUrl: string;
-  tickets: {
-    adult: { count: number; price: number };
-    child: { count: number; price: number };
-    senior: { count: number; price: number };
-  };
-  bookingFee: number;
-  paymentMethod: string;
-}
+import { OrderRow } from '@/types/order';
 
 const demoOrders: OrderRow[] = [
   {
@@ -117,26 +100,16 @@ export default function OrdersPage() {
       <div className="h-30" />
 
       {/* Tabs */}
-      <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose" style={{ fontSize: '30px' }}>
+      <div className="flex items-center justify-center gap-10 mt-2 mb-18 font-red-rose text-[30px]">
         <Link href="/user/profile" className="font-bold text-gray-300 hover:text-white transition-colors">
           Account Info
         </Link>
         <Link href="/user/payments" className="font-bold text-gray-300 hover:text-white transition-colors">
           Payment
         </Link>
-        <Link href="/user/orders" className="relative font-bold" style={{ color: '#FF478B' }}>
+        <Link href="/user/orders" className="relative font-bold text-acm-pink">
           Order History
-          <span
-            className="absolute rounded-full"
-            style={{
-              bottom: '-8px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '32px',
-              height: '2px',
-              backgroundColor: '#FF478B',
-            }}
-          />
+          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
         </Link>
       </div>
 
@@ -145,12 +118,16 @@ export default function OrdersPage() {
           {/* Sidebar */}
           <aside className="flex flex-col items-center gap-6 -mt-2 md:-mt-20">
             <div className="relative">
-              <div
-                className="rounded-full flex items-center justify-center"
-                style={{ width: '170px', height: '170px', backgroundColor: '#2B2B2B' }}
-              >
+              <div className="rounded-full flex items-center justify-center w-[170px] h-[170px] bg-[#2B2B2B]">
                 {profilePicUrl ? (
-                  <img src={profilePicUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                  <Image
+                    src={profilePicUrl}
+                    alt="Profile"
+                    width={170}
+                    height={170}
+                    className="w-full h-full rounded-full object-cover"
+                    loading="lazy"
+                  />
                 ) : (
                   <svg width="84" height="84" viewBox="0 0 24 24" fill="none" stroke="#EDEDED" strokeWidth="1.2">
                     <circle cx="12" cy="8" r="4" />
@@ -173,7 +150,7 @@ export default function OrdersPage() {
             </div>
 
             <div className="divide-y divide-white border-b border-white">
-              {demoOrders.map((order, idx) => (
+              {demoOrders.map((order) => (
                 <div
                   key={order.id}
                   className="grid grid-cols-3 items-center py-6 px-2 font-afacad text-white text-xl cursor-pointer hover:bg-gray-500/20 transition-colors"
@@ -192,10 +169,7 @@ export default function OrdersPage() {
       {/* Order Details Popup */}
       {selectedOrder && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div
-            className="relative bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto"
-            style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}
-          >
+          <div className="relative bg-white/3 backdrop-blur-md rounded-lg p-8 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)]">
             {/* Close button */}
             <button
               type="button"
@@ -224,7 +198,14 @@ export default function OrdersPage() {
             <div className="mb-6">
               <div className="flex gap-6 items-center">
                 <div className="w-28 h-40 bg-gray-600 rounded-lg overflow-hidden flex-shrink-0">
-                  <img src={selectedOrder.posterUrl} alt={selectedOrder.movie} className="w-full h-full object-cover" />
+                  <Image
+                    src={selectedOrder.posterUrl}
+                    alt={selectedOrder.movie}
+                    width={112}
+                    height={160}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-3xl md:text-4xl font-bold text-white mb-2">{selectedOrder.movie}</h3>

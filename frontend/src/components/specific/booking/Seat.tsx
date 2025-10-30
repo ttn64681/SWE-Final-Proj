@@ -1,14 +1,12 @@
 'use client';
 
 import styles from '@/app/(booking)/booking/(seats)/seating.module.css';
+import { Seat } from '@/types/booking';
 
 interface SeatProps {
-  seat: {
-    id: string;
-    occupied: boolean;
-  };
+  seat: Seat;
   isSelected: boolean;
-  onToggle: (seat: { id: string; occupied: boolean }) => void;
+  onToggle: (seat: Seat) => void;
 }
 
 export default function Seat({ seat, isSelected, onToggle }: SeatProps) {

@@ -4,12 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import NavBar from '@/components/common/navBar/NavBar';
-
-interface Showtime {
-  date: string;
-  time: string;
-  ampm: string;
-}
+import { Showtime } from '@/types/booking';
 
 // interface Movie {
 //   id: number;

@@ -2,12 +2,13 @@
 
 import styles from '@/app/(booking)/booking/(seats)/seating.module.css';
 import SeatRow from './SeatRow';
+import { Seat } from '@/types/booking';
 
 interface CinemaLayoutProps {
-  frontRows: Array<Array<{ id: string; occupied: boolean }>>;
-  backRows: Array<Array<{ id: string; occupied: boolean }>>;
+  frontRows: Seat[][];
+  backRows: Seat[][];
   selectedSeats: string[];
-  onToggleSeat: (seat: { id: string; occupied: boolean }) => void;
+  onToggleSeat: (seat: Seat) => void;
 }
 
 export default function CinemaLayout({ frontRows, backRows, selectedSeats, onToggleSeat }: CinemaLayoutProps) {

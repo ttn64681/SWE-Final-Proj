@@ -3,13 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import AdminNavBar from '@/components/common/navBar/AdminNavBar';
-
-interface StoredUser {
-  id: number;
-  name: string;
-  type: 'admin' | 'member';
-  status?: 'active' | 'inactive' | 'suspended';
-}
+import { StoredUser } from '@/types/admin';
 
 function AdminUsersPage() {
   const [adminList, setAdminList] = useState([

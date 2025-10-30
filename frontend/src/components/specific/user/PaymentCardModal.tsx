@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { PaymentCardFormData } from '@/types/payment';
 
 interface PaymentCardModalProps {
   isOpen: boolean;
@@ -9,21 +10,6 @@ interface PaymentCardModalProps {
   onSubmit: (data: PaymentCardFormData) => void;
   initialData?: Partial<PaymentCardFormData>;
   isSubmitting?: boolean;
-}
-
-export interface PaymentCardFormData {
-  cardId: number;
-  cardType: string;
-  cardNumber: string;
-  expirationDate: string;
-  cvv: string;
-  cardholderName: string;
-  billingStreet: string;
-  billingCity: string;
-  billingState: string;
-  billingZip: string;
-  billingCountry: string;
-  isDefault: boolean;
 }
 
 export default function PaymentCardModal({

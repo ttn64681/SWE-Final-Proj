@@ -1,11 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-
-interface Seat {
-  id: string;
-  occupied: boolean;
-}
+import { Seat } from '@/types/booking';
 
 export function useSeats() {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);

@@ -6,45 +6,9 @@ import { MdDelete, MdEdit, MdCreditCard } from 'react-icons/md';
 import { useState, useEffect } from 'react';
 import NavBar from '@/components/common/navBar/NavBar';
 import { useProfile } from '@/contexts/ProfileContext';
-import PaymentCardModal, { PaymentCardFormData } from '@/components/specific/user/PaymentCardModal';
+import PaymentCardModal from '@/components/specific/user/PaymentCardModal';
+import { PaymentCardFormData, PaymentCard } from '@/types/payment';
 import { buildUrl, endpoints } from '@/config/api';
-
-interface PaymentCard {
-  id: number;
-  cardNumber: string;
-  cardholderName: string;
-  paymentCardType: string;
-  expirationDate: string;
-  isDefault: boolean;
-  billingStreet?: string;
-  billingCity?: string;
-  billingState?: string;
-  billingZip?: string;
-  billingCountry?: string;
-}
-
-interface PaymentCardResponse {
-  id: number;
-  cardNumber: string;
-  cardholderName: string;
-  paymentCardType: string;
-  expirationDate: string;
-  isDefault: boolean;
-  billingStreet?: string;
-  billingCity?: string;
-  billingState?: string;
-  billingZip?: string;
-  billingCountry?: string;
-}
-
-interface BillingAddress {
-  id: number;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-}
 
 export default function PaymentsPage() {
   const [paymentCards, setPaymentCards] = useState<PaymentCard[]>([]);
@@ -87,10 +51,10 @@ export default function PaymentsPage() {
         },
       });
 
-      const cards = (await response.json()) as PaymentCardResponse[];
+      const cards = (await response.json()) as PaymentCard[];
 
       // Payment cards already include billing address fields from the backend
-      setPaymentCards(cards as PaymentCard[]);
+      setPaymentCards(cards);
     } catch (error) {
       console.error('Error fetching payment cards:', error);
     }

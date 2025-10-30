@@ -2,12 +2,13 @@
 
 import styles from '@/app/(booking)/booking/(seats)/seating.module.css';
 import Seat from './Seat';
+import { Seat as SeatType } from '@/types/booking';
 
 interface SeatRowProps {
   rowNumber: number;
-  seats: Array<{ id: string; occupied: boolean }>;
+  seats: SeatType[];
   selectedSeats: string[];
-  onToggleSeat: (seat: { id: string; occupied: boolean }) => void;
+  onToggleSeat: (seat: SeatType) => void;
   isFrontRow?: boolean;
 }
 

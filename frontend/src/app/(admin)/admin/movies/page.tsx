@@ -4,16 +4,7 @@ import Link from 'next/link';
 import { PiPencilSimple, PiX } from 'react-icons/pi';
 import { useState, useEffect } from 'react';
 import AdminNavBar from '@/components/common/navBar/AdminNavBar';
-
-interface Movie {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  _meta?: {
-    showtimes?: Array<{ date: string; time: string; ampm: string }>;
-  };
-}
+import { Movie } from '@/types/admin';
 
 // hardcoded movies for now
 const moviesList: Movie[] = [
