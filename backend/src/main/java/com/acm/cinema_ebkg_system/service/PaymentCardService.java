@@ -126,7 +126,7 @@ public class PaymentCardService {
         PaymentCard saved = paymentCardRepository.save(paymentCard);
         
         // Decrypt for return
-        try {
+       /* try {
             if (saved.getCardNumber() != null) {
                 String decrypted = PaymentEncryptionUtil.decryptCardNumber(saved.getCardNumber());
                 saved.setCardNumber(decrypted);
@@ -134,7 +134,7 @@ public class PaymentCardService {
         } catch (Exception e) {
             // Shouldn't happen since we just encrypted it, but handle gracefully
             System.out.println("Warning: Could not decrypt newly saved card number");
-        }
+        } */
         
         return saved;
     }
