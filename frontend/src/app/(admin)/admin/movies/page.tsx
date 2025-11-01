@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { PiPencilSimple, PiX } from 'react-icons/pi';
 import NavBar from '@/components/common/navBar/NavBar';
 import { useState, useEffect } from 'react';
+import MovieFormModal, { AdminMovie } from '@/components/specific/admin/MovieFormModal';
 
 interface Movie {
   id: number; 
@@ -31,21 +32,27 @@ const moviesList: Movie[] = [
 ];
 
 export default function AdminMoviesPage() {
-  const [movies, setMovies] = useState(moviesList);
+  const [movies, setMovies] = useState<Movie[]>(moviesList);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMovie, setEditingMovie] = useState<AdminMovie | null>(null);
 
   // load saved movies on mount
   useEffect(() => {
     const savedMovies = sessionStorage.getItem('movies');
     if (savedMovies) {
       try {
-        const parsedMovies = JSON.parse(savedMovies);
-        const allMovies = [...moviesList];
-        parsedMovies.forEach((savedMovie: Movie) => {
-          if (!moviesList.some(movie => movie.id === savedMovie.id)) {
-            allMovies.push(savedMovie);
-          }
+        const parsedMovies: AdminMovie[] = JSON.parse(savedMovies);
+        // Merge by replacing matching ids from baseline with saved overrides, then adding new ones
+        const baselineById = new Map(moviesList.map(m => [m.id, m]));
+        parsedMovies.forEach(saved => {
+          baselineById.set(saved.id, saved as unknown as Movie);
         });
-        setMovies(allMovies);
+        // Add any that are only in saved
+        const merged = Array.from(baselineById.values());
+        // Also include saved that are entirely new (ids not in baseline map after replacement logic already handled)
+        const savedOnly = parsedMovies.filter(s => !moviesList.some(b => b.id === s.id));
+        const result = merged.concat(savedOnly as unknown as Movie[]);
+        setMovies(result);
       } catch (error) {
         console.log('error parsing movies:', error);
       }
@@ -60,6 +67,35 @@ export default function AdminMoviesPage() {
       !moviesList.some(initialMovie => initialMovie.id === movie.id)
     );
     sessionStorage.setItem('movies', JSON.stringify(nonInitialMovies));
+  };
+
+  const openAddModal = () => {
+    setEditingMovie(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (movie: Movie) => {
+    const adminMovie: AdminMovie = {
+      id: movie.id,
+      title: movie.title,
+      date: movie.date,
+      time: movie.time,
+      _meta: movie._meta
+    };
+    setEditingMovie(adminMovie);
+    setIsModalOpen(true);
+  };
+
+  const handleSaved = (saved: AdminMovie) => {
+    // Update local state, replacing if id exists otherwise append
+    setMovies(prev => {
+      const exists = prev.some(m => m.id === saved.id);
+      const next = exists ? prev.map(m => (m.id === saved.id ? (saved as unknown as Movie) : m)) : [...prev, saved as unknown as Movie];
+      // Maintain sessionStorage of only non-initial movies
+      const nonInitial = next.filter(m => !moviesList.some(init => init.id === m.id)) as unknown as AdminMovie[];
+      sessionStorage.setItem('movies', JSON.stringify(nonInitial));
+      return next;
+    });
   };
 
   return (
@@ -106,11 +142,9 @@ export default function AdminMoviesPage() {
                     <div className="flex items-center gap-3 text-gray-300 px-25 ml-auto min-w-[4rem]">
                       {isFirst && (
                         <>
-                          <Link href={`/admin/movies/add?edit=${movie.id}`}>
-                            <button title="Edit movie" className="hover:text-white transition-colors">
-                              <PiPencilSimple className="text-xl" />
-                            </button>
-                          </Link>
+                          <button title="Edit movie" className="hover:text-white transition-colors" onClick={() => openEditModal(movie)}>
+                            <PiPencilSimple className="text-xl" />
+                          </button>
                           <button 
                             title="Remove" 
                             className="hover:text-white transition-colors"
@@ -129,16 +163,23 @@ export default function AdminMoviesPage() {
         </div>
       </div>
 
-      {/* Add movie button */}
+      {/* Add movie button */
+      }
       <div className="flex justify-center mt-8">
-        <Link href="/admin/movies/add">
-          <button 
-            className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold" 
-            style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}>
-            Add Movie
-          </button>
-        </Link>
+        <button 
+          onClick={openAddModal}
+          className="text-black px-5 py-2 rounded-full transition-colors hover:opacity-90 font-afacad font-bold" 
+          style={{ background: 'linear-gradient(to right, #FF478B, #FF5C33)' }}>
+          Add Movie
+        </button>
       </div>
+
+      <MovieFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSaved={handleSaved}
+        initialMovie={editingMovie}
+      />
     </div>
   );
 }

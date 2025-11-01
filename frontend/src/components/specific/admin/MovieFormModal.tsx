@@ -1,20 +1,41 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import NavBar from "@/components/common/navBar/NavBar";
+import { useEffect, useState } from "react";
 
-interface Showtime {
+type Showtime = {
   date: string;
   time: string;
   ampm: string;
+};
+
+export type AdminMovie = {
+  id: number;
+  title: string;
+  date: string;
+  time: string;
+  _meta?: {
+    movieType?: string;
+    genre?: string;
+    posterName?: string | null;
+    trailerUrl?: string;
+    synopsis?: string;
+    director?: string;
+    producer?: string;
+    cast?: string;
+    reviews?: string;
+    rating?: string;
+    showtimes?: Showtime[];
+  };
+};
+
+interface MovieFormModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSaved: (savedMovie: AdminMovie) => void;
+  initialMovie?: AdminMovie | null;
 }
 
-export default function AdminAddMoviePage() {
-  const router = useRouter();
-
-  // form state
+export default function MovieFormModal({ isOpen, onClose, onSaved, initialMovie }: MovieFormModalProps) {
   const [title, setTitle] = useState("");
   const [movieType, setMovieType] = useState("New Movie");
   const [genre, setGenre] = useState("");
@@ -30,92 +51,69 @@ export default function AdminAddMoviePage() {
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  // load movie data for editing
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const editId = urlParams.get("edit");
-      
-      if (editId) {
-        const existing = sessionStorage.getItem("movies");
-        if (existing) {
-          try {
-            const movies = JSON.parse(existing);
-            const movieToEdit = movies.find((m: { id: number }) => m.id === parseInt(editId));
-            
-            if (movieToEdit) {
-              setEditingId(parseInt(editId));
-              setTitle(movieToEdit.title);
-              setMovieType(movieToEdit._meta?.movieType || "New Movie");
-              setGenre(movieToEdit._meta?.genre || "");
-              setTrailerUrl(movieToEdit._meta?.trailerUrl || "");
-              setSynopsis(movieToEdit._meta?.synopsis || "");
-              setDirector(movieToEdit._meta?.director || "");
-              setProducer(movieToEdit._meta?.producer || "");
-              setCast(movieToEdit._meta?.cast || "");
-              setReviews(movieToEdit._meta?.reviews || "");
-              setRating(movieToEdit._meta?.rating || "");
-              
-              // load showtimes or create from date/time
-              if (movieToEdit._meta?.showtimes && movieToEdit._meta.showtimes.length > 0) {
-                setShowtimes(movieToEdit._meta.showtimes);
-              } else {
-                setShowtimes([{ 
-                  date: movieToEdit.date, 
-                  time: movieToEdit.time.split(':').slice(0, 2).join(':'),
-                  ampm: movieToEdit.time.includes('AM') ? 'AM' : 'PM'
-                }]);
-              }
-            }
-          } catch (error) {
-            console.log('error loading movie:', error);
-          }
-        }
+    if (!isOpen) return;
+
+    if (initialMovie) {
+      setEditingId(initialMovie.id);
+      setTitle(initialMovie.title || "");
+      setMovieType(initialMovie._meta?.movieType || "New Movie");
+      setGenre(initialMovie._meta?.genre || "");
+      setTrailerUrl(initialMovie._meta?.trailerUrl || "");
+      setSynopsis(initialMovie._meta?.synopsis || "");
+      setDirector(initialMovie._meta?.director || "");
+      setProducer(initialMovie._meta?.producer || "");
+      setCast(initialMovie._meta?.cast || "");
+      setReviews(initialMovie._meta?.reviews || "");
+      setRating(initialMovie._meta?.rating || "");
+
+      if (initialMovie._meta?.showtimes && initialMovie._meta.showtimes.length > 0) {
+        setShowtimes(initialMovie._meta.showtimes);
+      } else {
+        setShowtimes([
+          {
+            date: initialMovie.date,
+            time: initialMovie.time.split(":").slice(0, 2).join(":"),
+            ampm: initialMovie.time.includes("AM") ? "AM" : "PM",
+          },
+        ]);
       }
+    } else {
+      // reset for new
+      setEditingId(null);
+      setTitle("");
+      setMovieType("New Movie");
+      setGenre("");
+      setPosterFile(null);
+      setTrailerUrl("");
+      setSynopsis("");
+      setDirector("");
+      setProducer("");
+      setCast("");
+      setReviews("");
+      setRating("");
+      setShowtimes([{ date: "", time: "", ampm: "AM" }]);
     }
-  }, []);
+  }, [isOpen, initialMovie]);
 
-  const handleAddShowtime = () => {
-    setShowtimes((prev) => [...prev, { date: "", time: "", ampm: "AM" }]);
-  };
-
-  const handleRemoveShowtime = (index: number) => {
-    setShowtimes((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateShowtime = (index: number, field: keyof Showtime, value: string) => {
+  const handleAddShowtime = () => setShowtimes((prev) => [...prev, { date: "", time: "", ampm: "AM" }]);
+  const handleRemoveShowtime = (index: number) => setShowtimes((prev) => prev.filter((_, i) => i !== index));
+  const updateShowtime = (index: number, field: keyof Showtime, value: string) =>
     setShowtimes((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
-  };
 
-  // format date input
   const formatDate = (value: string) => {
-    const digits = value.replace(/\D/g, '');
-    
+    const digits = value.replace(/\D/g, "");
     if (digits.length <= 2) return digits;
     if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
     return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4, 8)}`;
   };
-
-  // format time input
   const formatTime = (value: string) => {
-    const cleaned = value.replace(/[^\d]/g, '').slice(0, 4);
-    
+    const cleaned = value.replace(/[^\d]/g, "").slice(0, 4);
     if (cleaned.length <= 2) return cleaned;
     return `${cleaned.slice(0, 2)}:${cleaned.slice(2, 4)}`;
   };
 
-  const handleDateChange = (index: number, value: string) => {
-    const formatted = formatDate(value);
-    updateShowtime(index, "date", formatted);
-  };
-
-  const handleTimeChange = (index: number, value: string) => {
-    const formatted = formatTime(value);
-    updateShowtime(index, "time", formatted);
-  };
-
   const formValid = () => {
-    // basic validation
     if (!title || !genre || !synopsis) return false;
     if (!showtimes.length || !showtimes[0].date || !showtimes[0].time) return false;
     return true;
@@ -127,11 +125,10 @@ export default function AdminAddMoviePage() {
 
     try {
       const existing = typeof window !== "undefined" ? sessionStorage.getItem("movies") : null;
-      const parsed: Array<{ id: number; title: string; date: string; time: string }> = existing ? JSON.parse(existing) : [];
+      const parsed: AdminMovie[] = existing ? JSON.parse(existing) : [];
 
-      // use first showtime for main display
       const primary = showtimes[0];
-      const movieData = {
+      const movieData: AdminMovie = {
         id: editingId || Date.now(),
         title,
         date: primary.date,
@@ -151,42 +148,43 @@ export default function AdminAddMoviePage() {
         },
       };
 
-      let updated;
+      let updated: AdminMovie[];
       if (editingId) {
-        // update existing
-        updated = parsed.map(movie => movie.id === editingId ? movieData : movie);
+        updated = parsed.some((m) => m.id === editingId)
+          ? parsed.map((m) => (m.id === editingId ? movieData : m))
+          : [...parsed, movieData];
       } else {
-        // add new
         updated = [...parsed, movieData];
       }
-      
+
       sessionStorage.setItem("movies", JSON.stringify(updated));
-      router.push("/admin/movies");
-    } catch (error) {
-      console.log('save error:', error);
+      onSaved(movieData);
+      onClose();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log("save error:", e);
     } finally {
       setSaving(false);
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="text-white" style={{ backgroundColor: "#1C1C1C", minHeight: "100vh" }}>
-      <NavBar />
-      <div className="h-30" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        className="bg-white/3 backdrop-blur-md rounded-lg p-6 sm:p-8 w-full max-w-[860px] mx-4 relative max-h-[90vh] overflow-y-auto"
+        style={{ boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)' }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-4 text-white text-2xl hover:text-white/70 transition-colors leading-none"
+        >
+          ×
+        </button>
 
-      {/* Tabs */}
-      <div className="flex items-center justify-center gap-10 text-[30px] font-red-rose mt-2 mb-10">
-        <Link href="/admin/movies" className="relative " style={{ color: '#FF478B', fontWeight: 'bold' }}>
-          Movies & Showtimes
-          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
-        </Link>
-        <Link href="/admin/pricing" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Pricing & Promotions</Link>
-        <Link href="/admin/users" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Users & Admins</Link>
-      </div>
+        <div className="mb-4 text-white font-red-rose text-2xl">{editingId ? "Edit Movie" : "Add Movie"}</div>
 
-      {/* Form Card */}
-      <div className="max-w-[53rem] mx-auto p-6 sm:p-8 rounded-md" style={{ backgroundColor: "#242424", border: "1px solid #FF478B" }}>
-        {/* Movie Title + Type */}
         <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-6 mb-6">
           <div>
             <label className="block text-sm mb-2 font-afacad text-white">Movie Title</label>
@@ -196,7 +194,7 @@ export default function AdminAddMoviePage() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter movie title"
               className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent"
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: "16px" }}
             />
           </div>
           <div>
@@ -219,7 +217,6 @@ export default function AdminAddMoviePage() {
           </div>
         </div>
 
-        {/* Genre + Poster */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           <div>
             <label className="block text-sm mb-2 font-afacad text-white">Genre</label>
@@ -261,7 +258,6 @@ export default function AdminAddMoviePage() {
           </div>
         </div>
 
-        {/* Trailer URL */}
         <div className="mb-6">
           <label className="block text-sm mb-2 font-afacad text-white">Trailer URL</label>
           <input
@@ -273,7 +269,6 @@ export default function AdminAddMoviePage() {
           />
         </div>
 
-        {/* Synopsis */}
         <div className="mb-6">
           <label className="block text-sm mb-2 font-afacad text-white">Synopsis</label>
           <textarea
@@ -282,15 +277,10 @@ export default function AdminAddMoviePage() {
             placeholder="Enter movie synopsis"
             rows={5}
             className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent resize-none"
-            style={{
-              scrollbarWidth: 'thin',
-              scrollbarColor: '#6B7280 #374151',
-              lineHeight: '1.5'
-            }}
+            style={{ scrollbarWidth: "thin", scrollbarColor: "#6B7280 #374151", lineHeight: "1.5" }}
           />
         </div>
 
-        {/* Director + Producer */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           <div>
             <label className="block text-sm mb-2 font-afacad text-white">Director(s)</label>
@@ -314,7 +304,6 @@ export default function AdminAddMoviePage() {
           </div>
         </div>
 
-        {/* Cast */}
         <div className="mb-6">
           <label className="block text-sm mb-2 font-afacad text-white">Cast</label>
           <textarea
@@ -323,11 +312,10 @@ export default function AdminAddMoviePage() {
             placeholder="Enter cast members"
             rows={4}
             className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent resize-none"
-            style={{ scrollbarWidth: 'thin', scrollbarColor: '#6B7280 #374151' }}
+            style={{ scrollbarWidth: "thin", scrollbarColor: "#6B7280 #374151" }}
           />
         </div>
 
-        {/* Reviews */}
         <div className="mb-6">
           <label className="block text-sm mb-2 font-afacad text-white">Reviews</label>
           <textarea
@@ -336,11 +324,10 @@ export default function AdminAddMoviePage() {
             placeholder="Enter reviews"
             rows={4}
             className="w-full px-4 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent resize-none"
-            style={{ scrollbarWidth: 'thin', scrollbarColor: '#6B7280 #374151' }}
+            style={{ scrollbarWidth: "thin", scrollbarColor: "#6B7280 #374151" }}
           />
         </div>
 
-        {/* Show Dates & Times + Rating */}
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] gap-6 mb-6">
           <div>
             <label className="block text-sm mb-2 font-afacad text-white">Show Dates & Times</label>
@@ -351,14 +338,14 @@ export default function AdminAddMoviePage() {
                     type="text"
                     placeholder="mm/dd/yyyy"
                     value={s.date}
-                    onChange={(e) => handleDateChange(idx, e.target.value)}
+                    onChange={(e) => updateShowtime(idx, "date", formatDate(e.target.value))}
                     className="w-40 px-3 py-2 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent"
                   />
                   <input
                     type="text"
                     placeholder="hh:mm"
                     value={s.time}
-                    onChange={(e) => handleTimeChange(idx, e.target.value)}
+                    onChange={(e) => updateShowtime(idx, "time", formatTime(e.target.value))}
                     className="w-28 px-3 py-2 rounded-md bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-[#FF478B] focus:border-transparent"
                   />
                   <div className="relative">
@@ -388,11 +375,7 @@ export default function AdminAddMoviePage() {
                   )}
                 </div>
               ))}
-              <button
-                type="button"
-                onClick={handleAddShowtime}
-                className="text-[#FF478B] text-sm font-afacad"
-              >
+              <button type="button" onClick={handleAddShowtime} className="text-[#FF478B] text-sm font-afacad">
                 + Add Show Time
               </button>
             </div>
@@ -421,26 +404,27 @@ export default function AdminAddMoviePage() {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex justify-center mt-10">
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-6 py-2 rounded-full font-afacad text-white border border-white/30"
+          >
+            Cancel
+          </button>
           <button
             type="button"
             onClick={onSave}
             disabled={saving || !formValid()}
-            className="px-8 py-3 rounded-full font-afacad font-bold text-black"
-            style={{ 
-              background: "linear-gradient(to right, #FF478B, #FF5C33)", 
-              opacity: saving || !formValid() ? 0.6 : 1,
-              cursor: saving || !formValid() ? 'not-allowed' : 'pointer'
-            }}
+            className="px-8 py-2 rounded-full font-afacad font-bold text-black"
+            style={{ background: "linear-gradient(to right, #FF478B, #FF5C33)", opacity: saving || !formValid() ? 0.6 : 1 }}
           >
             {saving ? "Saving..." : "Save"}
           </button>
         </div>
       </div>
-      
-      {/* Extra space at bottom */}
-      <div className="h-20"></div>
     </div>
   );
 }
+
+
