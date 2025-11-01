@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PaymentRequest {
     
-    private Long card_number;
+    private String cardholder_name;
+    private String card_number;
     private String billing_address;
-    private LocalDate expiration_date;    
+    private LocalDate expiration_date;
 }

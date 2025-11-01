@@ -1,18 +1,17 @@
 package com.acm.cinema_ebkg_system.model;
 
-
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.acm.cinema_ebkg_system.enums.PaymentCardType;
+import com.acm.cinema_ebkg_system.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.acm.cinema_ebkg_system.enums.AddressType;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 /**
  * User Entity - Represents a user in the cinema booking system
@@ -25,13 +24,13 @@ import java.util.ArrayList;
  * - Password hashing handled at service layer (not stored as plain text)
  * - Automatic timestamp management for created_at and updated_at
  * - Email uniqueness constraint for login purposes
- * 
- * @author ACM Cinema Team
- * @version 1.0
  */
-@Data 
+
 @Entity
 @Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     // Primary key - auto-generated unique identifier
     @Id
@@ -57,15 +56,13 @@ public class User {
     @Column
     private String phoneNumber;
 
-    // Optional address information (collected during registration)
-    @Column
-    private String address;
+    // User preferences
+    @Column(name = "enrolled_for_promotions")
+    private boolean enrolledForPromotions = false;
 
-    @Column
-    private String state;
-
-    @Column
-    private String country;
+    // Profile picture link
+    @Column(name = "profile_image_link")
+    private String profileImageLink;
 
     // Audit fields - automatically managed timestamps
     @Column(name = "created_at")
@@ -78,6 +75,10 @@ public class User {
     
     @Column(name = "is_active")
     private boolean isActive = false;
+
+  /*@Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
+    private UserStatus userStatus; */
     
     @Column(name = "verification_token")
     private String verificationToken;
@@ -85,35 +86,22 @@ public class User {
     @Column(name = "verification_token_expires_at")
     private LocalDateTime verificationTokenExpiresAt;
 
-    // ========== CONSTRUCTORS ==========
+    // ========== PASSWORD RESET FIELDS ==========
     
-    /**
-     * Default constructor required by JPA
-     */
-    public User() {}
+    @Column(name = "password_reset_token")
+    private String passwordResetToken;
+    
+    @Column(name = "password_reset_token_expires_at")
+    private LocalDateTime passwordResetTokenExpiresAt;
 
-    /**
-     * Constructor for creating a new user with basic required information
-     * Automatically sets creation and update timestamps
-     * 
-     * @param email User's email address (used for login)
-     * @param password User's password (will be hashed before saving)
-     * @param firstName User's first name
-     * @param lastName User's last name
-     */
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<PaymentInfo> paymentInfos = new ArrayList<>();
-
-    // Custom constructor for registration (kept for business logic)
-    public User(String email, String password, String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
+    
+    // One-to-many relationship with Address
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Address> addresses = new ArrayList<>();
 
     // ========== JPA LIFECYCLE CALLBACKS ==========
     
@@ -134,5 +122,78 @@ public class User {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+    
+    // ========== HOME ADDRESS GETTERS (for JSON serialization) ==========
+    
+    /**
+     * Get home address street
+     * Returns the street from the home address if it exists
+     */
+    public String getHomeStreet() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
+                .findFirst()
+                .map(Address::getStreet)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address city
+     */
+    public String getHomeCity() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
+                .findFirst()
+                .map(Address::getCity)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address state
+     */
+    public String getHomeState() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
+                .findFirst()
+                .map(Address::getState)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address ZIP code
+     */
+    public String getHomeZip() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
+                .findFirst()
+                .map(Address::getZip)
+                .orElse(null);
+        }
+        return null;
+    }
+    
+    /**
+     * Get home address country
+     */
+    public String getHomeCountry() {
+        if (addresses != null) {
+            return addresses.stream()
+                .filter(addr -> addr.getAddressType() != null && addr.getAddressType().equals(AddressType.home))
+                .findFirst()
+                .map(Address::getCountry)
+                .orElse(null);
+        }
+        return null;
     }
 }

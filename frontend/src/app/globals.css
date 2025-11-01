@@ -3,17 +3,17 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  
+
   /* Seat-related CSS variables */
   --seat-gray: #b6b6b6;
-  --seat-selected: #FE478A;
-  --seat-occupied: #3E3B3B;
+  --seat-selected: #fe478a;
+  --seat-occupied: #3e3b3b;
   --seat-shadow: 0 0 20px;
 }
 
 @theme {
-  --color-acm-orange: #FF5C33;
-  --color-acm-pink: #FF478B;
+  --color-acm-orange: #ff5c33;
+  --color-acm-pink: #ff478b;
 }
 
 @theme inline {
@@ -38,7 +38,7 @@
 
 /* Used in MovieCardsGrid.tsx */
 .acm-gradient {
-  background: linear-gradient(to right, #FF478B, #FF5C33);
+  background: linear-gradient(to right, #ff478b, #ff5c33);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -49,7 +49,7 @@
 
 /* Primary button - Active state: seats page "Continue with X seats" (when seats selected), ticket-age page "CHECKOUT" (when tickets match seats), hero promo "Claim Offer" */
 .btn-primary {
-  background: linear-gradient(135deg, #FF478B 0%, #FF5C33 100%);
+  background: linear-gradient(135deg, #ff478b 0%, #ff5c33 100%);
   color: white;
   border: none;
   border-radius: 0.75rem;
@@ -71,7 +71,7 @@
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px 0 rgba(255, 71, 139, 0.4);
-  background: linear-gradient(135deg, #FF5C33 0%, #FF478B 100%);
+  background: linear-gradient(135deg, #ff5c33 0%, #ff478b 100%);
 }
 
 .btn-primary:active {
@@ -80,8 +80,8 @@
 }
 
 .btn-primary:disabled {
-  background: #6B7280;
-  color: #9CA3AF;
+  background: #6b7280;
+  color: #9ca3af;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -90,14 +90,14 @@
 .btn-primary:disabled:hover {
   transform: none;
   box-shadow: none;
-  background: #6B7280;
+  background: #6b7280;
 }
 
 /* Secondary button - Disabled state: seats page "Continue with X seats" (when no seats selected), ticket-age page "CHECKOUT" (when not enough tickets) */
 .btn-secondary {
   background: transparent;
   color: white;
-  border: 2px solid #FF478B;
+  border: 2px solid #ff478b;
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
@@ -114,7 +114,7 @@
 }
 
 .btn-secondary:hover {
-  background: #FF478B;
+  background: #ff478b;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 8px 25px 0 rgba(255, 71, 139, 0.3);
@@ -125,8 +125,8 @@
 }
 
 .btn-secondary:disabled {
-  border-color: #6B7280;
-  color: #9CA3AF;
+  border-color: #6b7280;
+  color: #9ca3af;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -134,8 +134,8 @@
 
 .btn-secondary:disabled:hover {
   background: transparent;
-  border-color: #6B7280;
-  color: #9CA3AF;
+  border-color: #6b7280;
+  color: #9ca3af;
   transform: none;
   box-shadow: none;
 }

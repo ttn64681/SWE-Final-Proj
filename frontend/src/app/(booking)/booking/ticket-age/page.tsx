@@ -3,7 +3,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import NavBar from "@/components/common/navBar/NavBar";
-import TicketTable from "@/components/specific/booking/ticket-age/TicketTable";
+import TicketTable from "@/components/specific/booking/ticketAge/TicketTable";
 import PromoBanner from "@/components/common/promos/PromoBanner";
 
 function TicketAgePageContent() {

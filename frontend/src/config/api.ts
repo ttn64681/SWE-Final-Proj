@@ -4,6 +4,7 @@
  */
 
 import axios from 'axios';
+import { BackendUser } from '@/types/user';
 
 // Get the base URL from environment variables
 const getApiUrl = (): string => {
@@ -15,7 +16,7 @@ const getApiUrl = (): string => {
 // API Configuration object
 export const apiConfig = {
   baseUrl: getApiUrl(),
-  
+
   // All API endpoints organized by feature
   endpoints: {
     // MOVIE ENDPOINTS
@@ -27,33 +28,50 @@ export const apiConfig = {
 
       // GET MOVIE BY MOVIE ID
       byId: (movieId: number) => `/api/movies/${movieId}`, // function taking in movieId
-      
+
       // MOVIE SEARCH ENDPOINTS
       searchNowPlaying: '/api/movies/search-now-playing',
       searchUpcoming: '/api/movies/search-upcoming',
-      
+
       // SHOW SCHEDULE ENDPOINTS BY MOVIE ID
       dates: (movieId: number) => `/api/movies/${movieId}/dates`, // function taking in movieId
       times: (movieId: number) => `/api/movies/${movieId}/times`, // function taking in movieId
-      
+
       // OPTIMIZED BROWSING ENDPOINTS (Lightweight)
       browseNowPlaying: '/api/movies/browse/now-playing',
       browseUpcoming: '/api/movies/browse/upcoming',
-      
+
       // UTILITY ENDPOINTS
       test: '/api/movies/test',
       create: '/api/movies/create',
     },
-    
-    // 👤 USER ENDPOINTS
+
+    // USER ENDPOINTS
     users: {
-      login: '/api/users/login',
-      logout: '/api/users/logout',
-      register: '/api/users/register',
-      profile: '/api/users/update-profile',
-      history: '/api/users/history',
+      getUserById: (userId: number) => `/api/users/${userId}`,
+      getUserProfile: (userId: number) => `/api/user/profile?userId=${userId}`, // Consolidated endpoint
+      getUserInfo: (userId: number) => `/api/user/info?userId=${userId}`,
+      updateUser: (userId: number) => `/api/users/${userId}/info`,
+      changePassword: (userId: number) => `/api/users/${userId}/change-password`,
     },
-    
+
+    // ADDRESS ENDPOINTS
+    addresses: {
+      getUserHomeAddress: (userId: number) => `/api/address/user/${userId}/home`,
+      getAddressById: (addressId: number) => `/api/address/${addressId}`,
+      updateUserAddress: (addressId: number) => `/api/address/${addressId}`,
+    },
+
+    // PAYMENT CARD ENDPOINTS
+    paymentCards: {
+      getUserPaymentCards: (userId: number) => `/api/payment-card/user/${userId}`,
+      getUserDefaultCard: (userId: number) => `/api/payment-card/user/${userId}/default`,
+      createPaymentCard: () => `/api/payment-card`,
+      updatePaymentCard: (cardId: number) => `/api/payment-card/${cardId}`,
+      deletePaymentCard: (cardId: number) => `/api/payment-card/${cardId}`,
+      setDefaultCard: (userId: number, cardId: number) => `/api/payment-card/user/${userId}/set-default/${cardId}`,
+    },
+
     // 🔐 AUTH ENDPOINTS
     auth: {
       login: '/api/auth/login',
@@ -62,9 +80,12 @@ export const apiConfig = {
       refresh: '/api/auth/refresh',
       verifyEmail: '/api/auth/verify-email',
       resendVerification: '/api/auth/resend-verification',
+      forgotPassword: '/api/auth/forgot-password',
+      resetPassword: '/api/auth/reset-password',
+      checkEmail: '/api/auth/check-email',
     },
   },
-  
+
   // Helper function to build full URLs
   buildUrl: (endpoint: string): string => {
     return `${apiConfig.baseUrl}${endpoint}`;

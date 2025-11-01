@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
 
@@ -28,11 +28,7 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     [profilePic, profilePicUrl]
   );
 
-  return (
-    <ProfileContext.Provider value={value}>
-      {children}
-    </ProfileContext.Provider>
-  );
+  return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 }
 
 export function useProfile() {
@@ -42,4 +38,3 @@ export function useProfile() {
   }
   return context;
 }
-

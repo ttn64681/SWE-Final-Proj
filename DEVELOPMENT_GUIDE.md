@@ -186,15 +186,24 @@
 #### `NavBar` - Main Navigation
 
 **What it does**: Shows the main navigation bar at the top of every page
-**Props**: None (gets data from `AuthContext`)
+**Props**: None (gets data from `AuthContext` and `FiltersContext`)
 
 **What changes based on login**:
 
 - **Not logged in**: Shows "Join" button
 - **Logged in**: Shows user's name and dropdown menu with logout option
 
+**Features**:
+- Search bar with search button
+- Filter button that opens global FiltersPopUp (calls `setIsFiltersOpen(true)`)
+- Responsive navigation links
+- User menu dropdown when authenticated
+
 **Used by**: Every page (added in root layout)
-**Gets data from**: `AuthContext` (user info, login status)
+**Gets data from**: 
+- `AuthContext` (user info, login status)
+- `FiltersContext` (filter popup state, selected filters)
+**Uses Hook**: `useAuth()` for authentication, `useFilters()` for filter state
 
 #### `AuthFormContainer`
 
@@ -229,12 +238,16 @@
 
 #### `FiltersPopUp`
 
-**Props**: None (uses `FiltersContext`)
-**Returns**: JSX - Genre checkboxes, date picker, search button
-**Used by**: Movies page (`movies/page.tsx`)
-**Uses from Context**: `FiltersContext` - `selectedGenres`, `selectedDate`, setter functions
+**Props**: `{ isClosed: boolean, setIsClosed: (closed: boolean) => void }`
+**Returns**: JSX - Genre checkboxes, date picker, apply filters button
+**Used by**: Rendered globally via `FiltersContext.createPortal` into `document.body`
+**Uses from Context**: `FiltersContext` - `selectedGenres`, `selectedDate`, `setSelectedGenres()`, `setSelectedDate()`
 **Uses Hook**: `useGenres()` for genre options
-**Calls**: `FiltersContext.setSelectedGenres()` and `setSelectedDate()` for state updates
+**Calls**: 
+- `FiltersContext.setSelectedGenres()` - Updates selected genres
+- `FiltersContext.setSelectedDate()` - Updates date filter
+- `setIsClosed(true)` - Closes the popup when filters applied
+**Features**: Full-screen blur overlay (z-[999]), popup on top (z-[1000])
 
 #### `CinemaLayout`
 
@@ -243,6 +256,23 @@
 **Used by**: Booking flow (`booking/(seats)/page.tsx`)
 **Uses Hook**: `useSeats()` for seat selection state management
 **Calls**: `onSeatSelect(seatId)` when seat clicked, `useSeats.toggleSeat()` for state updates
+
+#### `HeroPromoSection` - Animated Promo Carousel
+
+**What it does**: Displays rotating promotional offers with animated transitions
+**Props**: None
+**Returns**: JSX - Animated carousel with hero promotions
+**Used by**: Homepage (`app/(public)/page.tsx`)
+**Uses Hook**: Local state with `useState` for carousel index
+**Uses Library**: `framer-motion` for slide animations
+**Features**:
+- Auto-advances every 5 seconds via `setInterval`
+- Left/right arrow buttons for manual navigation
+- Carousel indicators for direct slide selection
+- Animated slide transitions with blur effects
+- Content animations synced with slides
+**Data Source**: `heroPromotions` array from `constants/movieData.ts`
+**API Integration**: Ready for dynamic `GET /api/promotions/hero` endpoint
 
 ---
 
@@ -307,11 +337,13 @@
 
 **Smart features**:
 
-- Reads filter settings from `FiltersContext` (genres, dates)
+- Reads filter settings from `FiltersContext` (genres, dates, isFiltersOpen, setIsFiltersOpen)
 - Prevents duplicate searches using `useRef`
 - Updates URL when search is performed
+- Builds query string from title, genres, and date filters
 
-**Used by**: Movies page search bar and filter popup
+**Used by**: Movies page search bar (`MoviesSearchSection`)
+**Calls**: `useFilters()` to get global filter state from FiltersContext
 
 ### `useSeats()` - Seat Selection Hook
 
@@ -380,24 +412,35 @@
 
 ### `FiltersContext` - Movie Search Filters
 
-**What it does**: Stores selected filters for movie search
+**What it does**: Stores selected filters for movie search AND manages global filter popup state
 **Provides**:
 
 - `selectedGenres`: Set of selected genres (Action, Comedy, etc.)
 - `setSelectedGenres()`: Function to update selected genres
 - `selectedDate`: Object with month, day, year for date filtering
 - `setSelectedDate()`: Function to update selected date
+- `isFiltersOpen`: Boolean - whether the global filter popup is open
+- `setIsFiltersOpen(open)`: Function to open/close the global filter popup
+- `resetFilters()`: Function to clear all filters
 
 **How it works**:
 
-1. User opens filter popup and selects genres/dates
-2. Filter selections are stored in context
-3. When user searches, `useSearchLogic()` reads these filters
-4. Search API call includes the selected filters
+1. User clicks filter button → calls `setIsFiltersOpen(true)`
+2. FiltersPopUp is rendered globally via `createPortal` into `document.body`
+3. User selects genres/dates → stored in context
+4. When user searches, `useSearchLogic()` reads these filters
+5. Search API call includes the selected filters
+
+**Architecture**:
+- Uses `createPortal` to render FiltersPopUp globally
+- Popup state managed in context (not local component state)
+- Single popup instance shared across entire app
+- Full-screen blur overlay when open
 
 **Used by**:
-
-- `FiltersPopUp`: Sets the filter values
+- `FiltersPopUp`: Reads and sets the filter values
+- `NavBar`: Calls `setIsFiltersOpen(true)` to open popup
+- `MoviesSearchSection`: Calls `setIsFiltersOpen(true)` to open popup
 - `useSearchLogic()`: Reads filter values for search
 
 ---
@@ -506,15 +549,29 @@ const contextValue = useMemo(
 ### FiltersContext Memoization
 
 ```typescript
+// CACHES: resetFilters function reference - persists across FiltersProvider re-renders
+// CHANGES: Never (empty deps) - BUT recreates if FiltersProvider unmounts/remounts
+// WHY MATTERS: Prevents function recreation on every re-render
+const resetFilters = useCallback(() => {
+  setSelectedGenres(new Set());
+  setSelectedDate({ month: '', day: '', year: '' });
+}, []);
+
 // CACHES: Context value object - persists across FiltersProvider re-renders
-// CHANGES: When selectedGenres or selectedDate change (user clicks filters) - BUT recreates if FiltersProvider unmounts/remounts
-// WITHOUT useMemo: New object every re-render → all filter consumers re-render (NavBar, Movies page, FiltersPopUp)
+// CHANGES: When selectedGenres, selectedDate, isFiltersOpen, or resetFilters change
+// WITHOUT useMemo: New object every re-render → all filter consumers re-render
 // WHY MATTERS: Prevents cascading re-renders across entire filter component tree
 const contextValue = useMemo(
   () => ({
-    /* ... */
+    selectedGenres,
+    setSelectedGenres,
+    selectedDate,
+    setSelectedDate,
+    isFiltersOpen,
+    setIsFiltersOpen,
+    resetFilters,
   }),
-  [selectedGenres, selectedDate]
+  [selectedGenres, selectedDate, isFiltersOpen, resetFilters]
 );
 ```
 

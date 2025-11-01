@@ -12,24 +12,24 @@ const moviesCache = {
   upcoming: [] as BackendMovie[],
   lastFetch: {
     nowplaying: 0,
-    upcoming: 0
-  }
+    upcoming: 0,
+  },
 };
 
 // Cache duration: 5 minutes
 const CACHE_DURATION = 5 * 60 * 1000;
 
-export function useMovies(activeTab: "nowplaying" | "upcoming") {
+export function useMovies(activeTab: 'nowplaying' | 'upcoming') {
   const [movies, setMovies] = useState<BackendMovie[]>(() => {
     // Initialize with cached data if available and fresh
     const now = Date.now();
     const lastFetch = moviesCache.lastFetch[activeTab];
-    
+
     if (now - lastFetch < CACHE_DURATION && moviesCache[activeTab].length > 0) {
       console.log(`Using cached ${activeTab} movies`);
       return moviesCache[activeTab];
     }
-    
+
     return [];
   });
   const [isLoadingMovies, setIsLoadingMovies] = useState(false);
@@ -42,7 +42,7 @@ export function useMovies(activeTab: "nowplaying" | "upcoming") {
     // Check if we have fresh cached data (less than 5 minutes old)
     const now = Date.now();
     const lastFetch = moviesCache.lastFetch[activeTab];
-    
+
     if (now - lastFetch < CACHE_DURATION && moviesCache[activeTab].length > 0) {
       console.log(`Using cached ${activeTab} movies (no API call needed)`);
       setMovies(moviesCache[activeTab]);
@@ -52,25 +52,23 @@ export function useMovies(activeTab: "nowplaying" | "upcoming") {
     // Cache is stale or empty - fetch fresh data from API
     setIsLoadingMovies(true);
     try {
-      const endpoint = activeTab === "nowplaying" 
-        ? endpoints.movies.nowPlaying 
-        : endpoints.movies.upcoming;
-      
+      const endpoint = activeTab === 'nowplaying' ? endpoints.movies.nowPlaying : endpoints.movies.upcoming;
+
       const response = await fetch(buildUrl(endpoint));
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      
+
       const responseText = await response.text();
       if (!responseText.trim()) {
         console.warn(`Empty response from ${endpoint}`);
         return;
       }
-      
+
       const backendMovies = JSON.parse(responseText);
-      
+
       // Store fresh data in cache for next time
       moviesCache[activeTab] = backendMovies;
       moviesCache.lastFetch[activeTab] = now;
-      
+
       setMovies(backendMovies);
       console.log(`Fetched fresh ${activeTab} movies:`, backendMovies);
     } catch (err) {
@@ -85,7 +83,7 @@ export function useMovies(activeTab: "nowplaying" | "upcoming") {
   // Without useCallback, this would run on EVERY render (bad!)
   // With useCallback, this only runs when activeTab actually changes (good!)
   useEffect(() => {
-    fetchMovies() // This will either use cache or make API call
+    fetchMovies(); // This will either use cache or make API call
   }, [fetchMovies]);
 
   return { movies, isLoadingMovies, refetchMovies: fetchMovies };

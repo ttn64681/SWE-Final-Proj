@@ -26,7 +26,13 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Long> {
      * @param showDate calendar date to match
      * @return list of ShowTime ordered by start_time ascending
      */
-    @Query("SELECT st FROM ShowTime st JOIN ShowDate sd ON st.show_date_id = sd.show_date_id WHERE sd.movie_id = :movieId AND sd.show_date = :showDate ORDER BY st.start_time")
+    @Query(value = """
+        SELECT st.* FROM show_time st 
+        JOIN show_date sd ON st.show_date_id = sd.show_date_id 
+        JOIN movie_show ms ON sd.movie_show_id = ms.id
+        WHERE ms.movie_id = :movieId AND sd.show_date = :showDate 
+        ORDER BY st.start_time
+    """, nativeQuery = true)
     List<ShowTime> findByMovieIdAndDate(@Param("movieId") Long movieId, @Param("showDate") LocalDate showDate);
 
     /**

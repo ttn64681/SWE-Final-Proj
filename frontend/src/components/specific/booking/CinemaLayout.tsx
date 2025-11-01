@@ -2,25 +2,21 @@
 
 import styles from '@/app/(booking)/booking/(seats)/seating.module.css';
 import SeatRow from './SeatRow';
+import { Seat } from '@/types/booking';
 
 interface CinemaLayoutProps {
-  frontRows: Array<Array<{ id: string; occupied: boolean }>>;
-  backRows: Array<Array<{ id: string; occupied: boolean }>>;
+  frontRows: Seat[][];
+  backRows: Seat[][];
   selectedSeats: string[];
-  onToggleSeat: (seat: { id: string; occupied: boolean }) => void;
+  onToggleSeat: (seat: Seat) => void;
 }
 
-export default function CinemaLayout({ 
-  frontRows, 
-  backRows, 
-  selectedSeats, 
-  onToggleSeat 
-}: CinemaLayoutProps) {
+export default function CinemaLayout({ frontRows, backRows, selectedSeats, onToggleSeat }: CinemaLayoutProps) {
   return (
     <div className={styles.cinemaLayout}>
       {/* Screen */}
       <div className={styles.screen}></div>
-      
+
       {/* Seats */}
       <div>
         {/* Front rows (1-3) */}
@@ -34,10 +30,10 @@ export default function CinemaLayout({
             isFrontRow={true}
           />
         ))}
-        
+
         {/* Row gap */}
         <div className={styles.rowGap}></div>
-        
+
         {/* Back rows (4-7) */}
         {backRows.map((rowSeats, index) => (
           <SeatRow

@@ -18,8 +18,6 @@ package com.acm.cinema_ebkg_system.dto.auth;
  * response structure to the frontend, including success status, messages,
  * and authentication tokens.
  * 
- * @author ACM Cinema Team
- * @version 1.0
  */
 public class AuthResponse {
     // ========== RESPONSE FIELDS ==========
@@ -137,6 +135,26 @@ public class AuthResponse {
          * Default constructor required for JSON serialization
          */
         public UserDto() {}
+
+        /**
+         * Constructor with basic user data fields (without address fields)
+         * 
+         * @param id User's unique identifier
+         * @param email User's email address
+         * @param firstName User's first name
+         * @param lastName User's last name
+         * @param phoneNumber User's phone number
+         */
+        public UserDto(Long id, String email, String firstName, String lastName, String phoneNumber) {
+            this.id = id;
+            this.email = email;
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.phoneNumber = phoneNumber;
+            this.address = null;
+            this.state = null;
+            this.country = null;
+        }
 
         /**
          * Constructor with all user data fields

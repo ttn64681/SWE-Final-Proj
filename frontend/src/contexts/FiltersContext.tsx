@@ -1,6 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useMemo, ReactNode } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback, ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import FiltersPopUp from '@/components/specific/movies/FiltersPopUp';
 
 // Shared filter state that both NavBar and Movies page can access
 // This allows both filter buttons to control the same popup and maintain state
@@ -12,42 +14,76 @@ interface FiltersContextType {
     day: string;
     year: string;
   };
-  setSelectedDate: (date: {
-    month: string;
-    day: string;
-    year: string;
-  }) => void;
+  setSelectedDate: (date: { month: string; day: string; year: string }) => void;
+  // GLOBAL: Add isOpen state for filter popup
+  isFiltersOpen: boolean;
+  setIsFiltersOpen: (open: boolean) => void;
+  // Reset function
+  resetFilters: () => void;
 }
 
 const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
 
 // Wrapper component that provides filter state to all child components
 export function FiltersProvider({ children }: { children: ReactNode }) {
-  
   // Track which genres user has selected (can select multiple)
   const [selectedGenres, setSelectedGenres] = useState<Set<string>>(new Set());
-  
+
   // Track the release date user wants to filter by
   const [selectedDate, setSelectedDate] = useState({
     month: '',
     day: '',
-    year: ''
+    year: '',
   });
 
-  // CACHES: Context value object { selectedGenres, setSelectedGenres, selectedDate, setSelectedDate } - persists across FiltersProvider re-renders
-  // CHANGES: When selectedGenres or selectedDate change (user clicks filters) - BUT will recreate if FiltersProvider component unmounts/remounts
-  // WITHOUT useMemo: New object every FiltersProvider re-render → all filter consumers re-render (NavBar, Movies page, FiltersPopUp)
+  // GLOBAL: Track if filters popup is open/closed
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+
+  // Reset function to clear all filters
+  const resetFilters = useCallback(() => {
+    setSelectedGenres(new Set());
+    setSelectedDate({
+      month: '',
+      day: '',
+      year: '',
+    });
+  }, []);
+
+  // CACHES: Context value object - persists across FiltersProvider re-renders
+  // CHANGES: When selectedGenres, selectedDate, or isFiltersOpen change
   // WHY MATTERS: Prevents cascading re-renders across entire filter component tree
-  const contextValue = useMemo(() => ({
-    selectedGenres,
-    setSelectedGenres,
-    selectedDate,
-    setSelectedDate
-  }), [selectedGenres, selectedDate]);
+  const contextValue = useMemo(
+    () => ({
+      selectedGenres,
+      setSelectedGenres,
+      selectedDate,
+      setSelectedDate,
+      isFiltersOpen,
+      setIsFiltersOpen,
+      resetFilters,
+    }),
+    [selectedGenres, selectedDate, isFiltersOpen, resetFilters]
+  );
 
   return (
     <FiltersContext.Provider value={contextValue}>
       {children}
+      {/* 
+        GLOBAL FILTERS POPUP 
+        Portal:
+        - Renders popup directly into document.body (outside component tree)
+        - Industry standard for global UI elements
+        
+        Why typeof window check?
+        - Next.js renders on server first (SSR), where 'window' doesn't exist
+        - Portal only works in browser, so we check if we're client-side
+        - Prevents hydration mismatches between server and client
+      */}
+      {typeof window !== 'undefined' &&
+        createPortal(
+          <FiltersPopUp isClosed={!isFiltersOpen} setIsClosed={(closed) => setIsFiltersOpen(!closed)} />,
+          document.body
+        )}
     </FiltersContext.Provider>
   );
 }

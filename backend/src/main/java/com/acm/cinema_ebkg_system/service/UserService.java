@@ -1,23 +1,19 @@
 package com.acm.cinema_ebkg_system.service;
 
 import com.acm.cinema_ebkg_system.model.User;
-import com.acm.cinema_ebkg_system.model.PaymentInfo;
+import com.acm.cinema_ebkg_system.model.Address;
+import com.acm.cinema_ebkg_system.enums.AddressType;
 import com.acm.cinema_ebkg_system.repository.UserRepository;
+import com.acm.cinema_ebkg_system.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.acm.cinema_ebkg_system.dto.payment.PaymentRequest;
-import com.acm.cinema_ebkg_system.dto.user.UserInfo;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Encrypt function
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 
 /**
  * User Service - Business logic layer for user operations
@@ -47,6 +43,9 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private AddressRepository addressRepository;
     
     @Autowired
     private EmailService emailService;  // Data access layer for user operations
@@ -80,6 +79,7 @@ public class UserService {
      * @return User Saved user object with hashed password
      * @throws RuntimeException if email already exists
      */
+    @Transactional // Ensures user creation and any related operations are atomic
     public User registerUser(User user) {
         // Step 1: Normalize email to lowercase for consistency
         String normalizedEmail = user.getEmail().toLowerCase().trim();
@@ -164,48 +164,9 @@ public class UserService {
      * @throws RuntimeException if user not found
      */
     public User getUserById(Long id) {
-        return userRepository.findById(id)
+        return userRepository.findByIdWithAddresses(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-    // ========== PAYMENT INFO MANAGEMENT ==========
-
-    public User addPaymentInfo(Long id, PaymentRequest dtoPayment) {
-        // Get user from database using UserRepository
-        User user = getUserById(id);
-        
-        // Create new PaymentInfo object (the model)
-        PaymentInfo paymentInfo = new PaymentInfo();
-        
-        // Extract payment data from DTO
-        Long cardNumber = dtoPayment.getCard_number();
-        String billingAddress = dtoPayment.getBilling_address();
-        LocalDate expirationDate = dtoPayment.getExpiration_date();
-
-        // Set payment fields using setters
-        paymentInfo.setCard_number(cardNumber);
-        paymentInfo.setBilling_address(billingAddress);
-        paymentInfo.setExpiration_date(expirationDate);
-        paymentInfo.setUser(user); // Set the JPA relationship
-
-        // Add to user's payment list (JPA relationship)
-        if (user.getPaymentInfos().size() < 3) {
-            user.getPaymentInfos().add(paymentInfo);
-        }
-        
-        // Save user - JPA automatically saves PaymentInfo too! (cascade = CascadeType.ALL)
-        return userRepository.save(user);
-    }
-
-    // ========== INCOMPLETE - TO BE IMPLEMENTED ==========
-    // public User updatePaymentInfo(Long id, UserInfo dtoUser, PaymentRequest dtoPayment) {
-    //     User user = getUserById(dtoPayment.getUser_id());
-    //     PaymentInfo paymentInfo = new PaymentInfo();
-    //     Integer cardNumber = dtoPayment.getCard_number();
-    //     String billingAddress = dtoPayment.getBilling_address();
-        
-
-    //     return null;
-    // }
 
     // ========== ADMIN ONLY OPERATIONS ==========
 
@@ -227,12 +188,14 @@ public class UserService {
      * Update user's personal information
      * 
      * This method updates a user's personal information based on the provided UserInfo DTO.
+     * It also handles the home address in the address table.
      * 
      * @param userId User ID to update
      * @param userInfo UserInfo DTO containing updated information
      * @return User Updated user object
      * @throws RuntimeException if user not found
      */
+    @Transactional // Ensures all profile updates (user + address + payment card) succeed or fail together
     public User updatePersonalInfo(Long userId, com.acm.cinema_ebkg_system.dto.user.UserInfo userInfo) {
         User user = getUserById(userId);
         
@@ -246,16 +209,73 @@ public class UserService {
         if (userInfo.getPhoneNumber() != null) {
             user.setPhoneNumber(userInfo.getPhoneNumber());
         }
-        if (userInfo.getAddress() != null) {
-            user.setAddress(userInfo.getAddress());
-        }
-        if (userInfo.getState() != null) {
-            user.setState(userInfo.getState());
-        }
-        if (userInfo.getCountry() != null) {
-            user.setCountry(userInfo.getCountry());
+        // Handle profile picture
+        if (userInfo.getProfileImageLink() != null) {
+            user.setProfileImageLink(userInfo.getProfileImageLink());
         }
         
+        // Handle enrolled_for_promotions preference
+        boolean wasEnrolledForPromotions = user.isEnrolledForPromotions();
+        if (userInfo.getEnrolledForPromotions() != null) {
+            user.setEnrolledForPromotions(userInfo.getEnrolledForPromotions());
+        }
+        
+        // Handle home address in the address table
+        if (userInfo.getHomeStreet() != null || userInfo.getHomeCity() != null || 
+            userInfo.getHomeState() != null || userInfo.getHomeZip() != null) {
+            
+            // Check if user already has a home address
+            List<Address> homeAddresses = addressRepository.findByUserIdAndAddressType(userId, AddressType.home);
+            Address homeAddress;
+            
+            if (!homeAddresses.isEmpty()) {
+                // Update existing home address
+                homeAddress = homeAddresses.get(0);
+                
+                if (userInfo.getHomeStreet() != null) {
+                    homeAddress.setStreet(userInfo.getHomeStreet());
+                }
+                if (userInfo.getHomeCity() != null) {
+                    homeAddress.setCity(userInfo.getHomeCity());
+                }
+                if (userInfo.getHomeState() != null) {
+                    homeAddress.setState(userInfo.getHomeState());
+                }
+                if (userInfo.getHomeZip() != null) {
+                    homeAddress.setZip(userInfo.getHomeZip());
+                }
+                if (userInfo.getHomeCountry() != null) {
+                    homeAddress.setCountry(userInfo.getHomeCountry());
+                } else {
+                    homeAddress.setCountry("US"); // default
+                }
+            } else {
+                // Create new home address
+                homeAddress = new Address();
+                homeAddress.setUser(user);
+                homeAddress.setAddressType(AddressType.home);
+                
+                homeAddress.setStreet(userInfo.getHomeStreet() != null ? userInfo.getHomeStreet() : "");
+                homeAddress.setCity(userInfo.getHomeCity() != null ? userInfo.getHomeCity() : "");
+                homeAddress.setState(userInfo.getHomeState() != null ? userInfo.getHomeState() : "");
+                homeAddress.setZip(userInfo.getHomeZip() != null ? userInfo.getHomeZip() : "");
+                homeAddress.setCountry(userInfo.getHomeCountry() != null ? userInfo.getHomeCountry() : "US");
+            }
+            
+            addressRepository.save(homeAddress);
+        }
+
+        // Send confirmation email for profile update
+        emailService.sendEditProfileConfirmationEmail(user.getEmail(), user.getFirstName());
+        
+        // Send promotion enrollment email if user just opted in
+        if (userInfo.getEnrolledForPromotions() != null && 
+            !wasEnrolledForPromotions && 
+            userInfo.getEnrolledForPromotions()) {
+            emailService.sendPromotionEnrollmentEmail(user.getEmail(), user.getFirstName());
+        }
+
+        // Save user to database
         return userRepository.save(user);
     }
 
@@ -335,8 +355,95 @@ public class UserService {
 
             System.out.println("Saved hashed password: " + savedUser.getPassword());
             System.out.println("Passwords match: " + passwordEncoder.matches(newPassword, savedUser.getPassword()));
+
+            // Send confirmation email
+            emailService.sendChangePasswordConfirmationEmail(user.getEmail(), user.getFirstName());
+
             return savedUser;
         }
+    }
+
+    // ========== PASSWORD RESET ==========
+    
+    /**
+     * Initiate password reset process for a user
+     * 
+     * Process Flow:
+     * 1. Find user by email address
+     * 2. Generate password reset token
+     * 3. Set token expiration (1 hour)
+     * 4. Send password reset email with reset link
+     * 
+     * @param email User's email address
+     * @throws RuntimeException if user not found
+     */
+    public void initiatePasswordReset(String email) {
+        // Find user by email
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        
+        // Generate password reset token
+        String resetToken = UUID.randomUUID().toString();
+        
+        // Set token and expiration (1 hour from now)
+        user.setPasswordResetToken(resetToken);
+        user.setPasswordResetTokenExpiresAt(LocalDateTime.now().plusHours(1));
+        
+        // Save user with reset token
+        userRepository.save(user);
+        
+        // Send password reset email
+        emailService.sendPasswordResetEmail(email, resetToken);
+        
+        System.out.println("Password reset token generated for user: " + email);
+    }
+
+    /**
+     * Reset password using reset token
+     * 
+     * Process Flow:
+     * 1. Find user by reset token
+     * 2. Validate token expiration
+     * 3. Hash new password
+     * 4. Update password and clear reset token
+     * 
+     * @param token Password reset token
+     * @param newPassword New password in plain text
+     * @throws RuntimeException if token is invalid or expired
+     */
+    public void resetPasswordWithToken(String token, String newPassword) {
+        // Find user by reset token
+        User user = userRepository.findByPasswordResetToken(token)
+            .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
+        
+        // Check if token has expired
+        if (user.getPasswordResetTokenExpiresAt() == null || 
+            user.getPasswordResetTokenExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Reset token has expired. Please request a new password reset.");
+        }
+        
+        // Hash the new password
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        
+        // Update password and clear reset token
+        user.setPassword(hashedPassword);
+        user.setPasswordResetToken(null);
+        user.setPasswordResetTokenExpiresAt(null);
+        
+        // Save user
+        userRepository.save(user);
+        
+        System.out.println("Password reset successfully for user: " + user.getEmail());
+    }
+
+    /**
+     * Check if email already exists in the system
+     * 
+     * @param email Email address to check
+     * @return boolean true if email exists, false otherwise
+     */
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     // ========== EMAIL VERIFICATION ==========
@@ -413,4 +520,5 @@ public class UserService {
         }
         return generateVerificationToken(user);
     }
+
 }

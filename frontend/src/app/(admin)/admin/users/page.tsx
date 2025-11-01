@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import NavBar from '@/components/common/navBar/NavBar';
+import AdminNavBar from '@/components/common/navBar/AdminNavBar';
+import { StoredUser } from '@/types/admin';
 
 function AdminUsersPage() {
   const [adminList, setAdminList] = useState([
@@ -21,39 +22,58 @@ function AdminUsersPage() {
 
   // load users from storage
   useEffect(() => {
+    // Check if we're on the client side before accessing sessionStorage
+    if (typeof window === 'undefined') return;
+
     const storedUsers = sessionStorage.getItem('adminUsers');
     if (storedUsers) {
-      const users = JSON.parse(storedUsers);
-      const admins = users.filter((user: any) => user.type === 'admin');
-      const members = users.filter((user: any) => user.type === 'member').map((member: any) => ({
-        ...member,
-        status: member.status || 'active' // Default to 'active' if no status
-      }));
-      
-      if (admins.length) setAdminList(prev => [...prev, ...admins]);
-      if (members.length) setMemberList(prev => [...prev, ...members]);
+      const users: StoredUser[] = JSON.parse(storedUsers);
+      const admins = users.filter((user) => user.type === 'admin');
+      const members = users
+        .filter((user) => user.type === 'member')
+        .map((member) => ({
+          ...member,
+          status: member.status || 'active', // Default to 'active' if no status
+        }));
+
+      if (admins.length) setAdminList((prev) => [...prev, ...admins]);
+      if (members.length) setMemberList((prev) => [...prev, ...members]);
     }
   }, []);
 
   // Function to toggle member suspension status
   const toggleMemberSuspension = (memberId: number) => {
-    setMemberList(prev => prev.map(member => {
-      if (member.id === memberId) {
-        const newStatus = member.status === 'suspended' ? 'active' : 'suspended';
-        return { ...member, status: newStatus };
-      }
-      return member;
-    }));
+    setMemberList((prev) =>
+      prev.map((member) => {
+        if (member.id === memberId) {
+          const newStatus = member.status === 'suspended' ? 'active' : 'suspended';
+          return { ...member, status: newStatus };
+        }
+        return member;
+      })
+    );
   };
 
   return (
     <div className="text-white" style={{ backgroundColor: '#1C1C1C', minHeight: '100vh' }}>
-      <NavBar />
+      <AdminNavBar />
       <div style={{ height: '120px' }} />
 
       <div className="flex items-center justify-center gap-10 text-[30px] font-red-rose mt-2 mb-18">
-        <Link href="/admin/movies" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Movies & Showtimes</Link>
-        <Link href="/admin/pricing" className="text-gray-300 hover:text-white transition-colors" style={{ fontWeight: 'bold' }}>Pricing & Promotions</Link>
+        <Link
+          href="/admin/movies"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Movies & Showtimes
+        </Link>
+        <Link
+          href="/admin/pricing"
+          className="text-gray-300 hover:text-white transition-colors"
+          style={{ fontWeight: 'bold' }}
+        >
+          Pricing & Promotions
+        </Link>
         <Link href="/admin/users" className="relative" style={{ color: '#FF478B', fontWeight: 'bold' }}>
           Users & Admins
           <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-acm-pink rounded-full" />
@@ -89,6 +109,8 @@ function AdminUsersPage() {
                 </div>
                 <div className="flex items-center">
                   <button
+                    title="Suspend"
+                    type="button"
                     onClick={() => toggleMemberSuspension(member.id)}
                     className="px-4 py-2 rounded-md text-sm font-medium transition-colors border border-white/10 hover:border-white/20 text-white"
                   >

@@ -65,4 +65,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return Optional<User> User if found, empty Optional if not found
      */
     Optional<User> findByVerificationToken(String verificationToken);
+    
+    /**
+     * Find a user by their password reset token
+     * 
+     * This method is used during password reset to locate the user account.
+     * Returns Optional<User> to handle cases where token doesn't exist or is invalid.
+     * 
+     * @param passwordResetToken Password reset token
+     * @return Optional<User> User if found, empty Optional if not found
+     */
+    Optional<User> findByPasswordResetToken(String passwordResetToken);
+    
+    /**
+     * Find a user by ID with addresses eagerly loaded
+     * 
+     * This method fetches a user along with all their addresses in a single query.
+     * Used when user info endpoint needs to return address information.
+     * 
+     * @param id User ID
+     * @return Optional<User> User with addresses loaded if found
+     */
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.addresses WHERE u.id = :id")
+    Optional<User> findByIdWithAddresses(@Param("id") Long id);
 }

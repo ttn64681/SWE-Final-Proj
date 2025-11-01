@@ -1,8 +1,35 @@
-import NavBar from "@/components/common/navBar/NavBar";
-import OrderDetails from "@/components/specific/booking/order/OrderDetails";
-import CheckoutSections from "@/components/specific/booking/order/CheckoutSections";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import NavBar from '@/components/common/navBar/NavBar';
+import OrderDetails from '@/components/specific/booking/order/OrderDetails';
+import CheckoutSections from '@/components/specific/booking/order/CheckoutSections';
 
 export default function CheckoutPage() {
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+  const [isChecking, setIsChecking] = useState(true);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        router.push('/auth/login');
+      } else {
+        setIsChecking(false);
+      }
+    }
+  }, [isLoading, isAuthenticated, router]);
+
+  if (isLoading || isChecking) {
+    return (
+      <div className="min-h-screen bg-dark flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <NavBar />

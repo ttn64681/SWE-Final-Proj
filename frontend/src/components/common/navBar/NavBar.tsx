@@ -1,45 +1,42 @@
 'use client';
 
 import Link from 'next/link';
-import { PiMagnifyingGlass } from "react-icons/pi";
-import { IoFilterOutline } from "react-icons/io5";
+import { PiMagnifyingGlass } from 'react-icons/pi';
+import { IoFilterOutline } from 'react-icons/io5';
 import UserMenu from './UserMenu';
-import FiltersPopUp from '@/components/specific/movies/FiltersPopUp';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFilters } from '@/contexts/FiltersContext';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function NavBar() {
-  // Track if the filters popup is open/closed
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   // Track what the user typed in the search box
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
-  // Get the currently selected filters from shared context
-  const { selectedGenres, selectedDate } = useFilters();
+  // Get the currently selected filters AND global popup state from shared context
+  const { selectedGenres, selectedDate, isFiltersOpen, setIsFiltersOpen } = useFilters();
   // Get authentication state
   const { isAuthenticated, user } = useAuth();
 
   // When user clicks search button or presses Enter, build URL with all search parameters
   const handleSearch = () => {
     const params = new URLSearchParams();
-    
+
     // Add movie title if user typed something
     if (searchQuery.trim()) {
       params.set('title', searchQuery.trim());
     }
-    
+
     // Add selected genres (comma-separated) if any are selected
     if (selectedGenres.size > 0) {
       params.set('genres', Array.from(selectedGenres).join(','));
     }
-    
+
     // Add date filters if user selected a date
     if (selectedDate.month) params.set('month', selectedDate.month);
     if (selectedDate.day) params.set('day', selectedDate.day);
     if (selectedDate.year) params.set('year', selectedDate.year);
-    
+
     const queryString = params.toString();
     router.push(`/movies${queryString ? `?${queryString}` : ''}`);
   };
@@ -51,9 +48,8 @@ export default function NavBar() {
     }
   };
 
-  
   return (
-    <nav className="fixed top-0 left-0 w-full bg-black/70 backdrop-blur-md z-50">
+    <nav className="fixed top-0 left-0 w-full bg-black/70 backdrop-blur-md z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left Section: Logo and Search */}
@@ -82,25 +78,26 @@ export default function NavBar() {
                 />
                 {/* Clickable search button */}
                 <button
+                  type="button"
                   onClick={handleSearch}
                   title="Search"
-                  className="absolute left-2 top-2 transform w-3 h-3 text-gray-400 hover:text-white transition-colors"
+                  className="absolute left-2 top-2 transform w-3 h-3 text-gray-400 hover:text-white transition-colors cursor-pointer"
                 >
-                  <PiMagnifyingGlass className="text-2xl"/>
+                  <PiMagnifyingGlass className="text-2xl" />
                 </button>
               </div>
             </div>
 
             {/* Filter Button - Always visible */}
             <div className="flex-shrink-0">
-              <button 
+              <button
                 title="Filter"
                 type="button"
-                className="text-white hover:text-red-500 transition-colors p-1.5 sm:p-2" 
+                className="text-white hover:text-acm-pink transition-colors duration-200 p-1.5 sm:p-2 cursor-pointer"
                 aria-label="filter"
                 onClick={() => setIsFiltersOpen(true)}
               >
-                <IoFilterOutline className="text-2xl"/>
+                <IoFilterOutline className="text-2xl" />
               </button>
             </div>
           </div>
@@ -109,10 +106,16 @@ export default function NavBar() {
           <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
             {/* Navigation Links - Hidden on small screens */}
             <div className="hidden lg:flex items-center space-x-6">
-              <Link href="/promos" className="text-white hover:text-red-500 transition-colors duration-200 font-medium">
+              <Link
+                href="/promos"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer"
+              >
                 Promotions
               </Link>
-              <Link href="/movies" className="text-white hover:text-red-500 transition-colors duration-200 font-medium">
+              <Link
+                href="/movies"
+                className="text-white hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer"
+              >
                 Movies
               </Link>
             </div>
@@ -124,14 +127,12 @@ export default function NavBar() {
             {!isAuthenticated ? (
               <Link
                 href="/auth/register"
-                className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1 sm:px-4 rounded-md transition-all duration-200 font-medium text-sm sm:text-base"
+                className="border border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white px-3 py-1 sm:px-4 rounded-md transition-all duration-200 font-medium text-sm sm:text-base cursor-pointer"
               >
                 Join
               </Link>
             ) : (
-              <div className="text-white text-sm sm:text-base font-medium">
-                Hi, {user?.firstName || 'User'}
-              </div>
+              <div className="text-white text-sm sm:text-base font-medium">Hi, {user?.firstName || 'User'}</div>
             )}
 
             {/* User Menu Dropdown - Only show when authenticated */}
@@ -139,12 +140,6 @@ export default function NavBar() {
           </div>
         </div>
       </div>
-      
-      {/* Filters Popup */}
-      <FiltersPopUp 
-        isClosed={!isFiltersOpen} 
-        setIsClosed={(closed) => setIsFiltersOpen(!closed)}
-      />
     </nav>
   );
 }

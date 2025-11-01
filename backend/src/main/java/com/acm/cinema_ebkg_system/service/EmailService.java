@@ -145,5 +145,89 @@ public class EmailService {
             throw new RuntimeException("Failed to send password reset email: " + e.getMessage());
         }
     }
+
+    public void sendEditProfileConfirmationEmail(String toEmail, String name) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("ACM Cinemas - User Profile Updated");
+
+            String emailBody = "Hello " + name + ", \n\n"
+                + "Your profile settings have been successfully updated.\n"
+                + "Best regards,\n"
+                + "ACM Cinema Team";
+            
+            message.setText(emailBody);
+            mailSender.send(message);
+            
+            System.out.println("Confirmation email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send confirmation email to: " + toEmail);
+            throw new RuntimeException("Failed to send confirmation email: " + e.getMessage());
+        }
+    }
+
+    public void sendChangePasswordConfirmationEmail(String toEmail, String name) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("ACM Cinemas - Password Change Notification");
+
+            String emailBody = "Hello " + name + ", \n\n"
+                + "You are receiving this email to confirm that your password has been changed successfully.\n"
+                + "If you did not change your password, please reach out to us immediately so we can secure your account.\n"
+                + "Best regards,\n"
+                + "ACM Cinema Team";
+            
+            message.setText(emailBody);
+            mailSender.send(message);
+            
+            System.out.println("Confirmation email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send confirmation email to: " + toEmail);
+            throw new RuntimeException("Failed to send confirmation email: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Send promotion enrollment email to user
+     * 
+     * This method sends an email notifying users about promotions they've enrolled for.
+     * It includes information about current promotions and special offers.
+     * 
+     * @param toEmail Recipient's email address
+     * @param name Recipient's first name
+     */
+    public void sendPromotionEnrollmentEmail(String toEmail, String name) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            message.setSubject("ACM Cinemas - Welcome to Promotions!");
+
+            String emailBody = "Hello " + name + ", \n\n"
+                + "Thank you for enrolling in our promotional notifications!\n\n"
+                + "As a valued subscriber, you will receive:\n"
+                + "• Exclusive movie ticket discounts\n"
+                + "• Special promotions and offers\n"
+                + "• Early access to new releases\n"
+                + "• Birthday specials and rewards\n\n"
+                + "Stay tuned for our latest offers and watch amazing movies at great prices!\n\n"
+                + "If you have any questions or concerns, please don't hesitate to contact us.\n\n"
+                + "Best regards,\n"
+                + "ACM Cinema Team";
+            
+            message.setText(emailBody);
+            mailSender.send(message);
+            
+            System.out.println("Promotion enrollment email sent successfully to: " + toEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send promotion enrollment email to: " + toEmail);
+            // Don't throw exception - promotion enrollment failure shouldn't block user registration/profile update
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
 }
 

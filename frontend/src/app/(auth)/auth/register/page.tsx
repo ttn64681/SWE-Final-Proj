@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRegistration } from '@/contexts/RegistrationContext';
-import { validateEmail, validatePassword } from '@/services/auth';
+import { validateEmail, validatePassword, authAPI } from '@/services/auth';
 import AuthFormContainer from '@/components/common/auth/AuthFormContainer';
 import AuthInput from '@/components/common/auth/AuthInput';
 import AuthButton from '@/components/common/auth/AuthButton';
@@ -12,88 +12,121 @@ import AuthButton from '@/components/common/auth/AuthButton';
 export default function RegisterPage() {
   const { data, updateData, isStepValid } = useRegistration();
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
+    // Create new errors object to avoid async state issues
+    const newErrors: { [key: string]: string } = {};
 
     // Validate email
     if (!data.email) {
-      setErrors(prev => ({ ...prev, email: 'Email is required' }));
+      newErrors.email = 'Email is required';
     } else if (!validateEmail(data.email)) {
-      setErrors(prev => ({ ...prev, email: 'Please enter a valid email address' }));
+      newErrors.email = 'Please enter a valid email address';
     }
 
     // Validate password
     if (!data.password) {
-      setErrors(prev => ({ ...prev, password: 'Password is required' }));
+      newErrors.password = 'Password is required';
     } else {
       const passwordValidation = validatePassword(data.password);
       if (!passwordValidation.isValid) {
-        setErrors(prev => ({ ...prev, password: passwordValidation.message || 'Invalid password' }));
+        newErrors.password = passwordValidation.message || 'Invalid password';
       }
     }
 
     // Validate confirm password
     if (!data.confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: 'Please confirm your password' }));
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (data.password !== data.confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    // Set errors and only proceed if no errors
+    // Using newErrors instead of checking old errors state prevents async issues
+    setErrors(newErrors);
+    
+    // If there are validation errors, don't proceed
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    // If no validation errors, check email availability
+    if (data.email && validateEmail(data.email)) {
+      setIsCheckingEmail(true);
+      try {
+        const emailCheck = await authAPI.checkEmail(data.email);
+        if (!emailCheck.success) {
+          setErrors(prev => ({ ...prev, email: emailCheck.message }));
+          setIsCheckingEmail(false);
+          return;
+        }
+      } catch (error) {
+        setErrors(prev => ({ ...prev, email: 'Error checking email availability. Please try again.' }));
+        setIsCheckingEmail(false);
+        return;
+      }
+      setIsCheckingEmail(false);
     }
 
     // If no errors, proceed to next step
-    if (Object.keys(errors).length === 0 && isStepValid(1)) {
+    if (Object.keys(newErrors).length === 0 && isStepValid(1)) {
       router.push('/auth/register/step2');
     }
   };
 
   return (
-    <AuthFormContainer title="Create an Account" subtitle="Step 1 of 3">
+    <AuthFormContainer
+      stepNumber={1}
+      stepTitle="Create an Account"
+      stepDescription="Step 1 of 3 - Get started with your account"
+    >
       <form onSubmit={handleSubmit} className="space-y-6">
         <AuthInput
           id="email"
-          label="Email Address*"
+          label="Email Address"
           type="email"
           value={data.email}
           onChange={(e) => updateData({ email: e.target.value })}
           placeholder="you@example.com"
           error={errors.email}
-          required
+          required={true}
         />
 
         <AuthInput
           id="password"
-          label="Password*"
+          label="Password"
           type="password"
           value={data.password}
           onChange={(e) => updateData({ password: e.target.value })}
           placeholder="••••••••"
           error={errors.password}
-          required
+          required={true}
         />
 
         <AuthInput
           id="confirmPassword"
-          label="Confirm Password*"
+          label="Confirm Password"
           type="password"
           value={data.confirmPassword}
           onChange={(e) => updateData({ confirmPassword: e.target.value })}
           placeholder="••••••••"
           error={errors.confirmPassword}
-          required
+          required={true}
         />
 
-        <AuthButton type="submit" variant="primary">
-          Continue
+        <AuthButton type="submit" variant="primary" disabled={isCheckingEmail}>
+          {isCheckingEmail ? 'Checking email...' : 'Continue'}
         </AuthButton>
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-white/70 text-sm">
+        <p className="text-white/60 text-sm">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-acm-pink hover:text-acm-orange transition-colors">
-            Sign in
+          <Link href="/auth/login" className="text-acm-pink hover:text-acm-orange transition-colors cursor-pointer">
+            &nbsp;Sign in
           </Link>
         </p>
       </div>

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import java.sql.Date;
 
 @Service // Spring service bean for business logic layer
 public class ShowTimeService {
@@ -27,12 +28,16 @@ public class ShowTimeService {
 
     /**
      * Returns all distinct LocalDate values on which the given movie has entries in show_dates.
+     * Converts java.sql.Date to java.time.LocalDate for API compatibility.
      *
      * @param movieId movie primary key
      * @return ordered list of available calendar dates (ascending)
      */
     public List<LocalDate> getAvailableDatesForMovie(Long movieId) {
-        return showDateRepository.findAvailableDatesByMovieId(movieId);
+        List<Date> sqlDates = showDateRepository.findAvailableDatesByMovieId(movieId);
+        return sqlDates.stream()
+            .map(Date::toLocalDate)
+            .collect(Collectors.toList());
     }
 
     /**
