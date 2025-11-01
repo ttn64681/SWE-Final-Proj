@@ -6,9 +6,9 @@ import NavBar from '@/components/common/navBar/NavBar';
 import api from '@/config/api';
 
 /**
- * Email Verification Page
+ * Email Verification Page Content
  * 
- * This page handles email verification when users click the link in their verification email.
+ * This component handles email verification when users click the link in their verification email.
  * It extracts the token from the URL and calls the backend verification endpoint.
  */
 function VerifyEmailContent() {
